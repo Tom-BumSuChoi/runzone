@@ -1,68 +1,77 @@
 import 'package:flutter/material.dart';
 
 abstract final class AppColors {
-  // Primitive / Base
+  // Primitive
   static const black = Color(0xFF000000);
   static const white = Color(0xFFFFFFFF);
 
-  // Primitive / Gray
-  static const gray0 = Color(0xFFF3F5F7);
-  static const gray500 = Color(0xFFA4ABB6);
-  static const gray700 = Color(0xFF353A43);
-  static const gray800 = Color(0xFF262A31);
-  static const gray850 = Color(0xFF1C2026);
-  static const gray900 = Color(0xFF16191F);
-  static const gray925 = Color(0xFF111317);
+  static const gray100 = Color(0xFFF3F5F7);
+  static const gray400 = Color(0xFFA4ABB6);
+  static const gray500 = Color(0xFF6B7280);
+  static const gray600 = Color(0xFF353A43);
+  static const gray700 = Color(0xFF262A31);
+  static const gray800 = Color(0xFF1C2026);
+  static const gray850 = Color(0xFF16191F);
+  static const gray900 = Color(0xFF111317);
   static const gray950 = Color(0xFF0A0B0D);
-  static const gray990 = Color(0xFF050608);
+  static const gray1000 = Color(0xFF050608);
 
-  // Primitive / Brand
-  static const lime400 = Color(0xFFE8FF3A);
-  static const lime500 = Color(0xFFC6E000);
+  static const lime300 = Color(0xFFE8FF3A);
+  static const lime400 = Color(0xFFC6E000);
+  static const lime500 = Color(0xFFAAC400);
 
-  // Primitive / Signal
-  static const blue400 = Color(0xFF3B82F6);
-  static const green400 = Color(0xFF22C55E);
-  static const yellow400 = Color(0xFFEAB308);
-  static const orange400 = Color(0xFFF97316);
-  static const red400 = Color(0xFFEF4444);
+  static const blue500 = Color(0xFF3B82F6);
+  static const green500 = Color(0xFF22C55E);
+  static const yellow500 = Color(0xFFEAB308);
+  static const orange500 = Color(0xFFF97316);
+  static const red500 = Color(0xFFEF4444);
 
-  // Background / Surface
-  static const backgroundPage = gray990;
-  static const backgroundApp = gray950;
-  static const surfaceCard = gray925;
-  static const surfaceRaised = gray900;
-  static const surfaceElevated = gray850;
+  // Dark semantic
+  static const pageBackground = gray1000;
+  static const background = gray950;
+  static const surface = gray900;
+  static const secondarySurface = gray850;
+  static const elevatedSurface = gray800;
+  static const line = gray700;
+  static const secondaryLine = gray600;
 
-  // Border
-  static const borderSubtle = gray800;
-  static const borderStrong = gray700;
+  static const text = gray100;
+  static const dimText = gray400;
+  static const mutedText = gray500;
 
-  // Text
-  static const textPrimary = gray0;
-  static const textSecondary = gray500;
+  static const accent = lime300;
+  static const secondaryAccent = lime400;
+  static const accentInk = gray950;
+  static const accentGlow = Color(0x38E8FF3A);
 
-  // Action
-  static const actionPrimary = lime400;
-  static const actionPrimaryPressed = lime500;
-  static const actionOnPrimary = gray950;
-  static const actionPrimarySoft = Color(0x24E8FF3A);
-  static const actionPrimaryGlow = Color(0x29E8FF3A);
+  // Light semantic
+  static const lightPageBackground = gray100;
+  static const lightBackground = white;
+  static const lightSurface = white;
+  static const lightSecondarySurface = gray100;
+  static const lightElevatedSurface = white;
+  static const lightLine = gray400;
+  static const lightSecondaryLine = gray500;
 
-  // Heart Zone
-  static const zoneRecovery = blue400;
-  static const zoneEndurance = green400;
-  static const zoneTempo = yellow400;
-  static const zoneThreshold = orange400;
-  static const zonePeak = red400;
+  static const lightText = gray950;
+  static const lightDimText = gray500;
+  static const lightMutedText = gray400;
 
-  // Feedback
-  static const feedbackSuccess = green400;
-  static const feedbackWarning = yellow400;
-  static const feedbackDanger = red400;
+  static const lightAccent = lime400;
+  static const lightSecondaryAccent = lime500;
+  static const lightAccentInk = gray950;
+  static const lightAccentGlow = Color(0x47C6E000);
 
-  // Overlay / Shadow
-  static const overlaySubtle = Color(0x12F3F5F7);
-  static const shadowDevice = Color(0xA8000000);
-  static const shadowModal = Color(0x94000000);
+  // Zone
+  static const zone1 = blue500;
+  static const zone2 = green500;
+  static const zone3 = yellow500;
+  static const zone4 = orange500;
+  static const zone5 = red500;
+
+  static const zone1Dim = Color(0x293B82F6);
+  static const zone2Dim = Color(0x2922C55E);
+  static const zone3Dim = Color(0x29EAB308);
+  static const zone4Dim = Color(0x29F97316);
+  static const zone5Dim = Color(0x29EF4444);
 }
