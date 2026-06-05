@@ -1,84 +1,85 @@
 import 'package:flutter/material.dart';
 
 abstract final class AppTypography {
-  // Font Family
-  static const sans = 'IBM Plex Sans KR';
+  // Font families
+  static const sansKorean = 'IBM Plex Sans KR';
   static const mono = 'IBM Plex Mono';
 
-  // Sans KR / Display & UI
+  // IBM Plex Sans KR
   static const display = TextStyle(
-    fontFamily: sans,
+    fontFamily: sansKorean,
     fontSize: 56,
     fontWeight: FontWeight.w600,
     height: 1.05,
     letterSpacing: -1.4,
   );
 
-  static const h1 = TextStyle(
-    fontFamily: sans,
+  static const heading1 = TextStyle(
+    fontFamily: sansKorean,
     fontSize: 27,
     fontWeight: FontWeight.w600,
+    height: 1.2,
     letterSpacing: -0.4,
   );
 
-  static const h2 = TextStyle(
-    fontFamily: sans,
+  static const heading2 = TextStyle(
+    fontFamily: sansKorean,
     fontSize: 20,
     fontWeight: FontWeight.w600,
+    height: 1.3,
   );
 
-  static const h3 = TextStyle(
-    fontFamily: sans,
+  static const heading3 = TextStyle(
+    fontFamily: sansKorean,
     fontSize: 15,
     fontWeight: FontWeight.w600,
+    height: 1.4,
   );
 
   static const body = TextStyle(
-    fontFamily: sans,
+    fontFamily: sansKorean,
     fontSize: 14,
     fontWeight: FontWeight.w400,
     height: 1.55,
   );
 
   static const small = TextStyle(
-    fontFamily: sans,
+    fontFamily: sansKorean,
     fontSize: 12,
     fontWeight: FontWeight.w400,
+    height: 1.5,
   );
 
   static const caption = TextStyle(
-    fontFamily: sans,
+    fontFamily: sansKorean,
     fontSize: 11,
     fontWeight: FontWeight.w400,
+    height: 1.5,
   );
 
-  // Mono / Numbers & Metadata
+  // IBM Plex Mono
   static const eyebrow = TextStyle(
     fontFamily: mono,
     fontSize: 11,
     fontWeight: FontWeight.w400,
+    height: 1,
     letterSpacing: 1.6,
   );
 
-  static const monoBigNumber = TextStyle(
+  static const largeNumber = TextStyle(
     fontFamily: mono,
     fontSize: 40,
     fontWeight: FontWeight.w700,
+    height: 1,
     letterSpacing: -0.8,
     fontFeatures: <FontFeature>[FontFeature.tabularFigures()],
   );
 
-  static const monoTag = TextStyle(
+  static const metadataTag = TextStyle(
     fontFamily: mono,
     fontSize: 12,
     fontWeight: FontWeight.w400,
+    height: 1,
     letterSpacing: 0.6,
-  );
-
-  static const monoUi = TextStyle(
-    fontFamily: mono,
-    fontSize: 12,
-    fontWeight: FontWeight.w500,
-    letterSpacing: 0.48,
   );
 }
