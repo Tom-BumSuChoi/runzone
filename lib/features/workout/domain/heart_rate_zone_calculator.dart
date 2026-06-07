@@ -54,27 +54,19 @@ final class HeartRateZoneCalculator {
   HeartRateZoneType getZoneType({required int age, required int heartRate}) {
     final HeartRateZone zone = getHeartRateZone(age: age);
 
-    if (zone.zone5.contains(heartRate)) {
+    if (heartRate >= zone.zone5.lower) {
       return HeartRateZoneType.zone5;
     }
-    if (zone.zone4.contains(heartRate)) {
+    if (heartRate >= zone.zone4.lower) {
       return HeartRateZoneType.zone4;
     }
-    if (zone.zone3.contains(heartRate)) {
+    if (heartRate >= zone.zone3.lower) {
       return HeartRateZoneType.zone3;
     }
-    if (zone.zone2.contains(heartRate)) {
+    if (heartRate >= zone.zone2.lower) {
       return HeartRateZoneType.zone2;
     }
-    if (zone.zone1.contains(heartRate)) {
-      return HeartRateZoneType.zone1;
-    }
-
-    throw ArgumentError.value(
-      heartRate,
-      'heartRate',
-      'must be between ${zone.zone1.lower} and ${zone.zone5.upper}',
-    );
+    return HeartRateZoneType.zone1;
   }
 
   void _validateAge(int age) {
