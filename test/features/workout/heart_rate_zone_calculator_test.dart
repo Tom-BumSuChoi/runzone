@@ -164,35 +164,56 @@ void main() {
     expect(zoneType, HeartRateZoneType.zone5);
   });
 
-  test('Given 30세 사용자와 60bpm When 현재 심박존을 판별하면 Then Zone1을 반환한다', () {
+  test('Given 30세 사용자와 Zone1 하한 미만 심박 When 현재 심박존을 판별하면 Then Zone1을 반환한다', () {
     // Given
     const int age = 30;
-    const int heartRate = 60; // zone1.lower(94) 미만 → 하단 클램프
     const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
 
-    // When
-    final HeartRateZoneType zoneType = calculator.getZoneType(
-      age: age,
-      heartRate: heartRate,
-    );
+    for (final int heartRate in [60, 80, 93]) {
+      // When
+      HeartRateZoneType calculate() =>
+          calculator.getZoneType(age: age, heartRate: heartRate);
 
-    // Then
-    expect(zoneType, HeartRateZoneType.zone1);
+      // Then
+      expect(
+        calculate(),
+        HeartRateZoneType.zone1,
+        reason: 'heartRate $heartRate',
+      );
+    }
   });
 
-  test('Given 30세 사용자와 200bpm When 현재 심박존을 판별하면 Then Zone5를 반환한다', () {
+  test('Given 30세 사용자와 0 이하 심박 When 현재 심박존을 판별하면 Then 입력값 오류가 발생한다', () {
     // Given
     const int age = 30;
-    const int heartRate = 200; // zone5.upper(187) 초과 → 상단 클램프
     const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
 
-    // When
-    final HeartRateZoneType zoneType = calculator.getZoneType(
-      age: age,
-      heartRate: heartRate,
-    );
+    for (final int heartRate in [0, -1]) {
+      // When
+      HeartRateZoneType calculate() =>
+          calculator.getZoneType(age: age, heartRate: heartRate);
 
-    // Then
-    expect(zoneType, HeartRateZoneType.zone5);
+      // Then
+      expect(calculate, throwsArgumentError, reason: 'heartRate $heartRate');
+    }
+  });
+
+  test('Given 30세 사용자와 계산된 최대심박 초과 심박 When 현재 심박존을 판별하면 Then Zone5를 반환한다', () {
+    // Given
+    const int age = 30;
+    const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
+
+    for (final int heartRate in [188, 200]) {
+      // When
+      HeartRateZoneType calculate() =>
+          calculator.getZoneType(age: age, heartRate: heartRate);
+
+      // Then
+      expect(
+        calculate(),
+        HeartRateZoneType.zone5,
+        reason: 'heartRate $heartRate',
+      );
+    }
   });
 }

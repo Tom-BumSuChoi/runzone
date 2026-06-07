@@ -6,6 +6,7 @@ final class HeartRateZoneCalculator {
 
   static const int _minimumAge = 1;
   static const int _maximumAge = 120;
+  static const int _minimumHeartRate = 1;
 
   int maxHeartRate({required int age}) {
     _validateAge(age);
@@ -53,20 +54,21 @@ final class HeartRateZoneCalculator {
 
   HeartRateZoneType getZoneType({required int age, required int heartRate}) {
     final HeartRateZone zone = getHeartRateZone(age: age);
+    _validateHeartRate(heartRate);
 
-    if (heartRate >= zone.zone5.lower) {
-      return HeartRateZoneType.zone5;
+    if (heartRate <= zone.zone1.upper) {
+      return HeartRateZoneType.zone1;
     }
-    if (heartRate >= zone.zone4.lower) {
-      return HeartRateZoneType.zone4;
-    }
-    if (heartRate >= zone.zone3.lower) {
-      return HeartRateZoneType.zone3;
-    }
-    if (heartRate >= zone.zone2.lower) {
+    if (zone.zone2.contains(heartRate)) {
       return HeartRateZoneType.zone2;
     }
-    return HeartRateZoneType.zone1;
+    if (zone.zone3.contains(heartRate)) {
+      return HeartRateZoneType.zone3;
+    }
+    if (zone.zone4.contains(heartRate)) {
+      return HeartRateZoneType.zone4;
+    }
+    return HeartRateZoneType.zone5;
   }
 
   void _validateAge(int age) {
@@ -75,6 +77,16 @@ final class HeartRateZoneCalculator {
         age,
         'age',
         'must be between $_minimumAge and $_maximumAge',
+      );
+    }
+  }
+
+  void _validateHeartRate(int heartRate) {
+    if (heartRate < _minimumHeartRate) {
+      throw ArgumentError.value(
+        heartRate,
+        'heartRate',
+        'must be at least $_minimumHeartRate',
       );
     }
   }
