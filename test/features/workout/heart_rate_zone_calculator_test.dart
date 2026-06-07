@@ -163,4 +163,36 @@ void main() {
     // Then
     expect(zoneType, HeartRateZoneType.zone5);
   });
+
+  test('Given 30세 사용자와 60bpm When 현재 심박존을 판별하면 Then Zone1을 반환한다', () {
+    // Given
+    const int age = 30;
+    const int heartRate = 60; // zone1.lower(94) 미만 → 하단 클램프
+    const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
+
+    // When
+    final HeartRateZoneType zoneType = calculator.getZoneType(
+      age: age,
+      heartRate: heartRate,
+    );
+
+    // Then
+    expect(zoneType, HeartRateZoneType.zone1);
+  });
+
+  test('Given 30세 사용자와 200bpm When 현재 심박존을 판별하면 Then Zone5를 반환한다', () {
+    // Given
+    const int age = 30;
+    const int heartRate = 200; // zone5.upper(187) 초과 → 상단 클램프
+    const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
+
+    // When
+    final HeartRateZoneType zoneType = calculator.getZoneType(
+      age: age,
+      heartRate: heartRate,
+    );
+
+    // Then
+    expect(zoneType, HeartRateZoneType.zone5);
+  });
 }
