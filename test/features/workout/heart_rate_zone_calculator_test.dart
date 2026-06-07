@@ -15,7 +15,7 @@ void main() {
     expect(maxHeartRate, 187);
   });
 
-  test('Given 30세 사용자 When 심박존을 계산하면 Then Zone2는 112bpm부터 131bpm까지다', () {
+  test('Given 30세 사용자 When 심박존을 계산하면 Then Zone2는 112bpm부터 130bpm까지다', () {
     // Given
     const int age = 30;
     const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
@@ -25,7 +25,7 @@ void main() {
 
     // Then
     expect(heartRateZone.zone2.lower, 112);
-    expect(heartRateZone.zone2.upper, 131);
+    expect(heartRateZone.zone2.upper, 130);
   });
 
   test('Given 30세 사용자 When 심박존을 계산하면 Then Z1부터 Z5까지 50퍼센트부터 100퍼센트까지 나뉜다', () {
@@ -38,13 +38,13 @@ void main() {
 
     // Then (최대심박 187 기준, 50~100%)
     expect(heartRateZone.zone1.lower, 94);
-    expect(heartRateZone.zone1.upper, 112);
+    expect(heartRateZone.zone1.upper, 111);
     expect(heartRateZone.zone2.lower, 112);
-    expect(heartRateZone.zone2.upper, 131);
+    expect(heartRateZone.zone2.upper, 130);
     expect(heartRateZone.zone3.lower, 131);
-    expect(heartRateZone.zone3.upper, 150);
+    expect(heartRateZone.zone3.upper, 149);
     expect(heartRateZone.zone4.lower, 150);
-    expect(heartRateZone.zone4.upper, 168);
+    expect(heartRateZone.zone4.upper, 167);
     expect(heartRateZone.zone5.lower, 168);
     expect(heartRateZone.zone5.upper, 187);
   });
@@ -59,22 +59,22 @@ void main() {
 
       // Then
       expect(
-        heartRateZone.zone1.upper,
+        heartRateZone.zone1.upper + 1,
         heartRateZone.zone2.lower,
         reason: 'age $age',
       );
       expect(
-        heartRateZone.zone2.upper,
+        heartRateZone.zone2.upper + 1,
         heartRateZone.zone3.lower,
         reason: 'age $age',
       );
       expect(
-        heartRateZone.zone3.upper,
+        heartRateZone.zone3.upper + 1,
         heartRateZone.zone4.lower,
         reason: 'age $age',
       );
       expect(
-        heartRateZone.zone4.upper,
+        heartRateZone.zone4.upper + 1,
         heartRateZone.zone5.lower,
         reason: 'age $age',
       );
@@ -130,5 +130,37 @@ void main() {
       // Then
       expect(calculate, throwsArgumentError, reason: 'age $age');
     }
+  });
+
+  test('Given 30세 사용자와 125bpm When 현재 심박존을 판별하면 Then Zone2를 반환한다', () {
+    // Given
+    const int age = 30;
+    const int heartRate = 125;
+    const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
+
+    // When
+    final HeartRateZoneType zoneType = calculator.getZoneType(
+      age: age,
+      heartRate: heartRate,
+    );
+
+    // Then
+    expect(zoneType, HeartRateZoneType.zone2);
+  });
+
+  test('Given 30세 사용자와 187bpm When 현재 심박존을 판별하면 Then Zone5를 반환한다', () {
+    // Given
+    const int age = 30;
+    const int heartRate = 187;
+    const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
+
+    // When
+    final HeartRateZoneType zoneType = calculator.getZoneType(
+      age: age,
+      heartRate: heartRate,
+    );
+
+    // Then
+    expect(zoneType, HeartRateZoneType.zone5);
   });
 }
