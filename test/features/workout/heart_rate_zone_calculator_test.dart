@@ -148,6 +148,23 @@ void main() {
     expect(zoneType, HeartRateZoneType.zone2);
   });
 
+  test(
+    'Given 계산된 심박존과 125bpm When 심박존 객체에 현재 심박존 판별을 요청하면 Then Zone2를 반환한다',
+    () {
+      // Given
+      const int age = 30;
+      const int heartRate = 125;
+      const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
+      final HeartRateZone heartRateZone = calculator.getHeartRateZone(age: age);
+
+      // When
+      final HeartRateZoneType zoneType = heartRateZone.getZoneType(heartRate);
+
+      // Then
+      expect(zoneType, HeartRateZoneType.zone2);
+    },
+  );
+
   test('Given 30세 사용자와 187bpm When 현재 심박존을 판별하면 Then Zone5를 반환한다', () {
     // Given
     const int age = 30;
