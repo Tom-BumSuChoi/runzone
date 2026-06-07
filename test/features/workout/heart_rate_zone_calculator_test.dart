@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:runzone/features/workout/heart_rate_zone_calculator.dart';
+import 'package:runzone/features/workout/domain/heart_rate_zone.dart';
+import 'package:runzone/features/workout/domain/heart_rate_zone_calculator.dart';
 
 void main() {
   test('Given 30세 사용자 When 최대심박을 계산하면 Then 187bpm을 반환한다', () {
