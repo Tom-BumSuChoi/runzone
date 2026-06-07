@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:runzone/features/workout/domain/heart_rate_zone.dart';
 import 'package:runzone/features/workout/domain/heart_rate_zone_calculator.dart';
+import 'package:runzone/features/workout/domain/heart_rate_zone_range.dart';
 
 void main() {
   test('Given 30세 사용자 When 최대심박을 계산하면 Then 187bpm을 반환한다', () {
@@ -24,8 +25,10 @@ void main() {
     final HeartRateZone heartRateZone = calculator.getHeartRateZone(age: age);
 
     // Then
-    expect(heartRateZone.zone2.lower, 112);
-    expect(heartRateZone.zone2.upper, 130);
+    expect(
+      heartRateZone.zone2,
+      const HeartRateZoneRange(lower: 112, upper: 130),
+    );
   });
 
   test('Given 30세 사용자 When 심박존을 계산하면 Then Z1부터 Z5까지 50퍼센트부터 100퍼센트까지 나뉜다', () {
@@ -37,16 +40,16 @@ void main() {
     final HeartRateZone heartRateZone = calculator.getHeartRateZone(age: age);
 
     // Then (최대심박 187 기준, 50~100%)
-    expect(heartRateZone.zone1.lower, 94);
-    expect(heartRateZone.zone1.upper, 111);
-    expect(heartRateZone.zone2.lower, 112);
-    expect(heartRateZone.zone2.upper, 130);
-    expect(heartRateZone.zone3.lower, 131);
-    expect(heartRateZone.zone3.upper, 149);
-    expect(heartRateZone.zone4.lower, 150);
-    expect(heartRateZone.zone4.upper, 167);
-    expect(heartRateZone.zone5.lower, 168);
-    expect(heartRateZone.zone5.upper, 187);
+    expect(
+      heartRateZone,
+      const HeartRateZone(
+        zone1: HeartRateZoneRange(lower: 94, upper: 111),
+        zone2: HeartRateZoneRange(lower: 112, upper: 130),
+        zone3: HeartRateZoneRange(lower: 131, upper: 149),
+        zone4: HeartRateZoneRange(lower: 150, upper: 167),
+        zone5: HeartRateZoneRange(lower: 168, upper: 187),
+      ),
+    );
   });
 
   test('Given 여러 나이 When 심박존을 계산하면 Then 각 존 경계는 빈틈없이 이어진다', () {
