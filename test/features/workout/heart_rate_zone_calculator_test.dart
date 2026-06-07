@@ -105,4 +105,30 @@ void main() {
       );
     }
   });
+
+  test('Given 유효하지 않은 나이 When 최대심박을 계산하면 Then 입력값 오류가 발생한다', () {
+    // Given
+    const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
+
+    for (final int age in [0, -1, 121]) {
+      // When
+      int calculate() => calculator.maxHeartRate(age: age);
+
+      // Then
+      expect(calculate, throwsArgumentError, reason: 'age $age');
+    }
+  });
+
+  test('Given 유효하지 않은 나이 When 심박존을 계산하면 Then 입력값 오류가 발생한다', () {
+    // Given
+    const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
+
+    for (final int age in [0, -1, 121]) {
+      // When
+      HeartRateZone calculate() => calculator.getHeartRateZone(age: age);
+
+      // Then
+      expect(calculate, throwsArgumentError, reason: 'age $age');
+    }
+  });
 }

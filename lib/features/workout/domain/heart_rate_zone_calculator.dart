@@ -4,7 +4,12 @@ import 'package:runzone/features/workout/domain/heart_rate_zone_range.dart';
 final class HeartRateZoneCalculator {
   const HeartRateZoneCalculator();
 
+  static const int _minimumAge = 1;
+  static const int _maximumAge = 120;
+
   int maxHeartRate({required int age}) {
+    _validateAge(age);
+
     return (208 - 0.7 * age).round();
   }
 
@@ -39,5 +44,15 @@ final class HeartRateZoneCalculator {
       zone4: zone4,
       zone5: zone5,
     );
+  }
+
+  void _validateAge(int age) {
+    if (age < _minimumAge || age > _maximumAge) {
+      throw ArgumentError.value(
+        age,
+        'age',
+        'must be between $_minimumAge and $_maximumAge',
+      );
+    }
   }
 }
