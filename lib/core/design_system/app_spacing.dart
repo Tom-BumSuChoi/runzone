@@ -11,6 +11,8 @@ abstract final class AppSpacing {
   static const screenPadding = 20.0;
   static const buttonPaddingVertical = 13.0;
   static const buttonPaddingHorizontal = 18.0;
+  static const chipPaddingVertical = 8.0;
+  static const chipPaddingHorizontal = 14.0;
 
   static const touchTarget = 44.0;
   static const navHeight = 78.0;
@@ -42,5 +44,9 @@ abstract final class AppSpacing {
   static const buttonInsets = EdgeInsets.symmetric(
     vertical: buttonPaddingVertical,
     horizontal: buttonPaddingHorizontal,
+  );
+  static const chipInsets = EdgeInsets.symmetric(
+    vertical: chipPaddingVertical,
+    horizontal: chipPaddingHorizontal,
   );
 }
