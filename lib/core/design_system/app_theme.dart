@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
 import 'app_radius.dart';
+import 'app_semantic_colors.dart';
 import 'app_spacing.dart';
 import 'app_typography.dart';
 
@@ -40,6 +41,7 @@ abstract final class AppTheme {
       modalBackgroundColor: AppColors.surface,
       shape: RoundedRectangleBorder(borderRadius: AppRadius.bottomSheetBorder),
     ),
+    extensions: const [AppSemanticColors.dark],
   );
 
   static final light = ThemeData(
@@ -74,6 +76,7 @@ abstract final class AppTheme {
       modalBackgroundColor: AppColors.lightSurface,
       shape: RoundedRectangleBorder(borderRadius: AppRadius.bottomSheetBorder),
     ),
+    extensions: const [AppSemanticColors.light],
   );
 
   static TextTheme _textTheme({
