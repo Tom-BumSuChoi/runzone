@@ -24,11 +24,6 @@ final directories = <_widgetbook.WidgetbookNode>[
         name: 'RunZoneChoiceChip',
         useCases: [
           _widgetbook.WidgetbookUseCase(
-            name: 'Disabled',
-            builder: _runzone_widgetbook_run_zone_choice_chip_use_cases
-                .buildDisabledChoiceChipUseCase,
-          ),
-          _widgetbook.WidgetbookUseCase(
             name: 'Selected',
             builder: _runzone_widgetbook_run_zone_choice_chip_use_cases
                 .buildSelectedChoiceChipUseCase,
