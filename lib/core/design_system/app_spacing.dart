@@ -14,6 +14,7 @@ abstract final class AppSpacing {
   static const chipPaddingVertical = 8.0;
   static const chipPaddingHorizontal = 14.0;
   static const chipGap = 8.0;
+  static const stepperGap = 12.0;
 
   static const touchTarget = 44.0;
   static const navHeight = 78.0;
