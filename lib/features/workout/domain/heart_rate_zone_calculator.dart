@@ -7,6 +7,8 @@ final class HeartRateZoneCalculator {
   static const int _minimumAge = 1;
   static const int _maximumAge = 120;
 
+  bool isValidAge(int age) => age >= _minimumAge && age <= _maximumAge;
+
   int maxHeartRate({required int age}) {
     _validateAge(age);
 
@@ -56,7 +58,7 @@ final class HeartRateZoneCalculator {
   }
 
   void _validateAge(int age) {
-    if (age < _minimumAge || age > _maximumAge) {
+    if (!isValidAge(age)) {
       throw ArgumentError.value(
         age,
         'age',
