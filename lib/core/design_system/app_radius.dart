@@ -9,6 +9,7 @@ abstract final class AppRadius {
   static const chipValue = 11.0;
   static const toggleValue = 14.0;
   static const zoneSegmentValue = 7.0;
+  static const progressValue = 3.0;
   static const pillValue = 999.0;
   static const screenValue = 42.0;
   static const deviceValue = 52.0;
@@ -21,6 +22,7 @@ abstract final class AppRadius {
   static const chip = Radius.circular(chipValue);
   static const toggle = Radius.circular(toggleValue);
   static const zoneSegment = Radius.circular(zoneSegmentValue);
+  static const progress = Radius.circular(progressValue);
   static const pill = Radius.circular(pillValue);
   static const screen = Radius.circular(screenValue);
   static const device = Radius.circular(deviceValue);
@@ -34,6 +36,7 @@ abstract final class AppRadius {
   static const chipBorder = BorderRadius.all(chip);
   static const toggleBorder = BorderRadius.all(toggle);
   static const zoneSegmentTopBorder = BorderRadius.vertical(top: zoneSegment);
+  static const progressBorder = BorderRadius.all(progress);
   static const pillBorder = BorderRadius.all(pill);
   static const screenBorder = BorderRadius.all(screen);
   static const deviceBorder = BorderRadius.all(device);
