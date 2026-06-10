@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:runzone/core/design_system/app_theme.dart';
+import 'package:runzone/features/workout/presentation/heart_rate_zone_setup_screen.dart';
 
 final class RunZoneApp extends StatelessWidget {
   const RunZoneApp({super.key});
@@ -12,7 +13,7 @@ final class RunZoneApp extends StatelessWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: AppTheme.themeMode,
-      home: const Center(child: Text('Run Zone')),
+      home: const HeartRateZoneSetupScreen(),
     );
   }
 }
