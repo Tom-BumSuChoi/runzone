@@ -82,4 +82,11 @@ abstract final class AppTypography {
     height: 1,
     letterSpacing: 0.6,
   );
+
+  static const stepperValue = TextStyle(
+    fontFamily: mono,
+    fontSize: 19,
+    fontWeight: FontWeight.w600,
+    height: 1,
+  );
 }
