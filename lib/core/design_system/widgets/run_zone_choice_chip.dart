@@ -1,46 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:runzone/core/design_system/app_semantic_colors.dart';
 
-import '../app_colors.dart';
 import '../app_radius.dart';
 import '../app_spacing.dart';
 import '../app_typography.dart';
 
 final class RunZoneChoiceChip extends StatelessWidget {
-  const RunZoneChoiceChip({
-    required this.label,
-    required this.selected,
-    required this.onSelected,
-    this.enabled = true,
-    super.key,
-  });
+  const RunZoneChoiceChip({super.key, required this.label, required this.isSelected, required this.onTap});
 
   final String label;
-  final bool selected;
-  final ValueChanged<bool> onSelected;
-  final bool enabled;
+  final bool isSelected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return ChoiceChip(
-      label: Text(
-        label,
-        style: AppTypography.eyebrow.copyWith(
-          color: selected ? AppColors.lightAccentInk : AppColors.lightDimText,
-          fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+    final colors = AppSemanticColors.of(context);
+    final background = isSelected ? colors.accent : colors.secondarySurface;
+    final foreground = isSelected ? colors.accentInk : colors.dimText;
+    final border = isSelected ? Colors.transparent : colors.secondaryLine;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: background,
+          border: Border.all(color: border),
+          borderRadius: AppRadius.chipBorder,
+        ),
+        child: Padding(
+          padding: AppSpacing.chipInsets,
+          child: Text(
+            label,
+            style: AppTypography.eyebrow.copyWith(
+              color: foreground,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+            ),
+          ),
         ),
       ),
-      selected: selected,
-      onSelected: enabled ? onSelected : null,
-      showCheckmark: false,
-      backgroundColor: AppColors.lightSecondarySurface,
-      selectedColor: AppColors.lightAccent,
-      side: BorderSide(color: selected ? Colors.transparent : AppColors.lightLine),
-      shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.chipBorder,
-      ),
-      padding: AppSpacing.chipInsets,
-      labelPadding: EdgeInsets.zero,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
   }
 }

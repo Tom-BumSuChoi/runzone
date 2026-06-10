@@ -4,15 +4,34 @@ import 'app_colors.dart';
 
 @immutable
 final class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
-  const AppSemanticColors({required this.progressFill, required this.progressTrack});
+  const AppSemanticColors({
+    required this.accent,
+    required this.accentInk,
+    required this.secondarySurface,
+    required this.secondaryLine,
+    required this.dimText,
+  });
 
-  final Color progressFill;
-  final Color progressTrack;
+  final Color accent;
+  final Color accentInk;
+  final Color secondarySurface;
+  final Color secondaryLine;
+  final Color dimText;
 
-  static const dark = AppSemanticColors(progressFill: AppColors.accent, progressTrack: AppColors.secondaryLine);
+  static const dark = AppSemanticColors(
+    accent: AppColors.accent,
+    accentInk: AppColors.accentInk,
+    secondarySurface: AppColors.secondarySurface,
+    secondaryLine: AppColors.secondaryLine,
+    dimText: AppColors.dimText,
+  );
+
   static const light = AppSemanticColors(
-    progressFill: AppColors.lightAccent,
-    progressTrack: AppColors.lightSecondaryLine,
+    accent: AppColors.lightAccent,
+    accentInk: AppColors.lightAccentInk,
+    secondarySurface: AppColors.lightSecondarySurface,
+    secondaryLine: AppColors.lightSecondaryLine,
+    dimText: AppColors.lightDimText,
   );
 
   static AppSemanticColors of(BuildContext context) {
@@ -22,10 +41,19 @@ final class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
   }
 
   @override
-  AppSemanticColors copyWith({Color? progressFill, Color? progressTrack}) {
+  AppSemanticColors copyWith({
+    Color? accent,
+    Color? accentInk,
+    Color? secondarySurface,
+    Color? secondaryLine,
+    Color? dimText,
+  }) {
     return AppSemanticColors(
-      progressFill: progressFill ?? this.progressFill,
-      progressTrack: progressTrack ?? this.progressTrack,
+      accent: accent ?? this.accent,
+      accentInk: accentInk ?? this.accentInk,
+      secondarySurface: secondarySurface ?? this.secondarySurface,
+      secondaryLine: secondaryLine ?? this.secondaryLine,
+      dimText: dimText ?? this.dimText,
     );
   }
 
@@ -33,8 +61,11 @@ final class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
   AppSemanticColors lerp(AppSemanticColors? other, double t) {
     if (other == null) return this;
     return AppSemanticColors(
-      progressFill: Color.lerp(progressFill, other.progressFill, t) ?? progressFill,
-      progressTrack: Color.lerp(progressTrack, other.progressTrack, t) ?? progressTrack,
+      accent: Color.lerp(accent, other.accent, t) ?? accent,
+      accentInk: Color.lerp(accentInk, other.accentInk, t) ?? accentInk,
+      secondarySurface: Color.lerp(secondarySurface, other.secondarySurface, t) ?? secondarySurface,
+      secondaryLine: Color.lerp(secondaryLine, other.secondaryLine, t) ?? secondaryLine,
+      dimText: Color.lerp(dimText, other.dimText, t) ?? dimText,
     );
   }
 }

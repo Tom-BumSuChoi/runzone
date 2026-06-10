@@ -18,7 +18,7 @@ final class RunZoneProgressIndicator extends StatelessWidget {
     final segments = <Widget>[];
 
     for (var i = 0; i < totalSteps; i++) {
-      final color = i < currentStep ? colors.progressFill : colors.progressTrack;
+      final color = i < currentStep ? colors.accent : colors.secondaryLine;
       segments.add(_Segment(color: color));
     }
 
