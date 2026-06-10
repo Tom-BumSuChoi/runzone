@@ -14,6 +14,8 @@ import 'package:runzone/widgetbook/run_zone_choice_chip_use_cases.dart'
     as _runzone_widgetbook_run_zone_choice_chip_use_cases;
 import 'package:runzone/widgetbook/run_zone_progress_indicator_use_cases.dart'
     as _runzone_widgetbook_run_zone_progress_indicator_use_cases;
+import 'package:runzone/widgetbook/run_zone_stepper_use_cases.dart'
+    as _runzone_widgetbook_run_zone_stepper_use_cases;
 import 'package:widgetbook/widgetbook.dart' as _widgetbook;
 
 final directories = <_widgetbook.WidgetbookNode>[
@@ -47,6 +49,16 @@ final directories = <_widgetbook.WidgetbookNode>[
             name: 'Step 2 of 2',
             builder: _runzone_widgetbook_run_zone_progress_indicator_use_cases
                 .buildStepTwoProgressIndicatorUseCase,
+          ),
+        ],
+      ),
+      _widgetbook.WidgetbookComponent(
+        name: 'RunZoneStepper',
+        useCases: [
+          _widgetbook.WidgetbookUseCase(
+            name: 'Default',
+            builder: _runzone_widgetbook_run_zone_stepper_use_cases
+                .buildStepperUseCase,
           ),
         ],
       ),
