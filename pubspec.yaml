@@ -17,6 +17,7 @@ dependencies:
   get_it: ^9.2.1
   widgetbook: ^3.8.1
   shared_preferences: ^2.5.5
+  widgetbook_annotation: ^3.11.0
 
 dev_dependencies:
   flutter_test:
@@ -24,6 +25,8 @@ dev_dependencies:
 
   bloc_test: ^10.0.0
   flutter_lints: ^6.0.0
+  widgetbook_generator: ^3.24.0
+  build_runner: ^2.15.0
 
 flutter:
   uses-material-design: true
