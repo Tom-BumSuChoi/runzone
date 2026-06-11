@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:runzone/features/workout/domain/height.dart';
+import 'package:runzone/features/profile/domain/height.dart';
 
 void main() {
   test('Given 경계를 포함한 유효한 키 When 생성하면 Then 해당 값을 가진다', () {

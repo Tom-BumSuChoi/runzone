@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:runzone/features/workout/domain/weight.dart';
+import 'package:runzone/features/profile/domain/weight.dart';
 
 void main() {
   test('Given 경계를 포함한 유효한 체중 When 생성하면 Then 해당 값을 가진다', () {
