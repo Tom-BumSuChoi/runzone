@@ -12,6 +12,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:runzone/widgetbook/run_zone_choice_chip_use_cases.dart'
     as _runzone_widgetbook_run_zone_choice_chip_use_cases;
+import 'package:runzone/widgetbook/run_zone_profile_field_use_cases.dart'
+    as _runzone_widgetbook_run_zone_profile_field_use_cases;
 import 'package:runzone/widgetbook/run_zone_progress_indicator_use_cases.dart'
     as _runzone_widgetbook_run_zone_progress_indicator_use_cases;
 import 'package:runzone/widgetbook/run_zone_stepper_use_cases.dart'
@@ -34,6 +36,21 @@ final directories = <_widgetbook.WidgetbookNode>[
             name: 'Unselected',
             builder: _runzone_widgetbook_run_zone_choice_chip_use_cases
                 .buildUnselectedChoiceChipUseCase,
+          ),
+        ],
+      ),
+      _widgetbook.WidgetbookComponent(
+        name: 'RunZoneProfileField',
+        useCases: [
+          _widgetbook.WidgetbookUseCase(
+            name: 'With Chips',
+            builder: _runzone_widgetbook_run_zone_profile_field_use_cases
+                .buildProfileFieldWithChipsUseCase,
+          ),
+          _widgetbook.WidgetbookUseCase(
+            name: 'With Stepper',
+            builder: _runzone_widgetbook_run_zone_profile_field_use_cases
+                .buildProfileFieldWithStepperUseCase,
           ),
         ],
       ),
