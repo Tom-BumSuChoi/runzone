@@ -2,17 +2,19 @@ import 'package:equatable/equatable.dart';
 
 final class Height extends Equatable {
   Height(this.centimeters) {
-    if (!isValid(centimeters)) {
-      throw ArgumentError.value(centimeters, 'centimeters', 'must be between $min and $max');
+    if (centimeters < _min || centimeters > _max) {
+      throw ArgumentError.value(centimeters, 'centimeters', 'must be between $_min and $_max');
     }
   }
 
-  static const int min = 100;
-  static const int max = 250;
+  static const int _min = 100;
+  static const int _max = 250;
 
   final int centimeters;
 
-  static bool isValid(int centimeters) => centimeters >= min && centimeters <= max;
+  Height incremented() => centimeters >= _max ? this : Height(centimeters + 1);
+
+  Height decremented() => centimeters <= _min ? this : Height(centimeters - 1);
 
   @override
   List<Object?> get props => [centimeters];
