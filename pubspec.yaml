@@ -30,6 +30,14 @@ dev_dependencies:
   build_runner: ^2.15.0
   flutter_launcher_icons: ^0.14.4
 
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/branding/app_icon.png
+  remove_alpha_ios: true
+  adaptive_icon_background: "#E8FF3A"
+  adaptive_icon_foreground: assets/branding/app_icon_foreground.png
+
 flutter:
   uses-material-design: true
 
