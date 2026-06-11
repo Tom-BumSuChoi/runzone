@@ -1,6 +1,6 @@
 import 'package:get_it/get_it.dart';
-import 'package:runzone/features/workout/data/shared_preferences_profile_repository.dart';
-import 'package:runzone/features/workout/domain/profile_repository.dart';
+import 'package:runzone/features/profile/data/shared_preferences_profile_repository.dart';
+import 'package:runzone/features/profile/domain/profile_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final GetIt getIt = GetIt.instance;

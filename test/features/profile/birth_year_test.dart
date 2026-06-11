@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:runzone/features/workout/domain/birth_year.dart';
+import 'package:runzone/features/profile/domain/birth_year.dart';
 
 void main() {
   test('Given 경계를 포함한 유효한 출생연도 When 생성하면 Then 해당 값을 가진다', () {

@@ -9,7 +9,7 @@ import 'package:runzone/core/design_system/widgets/run_zone_profile_field.dart';
 import 'package:runzone/core/design_system/widgets/run_zone_progress_indicator.dart';
 import 'package:runzone/core/design_system/widgets/run_zone_section_label.dart';
 import 'package:runzone/core/design_system/widgets/run_zone_stepper.dart';
-import 'package:runzone/features/workout/domain/profile_repository.dart';
+import 'package:runzone/features/profile/domain/profile_repository.dart';
 import 'package:runzone/features/workout/presentation/cubit/heart_rate_zone_setup_cubit.dart';
 
 final class HeartRateZoneSetupScreen extends StatelessWidget {

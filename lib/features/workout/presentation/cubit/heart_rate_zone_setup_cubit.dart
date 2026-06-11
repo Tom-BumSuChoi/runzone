@@ -1,15 +1,15 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:runzone/features/workout/domain/birth_year.dart';
-import 'package:runzone/features/workout/domain/gender.dart';
+import 'package:runzone/features/profile/domain/birth_year.dart';
+import 'package:runzone/features/profile/domain/gender.dart';
 import 'package:runzone/features/workout/domain/heart_rate_zone.dart';
 import 'package:runzone/features/workout/domain/heart_rate_zone_calculator.dart';
-import 'package:runzone/features/workout/domain/height.dart';
-import 'package:runzone/features/workout/domain/profile_repository.dart';
-import 'package:runzone/features/workout/domain/runner_profile.dart';
-import 'package:runzone/features/workout/domain/running_career.dart';
-import 'package:runzone/features/workout/domain/weekly_frequency.dart';
-import 'package:runzone/features/workout/domain/weight.dart';
+import 'package:runzone/features/profile/domain/height.dart';
+import 'package:runzone/features/profile/domain/profile_repository.dart';
+import 'package:runzone/features/profile/domain/runner_profile.dart';
+import 'package:runzone/features/profile/domain/running_career.dart';
+import 'package:runzone/features/profile/domain/weekly_frequency.dart';
+import 'package:runzone/features/profile/domain/weight.dart';
 
 part 'heart_rate_zone_setup_state.dart';
 

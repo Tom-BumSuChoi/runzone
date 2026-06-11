@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:runzone/features/workout/domain/profile_repository.dart';
-import 'package:runzone/features/workout/domain/runner_profile.dart';
+import 'package:runzone/features/profile/domain/profile_repository.dart';
+import 'package:runzone/features/profile/domain/runner_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final class SharedPreferencesProfileRepository implements ProfileRepository {
