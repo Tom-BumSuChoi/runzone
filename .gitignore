@@ -26,6 +26,7 @@ migrate_working_dir/
 # Local agent/tooling state
 .codegraph/
 .cursor/
+AGENTS.md
 
 # Flutter/Dart/Pub related
 **/doc/api/
