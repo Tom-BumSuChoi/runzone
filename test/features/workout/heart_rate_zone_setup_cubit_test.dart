@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:runzone/features/workout/domain/birth_year.dart';
 import 'package:runzone/features/workout/domain/gender.dart';
 import 'package:runzone/features/workout/domain/heart_rate_zone_calculator.dart';
 import 'package:runzone/features/workout/domain/height.dart';
@@ -40,39 +41,39 @@ void main() {
     final HeartRateZoneSetupCubit cubit = buildCubit();
 
     expect(cubit.state, HeartRateZoneSetupState.initial());
-    expect(cubit.state.zone, calculator.getHeartRateZone(age: 30));
+    expect(cubit.state.zone, calculator.getHeartRateZone(age: cubit.state.age));
   });
 
-  group('나이 조절', () {
+  group('출생 연도 조절', () {
     blocTest<HeartRateZoneSetupCubit, HeartRateZoneSetupState>(
-      'Given cubit When incrementAge 하면 Then 나이가 1 늘고 그에 따른 심박존을 방출한다',
+      'Given cubit When incrementBirthYear 하면 Then 출생 연도가 1 늘고 그에 따른 심박존을 방출한다',
       build: buildCubit,
-      act: (cubit) => cubit.incrementAge(),
-      expect: () => [HeartRateZoneSetupState.initial().copyWith(age: 31)],
-      verify: (cubit) => expect(cubit.state.zone, calculator.getHeartRateZone(age: 31)),
+      act: (cubit) => cubit.incrementBirthYear(),
+      expect: () => [HeartRateZoneSetupState.initial().copyWith(birthYear: BirthYear(1997))],
+      verify: (cubit) => expect(cubit.state.zone, calculator.getHeartRateZone(age: cubit.state.age)),
     );
 
     blocTest<HeartRateZoneSetupCubit, HeartRateZoneSetupState>(
-      'Given cubit When decrementAge 하면 Then 나이가 1 줄고 그에 따른 심박존을 방출한다',
+      'Given cubit When decrementBirthYear 하면 Then 출생 연도가 1 줄고 그에 따른 심박존을 방출한다',
       build: buildCubit,
-      act: (cubit) => cubit.decrementAge(),
-      expect: () => [HeartRateZoneSetupState.initial().copyWith(age: 29)],
-      verify: (cubit) => expect(cubit.state.zone, calculator.getHeartRateZone(age: 29)),
+      act: (cubit) => cubit.decrementBirthYear(),
+      expect: () => [HeartRateZoneSetupState.initial().copyWith(birthYear: BirthYear(1995))],
+      verify: (cubit) => expect(cubit.state.zone, calculator.getHeartRateZone(age: cubit.state.age)),
     );
 
     blocTest<HeartRateZoneSetupCubit, HeartRateZoneSetupState>(
-      'Given 최대 나이 상태 When incrementAge 하면 Then 더 증가하지 않고 아무것도 방출하지 않는다',
+      'Given 최대 출생 연도 상태 When incrementBirthYear 하면 Then 더 증가하지 않고 아무것도 방출하지 않는다',
       build: buildCubit,
-      seed: () => HeartRateZoneSetupState.initial().copyWith(age: 120),
-      act: (cubit) => cubit.incrementAge(),
+      seed: () => HeartRateZoneSetupState.initial().copyWith(birthYear: BirthYear(2012)),
+      act: (cubit) => cubit.incrementBirthYear(),
       expect: () => const <HeartRateZoneSetupState>[],
     );
 
     blocTest<HeartRateZoneSetupCubit, HeartRateZoneSetupState>(
-      'Given 최소 나이 상태 When decrementAge 하면 Then 더 감소하지 않고 아무것도 방출하지 않는다',
+      'Given 최소 출생 연도 상태 When decrementBirthYear 하면 Then 더 감소하지 않고 아무것도 방출하지 않는다',
       build: buildCubit,
-      seed: () => HeartRateZoneSetupState.initial().copyWith(age: 1),
-      act: (cubit) => cubit.decrementAge(),
+      seed: () => HeartRateZoneSetupState.initial().copyWith(birthYear: BirthYear(1940)),
+      act: (cubit) => cubit.decrementBirthYear(),
       expect: () => const <HeartRateZoneSetupState>[],
     );
   });
@@ -83,20 +84,6 @@ void main() {
       build: buildCubit,
       act: (cubit) => cubit.changeGender(Gender.female),
       expect: () => [HeartRateZoneSetupState.initial().copyWith(gender: Gender.female)],
-    );
-
-    blocTest<HeartRateZoneSetupCubit, HeartRateZoneSetupState>(
-      'Given cubit When changeHeight 하면 Then 키만 갱신된다',
-      build: buildCubit,
-      act: (cubit) => cubit.changeHeight(175),
-      expect: () => [HeartRateZoneSetupState.initial().copyWith(height: Height(175))],
-    );
-
-    blocTest<HeartRateZoneSetupCubit, HeartRateZoneSetupState>(
-      'Given cubit When changeWeight 하면 Then 체중만 갱신된다',
-      build: buildCubit,
-      act: (cubit) => cubit.changeWeight(68),
-      expect: () => [HeartRateZoneSetupState.initial().copyWith(weight: Weight(68))],
     );
 
     blocTest<HeartRateZoneSetupCubit, HeartRateZoneSetupState>(
@@ -130,7 +117,7 @@ void main() {
       verify: (_) => expect(
         spy.saved,
         RunnerProfile(
-          age: 30,
+          birthYear: BirthYear(1996),
           gender: Gender.male,
           height: Height(170),
           weight: Weight(65),

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:runzone/features/workout/data/shared_preferences_profile_repository.dart';
+import 'package:runzone/features/workout/domain/birth_year.dart';
 import 'package:runzone/features/workout/domain/gender.dart';
 import 'package:runzone/features/workout/domain/height.dart';
 import 'package:runzone/features/workout/domain/runner_profile.dart';
@@ -20,7 +21,7 @@ void main() {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     final SharedPreferencesProfileRepository repository = SharedPreferencesProfileRepository(preferences);
     final RunnerProfile profile = RunnerProfile(
-      age: 30,
+      birthYear: BirthYear(1996),
       gender: Gender.male,
       height: Height(170),
       weight: Weight(65),
@@ -35,7 +36,7 @@ void main() {
     final String? stored = preferences.getString('runner_profile');
     expect(stored, isNotNull);
     expect(jsonDecode(stored!), <String, Object>{
-      'age': 30,
+      'birthYear': 1996,
       'gender': 'male',
       'height': 170,
       'weight': 65,

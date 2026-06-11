@@ -4,7 +4,7 @@ enum SetupStatus { editing, submitting, success, failure }
 
 final class HeartRateZoneSetupState extends Equatable {
   const HeartRateZoneSetupState({
-    required this.age,
+    required this.birthYear,
     required this.gender,
     required this.height,
     required this.weight,
@@ -14,7 +14,7 @@ final class HeartRateZoneSetupState extends Equatable {
   });
 
   factory HeartRateZoneSetupState.initial() => HeartRateZoneSetupState(
-    age: 30,
+    birthYear: BirthYear(1996),
     gender: Gender.male,
     height: Height(170),
     weight: Weight(65),
@@ -22,7 +22,7 @@ final class HeartRateZoneSetupState extends Equatable {
     weeklyFrequency: WeeklyFrequency(3),
   );
 
-  final int age;
+  final BirthYear birthYear;
   final Gender gender;
   final Height height;
   final Weight weight;
@@ -30,10 +30,12 @@ final class HeartRateZoneSetupState extends Equatable {
   final WeeklyFrequency weeklyFrequency;
   final SetupStatus status;
 
+  int get age => DateTime.now().year - birthYear.year;
+
   HeartRateZone get zone => _calculator.getHeartRateZone(age: age);
 
   HeartRateZoneSetupState copyWith({
-    int? age,
+    BirthYear? birthYear,
     Gender? gender,
     Height? height,
     Weight? weight,
@@ -42,7 +44,7 @@ final class HeartRateZoneSetupState extends Equatable {
     SetupStatus? status,
   }) {
     return HeartRateZoneSetupState(
-      age: age ?? this.age,
+      birthYear: birthYear ?? this.birthYear,
       gender: gender ?? this.gender,
       height: height ?? this.height,
       weight: weight ?? this.weight,
@@ -53,5 +55,5 @@ final class HeartRateZoneSetupState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [age, gender, height, weight, career, weeklyFrequency, status];
+  List<Object?> get props => [birthYear, gender, height, weight, career, weeklyFrequency, status];
 }
