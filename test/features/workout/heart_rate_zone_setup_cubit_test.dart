@@ -14,6 +14,9 @@ import 'package:runzone/features/workout/presentation/cubit/heart_rate_zone_setu
 class _FakeProfileRepository implements ProfileRepository {
   @override
   Future<void> save(RunnerProfile profile) async {}
+
+  @override
+  Future<RunnerProfile?> load() async => null;
 }
 
 class _SpyProfileRepository implements ProfileRepository {
@@ -23,6 +26,9 @@ class _SpyProfileRepository implements ProfileRepository {
   Future<void> save(RunnerProfile profile) async {
     saved = profile;
   }
+
+  @override
+  Future<RunnerProfile?> load() async => null;
 }
 
 class _ThrowingProfileRepository implements ProfileRepository {
@@ -30,6 +36,9 @@ class _ThrowingProfileRepository implements ProfileRepository {
   Future<void> save(RunnerProfile profile) async {
     throw Exception('save failed');
   }
+
+  @override
+  Future<RunnerProfile?> load() async => null;
 }
 
 void main() {

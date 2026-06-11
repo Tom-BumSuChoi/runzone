@@ -70,4 +70,37 @@ void main() {
     // When & Then
     await expectLater(repository.save(profile), throwsStateError);
   });
+
+  test('Given 저장된 러너 프로필 When load 하면 Then 저장된 RunnerProfile을 복원한다', () async {
+    // Given
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    final SharedPreferencesProfileRepository repository = SharedPreferencesProfileRepository(preferences);
+    final RunnerProfile profile = RunnerProfile(
+      birthYear: BirthYear(1996),
+      gender: Gender.male,
+      height: Height(170),
+      weight: Weight(65),
+      career: RunningCareer.beginner,
+      weeklyFrequency: WeeklyFrequency(3),
+    );
+    await repository.save(profile);
+
+    // When
+    final RunnerProfile? loaded = await repository.load();
+
+    // Then
+    expect(loaded, profile);
+  });
+
+  test('Given 저장된 러너 프로필이 없으면 When load 하면 Then null을 반환한다', () async {
+    // Given
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    final SharedPreferencesProfileRepository repository = SharedPreferencesProfileRepository(preferences);
+
+    // When
+    final RunnerProfile? loaded = await repository.load();
+
+    // Then
+    expect(loaded, isNull);
+  });
 }

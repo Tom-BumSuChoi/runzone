@@ -25,6 +25,9 @@ final class _SpyProfileRepository implements ProfileRepository {
     saved = profile;
     await completer?.future;
   }
+
+  @override
+  Future<RunnerProfile?> load() async => null;
 }
 
 void main() {
