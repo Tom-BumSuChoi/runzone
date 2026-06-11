@@ -16,7 +16,6 @@ abstract final class AppSpacing {
   static const chipGap = 8.0;
   static const stepperGap = 12.0;
 
-  static const touchTarget = 44.0;
   static const navHeight = 78.0;
 
   static const iconSmall = 17.0;

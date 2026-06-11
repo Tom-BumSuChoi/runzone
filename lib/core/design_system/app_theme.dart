@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_radius.dart';
 import 'app_semantic_colors.dart';
+import 'app_sizing.dart';
 import 'app_spacing.dart';
 import 'app_typography.dart';
 
@@ -104,7 +105,7 @@ abstract final class AppTheme {
       backgroundColor: WidgetStatePropertyAll(backgroundColor),
       foregroundColor: WidgetStatePropertyAll(foregroundColor),
       minimumSize: const WidgetStatePropertyAll(
-        Size(AppSpacing.touchTarget, AppSpacing.touchTarget),
+        Size(AppSizing.touchTarget, AppSizing.touchTarget),
       ),
       padding: const WidgetStatePropertyAll(AppSpacing.buttonInsets),
       shape: const WidgetStatePropertyAll(
