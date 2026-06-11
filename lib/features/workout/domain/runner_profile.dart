@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:runzone/features/workout/domain/birth_year.dart';
 import 'package:runzone/features/workout/domain/gender.dart';
 import 'package:runzone/features/workout/domain/height.dart';
 import 'package:runzone/features/workout/domain/running_career.dart';
@@ -7,7 +8,7 @@ import 'package:runzone/features/workout/domain/weight.dart';
 
 final class RunnerProfile extends Equatable {
   const RunnerProfile({
-    required this.age,
+    required this.birthYear,
     required this.gender,
     required this.height,
     required this.weight,
@@ -15,7 +16,7 @@ final class RunnerProfile extends Equatable {
     required this.weeklyFrequency,
   });
 
-  final int age;
+  final BirthYear birthYear;
   final Gender gender;
   final Height height;
   final Weight weight;
@@ -23,5 +24,5 @@ final class RunnerProfile extends Equatable {
   final WeeklyFrequency weeklyFrequency;
 
   @override
-  List<Object?> get props => [age, gender, height, weight, career, weeklyFrequency];
+  List<Object?> get props => [birthYear, gender, height, weight, career, weeklyFrequency];
 }

@@ -14,7 +14,7 @@ final class SharedPreferencesProfileRepository implements ProfileRepository {
   @override
   Future<void> save(RunnerProfile profile) {
     final String json = jsonEncode(<String, Object>{
-      'age': profile.age,
+      'birthYear': profile.birthYear.year,
       'gender': profile.gender.name,
       'height': profile.height.centimeters,
       'weight': profile.weight.kilograms,

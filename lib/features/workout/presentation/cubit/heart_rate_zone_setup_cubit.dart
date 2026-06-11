@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:runzone/features/workout/domain/birth_year.dart';
 import 'package:runzone/features/workout/domain/gender.dart';
 import 'package:runzone/features/workout/domain/heart_rate_zone.dart';
 import 'package:runzone/features/workout/domain/heart_rate_zone_calculator.dart';
@@ -19,25 +20,19 @@ final class HeartRateZoneSetupCubit extends Cubit<HeartRateZoneSetupState> {
 
   final ProfileRepository _repository;
 
-  void incrementAge() {
-    final int next = state.age + 1;
-    if (_calculator.isValidAge(next)) {
-      emit(state.copyWith(age: next));
-    }
-  }
+  void incrementBirthYear() => emit(state.copyWith(birthYear: state.birthYear.incremented()));
 
-  void decrementAge() {
-    final int previous = state.age - 1;
-    if (_calculator.isValidAge(previous)) {
-      emit(state.copyWith(age: previous));
-    }
-  }
+  void decrementBirthYear() => emit(state.copyWith(birthYear: state.birthYear.decremented()));
 
   void changeGender(Gender gender) => emit(state.copyWith(gender: gender));
 
-  void changeHeight(int centimeters) => emit(state.copyWith(height: Height(centimeters)));
+  void incrementHeight() => emit(state.copyWith(height: state.height.incremented()));
 
-  void changeWeight(int kilograms) => emit(state.copyWith(weight: Weight(kilograms)));
+  void decrementHeight() => emit(state.copyWith(height: state.height.decremented()));
+
+  void incrementWeight() => emit(state.copyWith(weight: state.weight.incremented()));
+
+  void decrementWeight() => emit(state.copyWith(weight: state.weight.decremented()));
 
   void changeCareer(RunningCareer career) => emit(state.copyWith(career: career));
 
@@ -52,7 +47,7 @@ final class HeartRateZoneSetupCubit extends Cubit<HeartRateZoneSetupState> {
     try {
       await _repository.save(
         RunnerProfile(
-          age: state.age,
+          birthYear: state.birthYear,
           gender: state.gender,
           height: state.height,
           weight: state.weight,
