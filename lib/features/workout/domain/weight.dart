@@ -2,17 +2,19 @@ import 'package:equatable/equatable.dart';
 
 final class Weight extends Equatable {
   Weight(this.kilograms) {
-    if (!isValid(kilograms)) {
-      throw ArgumentError.value(kilograms, 'kilograms', 'must be between $min and $max');
+    if (kilograms < _min || kilograms > _max) {
+      throw ArgumentError.value(kilograms, 'kilograms', 'must be between $_min and $_max');
     }
   }
 
-  static const int min = 30;
-  static const int max = 200;
+  static const int _min = 30;
+  static const int _max = 200;
 
   final int kilograms;
 
-  static bool isValid(int kilograms) => kilograms >= min && kilograms <= max;
+  Weight incremented() => kilograms >= _max ? this : Weight(kilograms + 1);
+
+  Weight decremented() => kilograms <= _min ? this : Weight(kilograms - 1);
 
   @override
   List<Object?> get props => [kilograms];
