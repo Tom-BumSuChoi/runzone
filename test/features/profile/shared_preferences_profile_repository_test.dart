@@ -10,6 +10,14 @@ import 'package:runzone/features/profile/domain/running_career.dart';
 import 'package:runzone/features/profile/domain/weekly_frequency.dart';
 import 'package:runzone/features/profile/domain/weight.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
+
+final class _FailingSharedPreferencesStore extends InMemorySharedPreferencesStore {
+  _FailingSharedPreferencesStore() : super.empty();
+
+  @override
+  Future<bool> setValue(String valueType, String key, Object value) async => false;
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -43,5 +51,23 @@ void main() {
       'career': 'beginner',
       'weeklyFrequency': 3,
     });
+  });
+
+  test('Given SharedPreferences 저장이 실패하면 When save 하면 Then StateError를 던진다', () async {
+    // Given
+    SharedPreferencesStorePlatform.instance = _FailingSharedPreferencesStore();
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    final SharedPreferencesProfileRepository repository = SharedPreferencesProfileRepository(preferences);
+    final RunnerProfile profile = RunnerProfile(
+      birthYear: BirthYear(1996),
+      gender: Gender.male,
+      height: Height(170),
+      weight: Weight(65),
+      career: RunningCareer.beginner,
+      weeklyFrequency: WeeklyFrequency(3),
+    );
+
+    // When & Then
+    await expectLater(repository.save(profile), throwsStateError);
   });
 }

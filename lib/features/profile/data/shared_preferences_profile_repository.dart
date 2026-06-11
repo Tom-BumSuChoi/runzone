@@ -12,7 +12,7 @@ final class SharedPreferencesProfileRepository implements ProfileRepository {
   final SharedPreferences _preferences;
 
   @override
-  Future<void> save(RunnerProfile profile) {
+  Future<void> save(RunnerProfile profile) async {
     final String json = jsonEncode(<String, Object>{
       'birthYear': profile.birthYear.year,
       'gender': profile.gender.name,
@@ -22,6 +22,9 @@ final class SharedPreferencesProfileRepository implements ProfileRepository {
       'weeklyFrequency': profile.weeklyFrequency.count,
     });
 
-    return _preferences.setString(_key, json);
+    final bool saved = await _preferences.setString(_key, json);
+    if (!saved) {
+      throw StateError('Failed to save runner profile.');
+    }
   }
 }
