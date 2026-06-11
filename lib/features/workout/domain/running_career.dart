@@ -1,1 +1,1 @@
-enum RunningCareer { beginner, intermediate, advanced }
+enum RunningCareer { novice, beginner, intermediate, advanced }
