@@ -12,6 +12,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:runzone/widgetbook/run_zone_choice_chip_use_cases.dart'
     as _runzone_widgetbook_run_zone_choice_chip_use_cases;
+import 'package:runzone/widgetbook/run_zone_primary_button_use_cases.dart'
+    as _runzone_widgetbook_run_zone_primary_button_use_cases;
 import 'package:runzone/widgetbook/run_zone_profile_field_use_cases.dart'
     as _runzone_widgetbook_run_zone_profile_field_use_cases;
 import 'package:runzone/widgetbook/run_zone_progress_indicator_use_cases.dart'
@@ -36,6 +38,16 @@ final directories = <_widgetbook.WidgetbookNode>[
             name: 'Unselected',
             builder: _runzone_widgetbook_run_zone_choice_chip_use_cases
                 .buildUnselectedChoiceChipUseCase,
+          ),
+        ],
+      ),
+      _widgetbook.WidgetbookComponent(
+        name: 'RunZonePrimaryButton',
+        useCases: [
+          _widgetbook.WidgetbookUseCase(
+            name: 'Default',
+            builder: _runzone_widgetbook_run_zone_primary_button_use_cases
+                .buildPrimaryButtonUseCase,
           ),
         ],
       ),
