@@ -39,6 +39,20 @@ flutter_launcher_icons:
   adaptive_icon_background: "#E8FF3A"
   adaptive_icon_foreground: assets/branding/app_icon_foreground.png
 
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+  color: "#F7F8F5"
+  image: assets/branding/splash_content_light.png
+  color_dark: "#0A0B0D"
+  image_dark: assets/branding/splash_content_dark.png
+  android_12:
+    color: "#F7F8F5"
+    image: assets/branding/splash_content_light.png
+    color_dark: "#0A0B0D"
+    image_dark: assets/branding/splash_content_dark.png
+
 flutter:
   uses-material-design: true
 
