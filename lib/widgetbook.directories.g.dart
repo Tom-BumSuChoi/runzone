@@ -145,28 +145,23 @@ final directories = <_widgetbook.WidgetbookNode>[
         ],
       ),
       _widgetbook.WidgetbookComponent(
-        name: 'RunZoneStepper',
-        useCases: [
-          _widgetbook.WidgetbookUseCase(
-            name: 'Default',
-            builder: _runzone_widgetbook_run_zone_stepper_use_cases
-                .buildStepperUseCase,
-          ),
-        ],
-      ),
-    ],
-  ),
-  _widgetbook.WidgetbookCategory(
-    name: 'Profile',
-    children: [
-      _widgetbook.WidgetbookComponent(
-        name: 'HeartRateZoneBar',
+        name: 'RunZoneSegmentedBar',
         useCases: [
           _widgetbook.WidgetbookUseCase(
             name: 'Default',
             builder:
                 _runzone_widgetbook_heart_rate_zone_adjustment_screen_use_cases
                     .buildHeartRateZoneBarUseCase,
+          ),
+        ],
+      ),
+      _widgetbook.WidgetbookComponent(
+        name: 'RunZoneStepper',
+        useCases: [
+          _widgetbook.WidgetbookUseCase(
+            name: 'Default',
+            builder: _runzone_widgetbook_run_zone_stepper_use_cases
+                .buildStepperUseCase,
           ),
         ],
       ),
