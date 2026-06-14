@@ -14,6 +14,8 @@ import 'package:runzone/widgetbook/color_swatch_use_cases.dart'
     as _runzone_widgetbook_color_swatch_use_cases;
 import 'package:runzone/widgetbook/heart_rate_zone_adjustment_screen_use_cases.dart'
     as _runzone_widgetbook_heart_rate_zone_adjustment_screen_use_cases;
+import 'package:runzone/widgetbook/labeled_slider_use_cases.dart'
+    as _runzone_widgetbook_labeled_slider_use_cases;
 import 'package:runzone/widgetbook/run_zone_bottom_navigation_use_cases.dart'
     as _runzone_widgetbook_run_zone_bottom_navigation_use_cases;
 import 'package:runzone/widgetbook/run_zone_choice_chip_use_cases.dart'
@@ -89,6 +91,16 @@ final directories = <_widgetbook.WidgetbookNode>[
             name: 'Default',
             builder: _runzone_widgetbook_color_swatch_use_cases
                 .buildColorSwatchUseCase,
+          ),
+        ],
+      ),
+      _widgetbook.WidgetbookComponent(
+        name: 'RunZoneLabeledSlider',
+        useCases: [
+          _widgetbook.WidgetbookUseCase(
+            name: 'Default',
+            builder: _runzone_widgetbook_labeled_slider_use_cases
+                .buildLabeledSliderUseCase,
           ),
         ],
       ),

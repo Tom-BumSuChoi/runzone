@@ -12,9 +12,12 @@ abstract final class AppSpacing {
   static const navigationStartButtonLift = 6.0;
 
   static const chipGap = 8.0;
+  static const controlLabelGap = 6.0;
   static const stepperGap = 12.0;
   static const progressSegmentGap = 6.0;
 
+  static const inlineLabelGap = SizedBox(width: 6);
+  static const inlineValueGap = SizedBox(width: 4);
   static const navigationLabelGap = SizedBox(height: 6);
   static const sectionGap = SizedBox(height: 18);
   static const sectionLabelGap = SizedBox(height: 10);
