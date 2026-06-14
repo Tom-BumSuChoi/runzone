@@ -54,6 +54,7 @@ final class RunnerProfileSetupCubit extends Cubit<RunnerProfileSetupState> {
           weight: state.weight,
           career: state.career,
           weeklyFrequency: state.weeklyFrequency,
+          heartRateZone: state.zone,
         ),
       );
       emit(state.copyWith(status: RunnerProfileSetupStatus.success));

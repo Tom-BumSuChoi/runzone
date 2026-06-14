@@ -1,5 +1,5 @@
-import 'package:runzone/features/workout/domain/heart_rate_zone.dart';
-import 'package:runzone/features/workout/domain/heart_rate_zone_range.dart';
+import 'heart_rate_zone.dart';
+import 'heart_rate_zone_range.dart';
 
 final class HeartRateZoneCalculator {
   const HeartRateZoneCalculator();
@@ -23,34 +23,13 @@ final class HeartRateZoneCalculator {
     final int zone4Lower = (max * 0.8).round();
     final int zone5Lower = (max * 0.9).round();
 
-    final HeartRateZoneRange zone1 = HeartRateZoneRange(
-      lower: zone1Lower,
-      upper: zone2Lower - 1,
-    );
-    final HeartRateZoneRange zone2 = HeartRateZoneRange(
-      lower: zone2Lower,
-      upper: zone3Lower - 1,
-    );
-    final HeartRateZoneRange zone3 = HeartRateZoneRange(
-      lower: zone3Lower,
-      upper: zone4Lower - 1,
-    );
-    final HeartRateZoneRange zone4 = HeartRateZoneRange(
-      lower: zone4Lower,
-      upper: zone5Lower - 1,
-    );
-    final HeartRateZoneRange zone5 = HeartRateZoneRange(
-      lower: zone5Lower,
-      upper: max,
-    );
+    final HeartRateZoneRange zone1 = HeartRateZoneRange(lower: zone1Lower, upper: zone2Lower - 1);
+    final HeartRateZoneRange zone2 = HeartRateZoneRange(lower: zone2Lower, upper: zone3Lower - 1);
+    final HeartRateZoneRange zone3 = HeartRateZoneRange(lower: zone3Lower, upper: zone4Lower - 1);
+    final HeartRateZoneRange zone4 = HeartRateZoneRange(lower: zone4Lower, upper: zone5Lower - 1);
+    final HeartRateZoneRange zone5 = HeartRateZoneRange(lower: zone5Lower, upper: max);
 
-    return HeartRateZone(
-      zone1: zone1,
-      zone2: zone2,
-      zone3: zone3,
-      zone4: zone4,
-      zone5: zone5,
-    );
+    return HeartRateZone(zone1: zone1, zone2: zone2, zone3: zone3, zone4: zone4, zone5: zone5);
   }
 
   HeartRateZoneType getZoneType({required int age, required int heartRate}) {
@@ -59,11 +38,7 @@ final class HeartRateZoneCalculator {
 
   void _validateAge(int age) {
     if (!isValidAge(age)) {
-      throw ArgumentError.value(
-        age,
-        'age',
-        'must be between $_minimumAge and $_maximumAge',
-      );
+      throw ArgumentError.value(age, 'age', 'must be between $_minimumAge and $_maximumAge');
     }
   }
 }

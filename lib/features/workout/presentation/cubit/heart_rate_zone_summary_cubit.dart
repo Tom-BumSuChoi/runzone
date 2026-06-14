@@ -1,13 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:runzone/features/profile/domain/profile_repository.dart';
-import 'package:runzone/features/profile/domain/runner_profile.dart';
-import 'package:runzone/features/workout/domain/heart_rate_zone.dart';
-import 'package:runzone/features/workout/domain/heart_rate_zone_calculator.dart';
+
+import '../../../profile/domain/profile_repository.dart';
+import '../../../profile/domain/runner_profile.dart';
 
 part 'heart_rate_zone_summary_state.dart';
-
-const HeartRateZoneCalculator _calculator = HeartRateZoneCalculator();
 
 final class HeartRateZoneSummaryCubit extends Cubit<HeartRateZoneSummaryState> {
   HeartRateZoneSummaryCubit(this._repository) : super(HeartRateZoneSummaryState.initial());
@@ -20,7 +17,6 @@ final class HeartRateZoneSummaryCubit extends Cubit<HeartRateZoneSummaryState> {
       return;
     }
 
-    final int age = DateTime.now().year - profile.birthYear.year;
-    emit(HeartRateZoneSummaryState(zone: _calculator.getHeartRateZone(age: age)));
+    emit(HeartRateZoneSummaryState(zone: profile.heartRateZone));
   }
 }

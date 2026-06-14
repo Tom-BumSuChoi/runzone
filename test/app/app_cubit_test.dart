@@ -1,14 +1,10 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:runzone/app/cubit/app_cubit.dart';
-import 'package:runzone/features/profile/domain/birth_year.dart';
-import 'package:runzone/features/profile/domain/gender.dart';
-import 'package:runzone/features/profile/domain/height.dart';
 import 'package:runzone/features/profile/domain/profile_repository.dart';
 import 'package:runzone/features/profile/domain/runner_profile.dart';
-import 'package:runzone/features/profile/domain/running_career.dart';
-import 'package:runzone/features/profile/domain/weekly_frequency.dart';
-import 'package:runzone/features/profile/domain/weight.dart';
+import 'package:runzone/features/workout/domain/heart_rate_zone_calculator.dart';
 
 final class _FakeProfileRepository implements ProfileRepository {
   _FakeProfileRepository(this._profile);
@@ -23,6 +19,7 @@ final class _FakeProfileRepository implements ProfileRepository {
 }
 
 void main() {
+  const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
   final RunnerProfile profile = RunnerProfile(
     birthYear: BirthYear(1996),
     gender: Gender.male,
@@ -30,6 +27,7 @@ void main() {
     weight: Weight(65),
     career: RunningCareer.beginner,
     weeklyFrequency: WeeklyFrequency(3),
+    heartRateZone: calculator.getHeartRateZone(age: DateTime.now().year - 1996),
   );
 
   test('Given 새로 생성한 cubit When 초기화 완료 전 상태를 확인하면 Then AppInitial(loading)이다', () {

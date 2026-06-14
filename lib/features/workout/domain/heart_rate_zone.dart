@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:runzone/features/workout/domain/heart_rate_zone_range.dart';
+
+import 'heart_rate_zone_range.dart';
 
 enum HeartRateZoneType { zone1, zone2, zone3, zone4, zone5 }
 

@@ -1,14 +1,9 @@
 import 'dart:convert';
 
-import 'package:runzone/features/profile/domain/birth_year.dart';
-import 'package:runzone/features/profile/domain/gender.dart';
-import 'package:runzone/features/profile/domain/height.dart';
-import 'package:runzone/features/profile/domain/profile_repository.dart';
-import 'package:runzone/features/profile/domain/runner_profile.dart';
-import 'package:runzone/features/profile/domain/running_career.dart';
-import 'package:runzone/features/profile/domain/weekly_frequency.dart';
-import 'package:runzone/features/profile/domain/weight.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../domain/profile_repository.dart';
+import '../domain/runner_profile.dart';
 
 final class SharedPreferencesProfileRepository implements ProfileRepository {
   SharedPreferencesProfileRepository(this._preferences);
@@ -26,6 +21,7 @@ final class SharedPreferencesProfileRepository implements ProfileRepository {
       'weight': profile.weight.kilograms,
       'career': profile.career.name,
       'weeklyFrequency': profile.weeklyFrequency.count,
+      'heartRateZone': _heartRateZoneToJson(profile.heartRateZone),
     });
 
     final bool saved = await _preferences.setString(_key, json);
@@ -50,6 +46,39 @@ final class SharedPreferencesProfileRepository implements ProfileRepository {
       weight: Weight(map['weight'] as int),
       career: RunningCareer.values.byName(map['career'] as String),
       weeklyFrequency: WeeklyFrequency(map['weeklyFrequency'] as int),
+      heartRateZone: _heartRateZoneFromJson(map['heartRateZone']),
     );
+  }
+
+  Map<String, Object> _heartRateZoneToJson(HeartRateZone zone) {
+    return <String, Object>{
+      'zone1': _heartRateZoneRangeToJson(zone.zone1),
+      'zone2': _heartRateZoneRangeToJson(zone.zone2),
+      'zone3': _heartRateZoneRangeToJson(zone.zone3),
+      'zone4': _heartRateZoneRangeToJson(zone.zone4),
+      'zone5': _heartRateZoneRangeToJson(zone.zone5),
+    };
+  }
+
+  Map<String, Object> _heartRateZoneRangeToJson(HeartRateZoneRange range) {
+    return <String, Object>{'lower': range.lower, 'upper': range.upper};
+  }
+
+  HeartRateZone _heartRateZoneFromJson(Object? value) {
+    final Map<String, Object?> map = value as Map<String, Object?>;
+
+    return HeartRateZone(
+      zone1: _heartRateZoneRangeFromJson(map['zone1']),
+      zone2: _heartRateZoneRangeFromJson(map['zone2']),
+      zone3: _heartRateZoneRangeFromJson(map['zone3']),
+      zone4: _heartRateZoneRangeFromJson(map['zone4']),
+      zone5: _heartRateZoneRangeFromJson(map['zone5']),
+    );
+  }
+
+  HeartRateZoneRange _heartRateZoneRangeFromJson(Object? value) {
+    final Map<String, Object?> map = value as Map<String, Object?>;
+
+    return HeartRateZoneRange(lower: map['lower'] as int, upper: map['upper'] as int);
   }
 }
