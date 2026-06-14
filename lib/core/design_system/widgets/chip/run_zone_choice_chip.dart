@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../app_radius.dart';
-import '../app_spacing.dart';
-import '../app_typography.dart';
+import '../../app_radius.dart';
+import '../../app_spacing.dart';
+import '../../app_typography.dart';
 
 final class RunZoneChoiceChip extends StatelessWidget {
   const RunZoneChoiceChip({super.key, required this.label, required this.isSelected, required this.onTap});

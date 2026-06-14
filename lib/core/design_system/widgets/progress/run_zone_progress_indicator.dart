@@ -21,7 +21,7 @@ final class RunZoneProgressIndicator extends StatelessWidget {
       segments.add(_Segment(color: color));
     }
 
-    return Row(spacing: AppSpacing.tight, children: segments);
+    return Row(spacing: AppSpacing.progressSegmentGap, children: segments);
   }
 }
 

@@ -23,6 +23,10 @@ final class RunZoneCatalogApp extends StatelessWidget {
             WidgetbookTheme(name: 'Light', data: AppTheme.light),
           ],
         ),
+        BuilderAddon(
+          name: 'Center',
+          builder: (context, child) => Center(child: child),
+        ),
       ],
       directories: directories,
     );

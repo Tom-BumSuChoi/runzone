@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../app_radius.dart';
-import '../app_spacing.dart';
+import '../../app_radius.dart';
+import '../../app_spacing.dart';
 
 final class RunZoneCard extends StatelessWidget {
   const RunZoneCard({required this.child, this.padding = AppSpacing.cardInsets, super.key});

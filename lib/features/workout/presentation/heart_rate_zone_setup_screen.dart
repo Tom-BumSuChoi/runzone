@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:runzone/app/di.dart';
 import 'package:runzone/core/design_system/app_spacing.dart';
-import 'package:runzone/core/design_system/widgets/run_zone_card.dart';
-import 'package:runzone/core/design_system/widgets/run_zone_choice_chip.dart';
-import 'package:runzone/core/design_system/widgets/run_zone_primary_button.dart';
-import 'package:runzone/core/design_system/widgets/run_zone_profile_field.dart';
-import 'package:runzone/core/design_system/widgets/run_zone_progress_indicator.dart';
-import 'package:runzone/core/design_system/widgets/run_zone_section_label.dart';
-import 'package:runzone/core/design_system/widgets/run_zone_stepper.dart';
+import 'package:runzone/core/design_system/widgets/card/run_zone_card.dart';
+import 'package:runzone/core/design_system/widgets/chip/run_zone_choice_chip.dart';
+import 'package:runzone/core/design_system/widgets/button/run_zone_primary_button.dart';
+import 'package:runzone/core/design_system/widgets/field/run_zone_profile_field.dart';
+import 'package:runzone/core/design_system/widgets/progress/run_zone_progress_indicator.dart';
+import 'package:runzone/core/design_system/widgets/label/run_zone_section_label.dart';
+import 'package:runzone/core/design_system/widgets/stepper/run_zone_stepper.dart';
 import 'package:runzone/features/profile/domain/profile_repository.dart';
 import 'package:runzone/features/workout/presentation/cubit/heart_rate_zone_setup_cubit.dart';
 
@@ -40,11 +40,11 @@ final class _HeartRateZoneSetupView extends StatelessWidget {
                 crossAxisAlignment: .start,
                 children: [
                   const _SetupHeader(),
-                  AppSpacing.looseGap,
+                  AppSpacing.sectionGap,
                   _BasicInfoSection(state: state, cubit: cubit),
-                  AppSpacing.looseGap,
+                  AppSpacing.sectionGap,
                   _CareerSection(state: state, cubit: cubit),
-                  AppSpacing.looseGap,
+                  AppSpacing.sectionGap,
                   _WeeklyFrequencySection(state: state, cubit: cubit),
                   const Spacer(),
                   _SetupFooter(onComplete: cubit.complete),
@@ -68,9 +68,9 @@ final class _SetupHeader extends StatelessWidget {
       crossAxisAlignment: .start,
       children: [
         const RunZoneProgressIndicator(totalSteps: 2, currentStep: 2),
-        AppSpacing.wideGap,
+        AppSpacing.headerTitleGap,
         Text('프로필 입력', style: textTheme.headlineLarge),
-        AppSpacing.tightGap,
+        AppSpacing.titleDescriptionGap,
         Text('이 정보로 당신의 심박존을 자동 계산해요', style: textTheme.bodySmall),
       ],
     );
@@ -89,7 +89,7 @@ final class _BasicInfoSection extends StatelessWidget {
       crossAxisAlignment: .start,
       children: [
         const RunZoneSectionLabel('기본 정보'),
-        AppSpacing.closeGap,
+        AppSpacing.sectionLabelGap,
         RunZoneCard(
           child: Column(
             children: [
@@ -165,7 +165,7 @@ final class _CareerSection extends StatelessWidget {
       crossAxisAlignment: .start,
       children: [
         const RunZoneSectionLabel('러닝 경력'),
-        AppSpacing.closeGap,
+        AppSpacing.sectionLabelGap,
         Row(
           spacing: AppSpacing.chipGap,
           children: [
@@ -212,7 +212,7 @@ final class _WeeklyFrequencySection extends StatelessWidget {
       crossAxisAlignment: .start,
       children: [
         const RunZoneSectionLabel('주간 러닝 빈도'),
-        AppSpacing.closeGap,
+        AppSpacing.sectionLabelGap,
         Row(
           spacing: AppSpacing.chipGap,
           children: [
@@ -244,7 +244,7 @@ final class _SetupFooter extends StatelessWidget {
           width: double.infinity,
           child: Text('나중에 설정에서 언제든 변경할 수 있어요', textAlign: TextAlign.center, style: textTheme.labelSmall),
         ),
-        AppSpacing.closeGap,
+        AppSpacing.footerHintGap,
         RunZonePrimaryButton(label: '시작하기', onPressed: onComplete),
       ],
     );
