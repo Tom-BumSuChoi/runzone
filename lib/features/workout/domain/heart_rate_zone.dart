@@ -5,6 +5,7 @@ import 'heart_rate_zone_range.dart';
 enum HeartRateZoneType { zone1, zone2, zone3, zone4, zone5 }
 
 final class HeartRateZone extends Equatable {
+  static const int minimumZoneWidth = 5;
   static const int _minimumHeartRate = 1;
 
   final HeartRateZoneRange zone1;
