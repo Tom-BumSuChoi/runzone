@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -9,13 +11,30 @@ import 'package:runzone/features/workout/domain/heart_rate_zone_calculator.dart'
 final class _FakeProfileRepository implements ProfileRepository {
   _FakeProfileRepository(this._profile);
 
-  final RunnerProfile? _profile;
+  RunnerProfile? _profile;
+  final StreamController<RunnerProfile?> _controller = StreamController<RunnerProfile?>.broadcast();
 
   @override
-  Future<void> save(RunnerProfile profile) async {}
+  Future<void> save(RunnerProfile profile) async {
+    _profile = profile;
+    _controller.add(profile);
+  }
 
   @override
   Future<RunnerProfile?> load() async => _profile;
+
+  @override
+  Stream<RunnerProfile?> watchProfile() async* {
+    yield _profile;
+    yield* _controller.stream;
+  }
+
+  void emitProfile(RunnerProfile? profile) {
+    _profile = profile;
+    _controller.add(profile);
+  }
+
+  Future<void> close() => _controller.close();
 }
 
 void main() {
@@ -31,7 +50,10 @@ void main() {
   );
 
   test('Given 새로 생성한 cubit When 초기화 완료 전 상태를 확인하면 Then AppInitial(loading)이다', () {
-    final AppCubit cubit = AppCubit(repository: _FakeProfileRepository(profile));
+    final _FakeProfileRepository repository = _FakeProfileRepository(profile);
+    final AppCubit cubit = AppCubit(repository: repository);
+    addTearDown(cubit.close);
+    addTearDown(repository.close);
 
     expect(cubit.state, const AppInitial());
   });
@@ -47,4 +69,26 @@ void main() {
     build: () => AppCubit(repository: _FakeProfileRepository(null)),
     expect: () => const [AppReady(hasProfile: false)],
   );
+
+  group('프로필 상태 stream', () {
+    late _FakeProfileRepository repository;
+
+    setUp(() {
+      repository = _FakeProfileRepository(null);
+    });
+
+    tearDown(() async {
+      await repository.close();
+    });
+
+    blocTest<AppCubit, AppState>(
+      'Given 저장된 프로필이 없으면 When repository가 프로필 변경을 알리면 Then hasProfile=true를 방출한다',
+      build: () => AppCubit(repository: repository),
+      act: (cubit) async {
+        await Future<void>.delayed(Duration.zero);
+        repository.emitProfile(profile);
+      },
+      expect: () => const [AppReady(hasProfile: false), AppReady(hasProfile: true)],
+    );
+  });
 }

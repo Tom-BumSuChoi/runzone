@@ -15,6 +15,9 @@ final class _FakeProfileRepository implements ProfileRepository {
 
   @override
   Future<RunnerProfile?> load() async => _profile;
+
+  @override
+  Stream<RunnerProfile?> watchProfile() => Stream<RunnerProfile?>.empty();
 }
 
 void main() {

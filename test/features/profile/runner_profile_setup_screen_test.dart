@@ -14,16 +14,23 @@ final class _SpyProfileRepository implements ProfileRepository {
   RunnerProfile? saved;
   int saveCount = 0;
   Completer<void>? completer;
+  final StreamController<RunnerProfile?> _controller = StreamController<RunnerProfile?>.broadcast();
 
   @override
   Future<void> save(RunnerProfile profile) async {
     saveCount += 1;
     saved = profile;
     await completer?.future;
+    _controller.add(profile);
   }
 
   @override
   Future<RunnerProfile?> load() async => null;
+
+  @override
+  Stream<RunnerProfile?> watchProfile() => _controller.stream;
+
+  Future<void> close() => _controller.close();
 }
 
 void main() {
@@ -36,6 +43,7 @@ void main() {
   });
 
   tearDown(() async {
+    await repository.close();
     await getIt.reset();
   });
 
