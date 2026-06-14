@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:runzone/app/cubit/app_cubit.dart';
-import 'package:runzone/app/di.dart';
-import 'package:runzone/app/main_shell.dart';
-import 'package:runzone/app/splash_screen.dart';
-import 'package:runzone/core/design_system/app_theme.dart';
-import 'package:runzone/features/profile/domain/profile_repository.dart';
-import 'package:runzone/features/workout/presentation/heart_rate_zone_setup_screen.dart';
+
+import '../core/design_system/app_theme.dart';
+import '../features/profile/domain/profile_repository.dart';
+import '../features/profile/presentation/runner_profile_setup_screen.dart';
+import 'cubit/app_cubit.dart';
+import 'di.dart';
+import 'main_shell.dart';
+import 'splash_screen.dart';
 
 final class RunZoneApp extends StatelessWidget {
   const RunZoneApp({super.key});
@@ -25,7 +26,7 @@ final class RunZoneApp extends StatelessWidget {
           builder: (context, state) => switch (state) {
             AppInitial() => const SplashScreen(),
             AppReady(hasProfile: true) => const MainShell(),
-            AppReady(hasProfile: false) => const HeartRateZoneSetupScreen(),
+            AppReady(hasProfile: false) => const RunnerProfileSetupScreen(),
           },
         ),
       ),

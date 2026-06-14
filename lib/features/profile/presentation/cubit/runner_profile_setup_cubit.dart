@@ -1,22 +1,23 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:runzone/features/profile/domain/birth_year.dart';
-import 'package:runzone/features/profile/domain/gender.dart';
-import 'package:runzone/features/workout/domain/heart_rate_zone.dart';
-import 'package:runzone/features/workout/domain/heart_rate_zone_calculator.dart';
-import 'package:runzone/features/profile/domain/height.dart';
-import 'package:runzone/features/profile/domain/profile_repository.dart';
-import 'package:runzone/features/profile/domain/runner_profile.dart';
-import 'package:runzone/features/profile/domain/running_career.dart';
-import 'package:runzone/features/profile/domain/weekly_frequency.dart';
-import 'package:runzone/features/profile/domain/weight.dart';
 
-part 'heart_rate_zone_setup_state.dart';
+import '../../../workout/domain/heart_rate_zone.dart';
+import '../../../workout/domain/heart_rate_zone_calculator.dart';
+import '../../domain/birth_year.dart';
+import '../../domain/gender.dart';
+import '../../domain/height.dart';
+import '../../domain/profile_repository.dart';
+import '../../domain/runner_profile.dart';
+import '../../domain/running_career.dart';
+import '../../domain/weekly_frequency.dart';
+import '../../domain/weight.dart';
+
+part 'runner_profile_setup_state.dart';
 
 const HeartRateZoneCalculator _calculator = HeartRateZoneCalculator();
 
-final class HeartRateZoneSetupCubit extends Cubit<HeartRateZoneSetupState> {
-  HeartRateZoneSetupCubit(this._repository) : super(HeartRateZoneSetupState.initial());
+final class RunnerProfileSetupCubit extends Cubit<RunnerProfileSetupState> {
+  RunnerProfileSetupCubit(this._repository) : super(RunnerProfileSetupState.initial());
 
   final ProfileRepository _repository;
 
@@ -39,11 +40,11 @@ final class HeartRateZoneSetupCubit extends Cubit<HeartRateZoneSetupState> {
   void changeWeeklyFrequency(int count) => emit(state.copyWith(weeklyFrequency: WeeklyFrequency(count)));
 
   Future<void> complete() async {
-    if (state.status == SetupStatus.submitting) {
+    if (state.status == RunnerProfileSetupStatus.submitting) {
       return;
     }
 
-    emit(state.copyWith(status: SetupStatus.submitting));
+    emit(state.copyWith(status: RunnerProfileSetupStatus.submitting));
     try {
       await _repository.save(
         RunnerProfile(
@@ -55,9 +56,9 @@ final class HeartRateZoneSetupCubit extends Cubit<HeartRateZoneSetupState> {
           weeklyFrequency: state.weeklyFrequency,
         ),
       );
-      emit(state.copyWith(status: SetupStatus.success));
+      emit(state.copyWith(status: RunnerProfileSetupStatus.success));
     } catch (_) {
-      emit(state.copyWith(status: SetupStatus.failure));
+      emit(state.copyWith(status: RunnerProfileSetupStatus.failure));
     }
   }
 }

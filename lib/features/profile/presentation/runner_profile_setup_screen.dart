@@ -1,31 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:runzone/app/di.dart';
-import 'package:runzone/core/design_system/app_spacing.dart';
-import 'package:runzone/core/design_system/widgets/card/run_zone_card.dart';
-import 'package:runzone/core/design_system/widgets/chip/run_zone_choice_chip.dart';
-import 'package:runzone/core/design_system/widgets/button/run_zone_primary_button.dart';
-import 'package:runzone/core/design_system/widgets/field/run_zone_profile_field.dart';
-import 'package:runzone/core/design_system/widgets/progress/run_zone_progress_indicator.dart';
-import 'package:runzone/core/design_system/widgets/label/run_zone_section_label.dart';
-import 'package:runzone/core/design_system/widgets/stepper/run_zone_stepper.dart';
-import 'package:runzone/features/profile/domain/profile_repository.dart';
-import 'package:runzone/features/workout/presentation/cubit/heart_rate_zone_setup_cubit.dart';
 
-final class HeartRateZoneSetupScreen extends StatelessWidget {
-  const HeartRateZoneSetupScreen({super.key});
+import '../../../app/di.dart';
+import '../../../core/design_system/app_spacing.dart';
+import '../../../core/design_system/widgets/button/run_zone_primary_button.dart';
+import '../../../core/design_system/widgets/card/run_zone_card.dart';
+import '../../../core/design_system/widgets/chip/run_zone_choice_chip.dart';
+import '../../../core/design_system/widgets/field/run_zone_profile_field.dart';
+import '../../../core/design_system/widgets/label/run_zone_section_label.dart';
+import '../../../core/design_system/widgets/progress/run_zone_progress_indicator.dart';
+import '../../../core/design_system/widgets/stepper/run_zone_stepper.dart';
+import '../domain/profile_repository.dart';
+import 'cubit/runner_profile_setup_cubit.dart';
+
+final class RunnerProfileSetupScreen extends StatelessWidget {
+  const RunnerProfileSetupScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => HeartRateZoneSetupCubit(getIt<ProfileRepository>()),
-      child: const _HeartRateZoneSetupView(),
+      create: (_) => RunnerProfileSetupCubit(getIt<ProfileRepository>()),
+      child: const _RunnerProfileSetupView(),
     );
   }
 }
 
-final class _HeartRateZoneSetupView extends StatelessWidget {
-  const _HeartRateZoneSetupView();
+final class _RunnerProfileSetupView extends StatelessWidget {
+  const _RunnerProfileSetupView();
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +34,9 @@ final class _HeartRateZoneSetupView extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: AppSpacing.screenInsets,
-          child: BlocBuilder<HeartRateZoneSetupCubit, HeartRateZoneSetupState>(
+          child: BlocBuilder<RunnerProfileSetupCubit, RunnerProfileSetupState>(
             builder: (context, state) {
-              final cubit = context.read<HeartRateZoneSetupCubit>();
+              final cubit = context.read<RunnerProfileSetupCubit>();
               return Column(
                 crossAxisAlignment: .start,
                 children: [
@@ -80,8 +81,8 @@ final class _SetupHeader extends StatelessWidget {
 final class _BasicInfoSection extends StatelessWidget {
   const _BasicInfoSection({required this.state, required this.cubit});
 
-  final HeartRateZoneSetupState state;
-  final HeartRateZoneSetupCubit cubit;
+  final RunnerProfileSetupState state;
+  final RunnerProfileSetupCubit cubit;
 
   @override
   Widget build(BuildContext context) {
@@ -138,8 +139,8 @@ final class _BasicInfoSection extends StatelessWidget {
 final class _GenderSelector extends StatelessWidget {
   const _GenderSelector({required this.state, required this.cubit});
 
-  final HeartRateZoneSetupState state;
-  final HeartRateZoneSetupCubit cubit;
+  final RunnerProfileSetupState state;
+  final RunnerProfileSetupCubit cubit;
 
   @override
   Widget build(BuildContext context) {
@@ -156,8 +157,8 @@ final class _GenderSelector extends StatelessWidget {
 final class _CareerSection extends StatelessWidget {
   const _CareerSection({required this.state, required this.cubit});
 
-  final HeartRateZoneSetupState state;
-  final HeartRateZoneSetupCubit cubit;
+  final RunnerProfileSetupState state;
+  final RunnerProfileSetupCubit cubit;
 
   @override
   Widget build(BuildContext context) {
@@ -199,8 +200,8 @@ final class _CareerSection extends StatelessWidget {
 final class _WeeklyFrequencySection extends StatelessWidget {
   const _WeeklyFrequencySection({required this.state, required this.cubit});
 
-  final HeartRateZoneSetupState state;
-  final HeartRateZoneSetupCubit cubit;
+  final RunnerProfileSetupState state;
+  final RunnerProfileSetupCubit cubit;
 
   bool get _isLowFrequency => state.weeklyFrequency.count <= 2;
   bool get _isMediumFrequency => state.weeklyFrequency.count >= 3 && state.weeklyFrequency.count <= 4;
