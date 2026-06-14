@@ -10,6 +10,8 @@
 // **************************************************************************
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:runzone/widgetbook/run_zone_bottom_navigation_use_cases.dart'
+    as _runzone_widgetbook_run_zone_bottom_navigation_use_cases;
 import 'package:runzone/widgetbook/run_zone_choice_chip_use_cases.dart'
     as _runzone_widgetbook_run_zone_choice_chip_use_cases;
 import 'package:runzone/widgetbook/run_zone_primary_button_use_cases.dart'
@@ -26,6 +28,41 @@ final directories = <_widgetbook.WidgetbookNode>[
   _widgetbook.WidgetbookCategory(
     name: 'Design System',
     children: [
+      _widgetbook.WidgetbookComponent(
+        name: 'RunZoneBottomNavigation',
+        useCases: [
+          _widgetbook.WidgetbookUseCase(
+            name: 'Default',
+            builder: _runzone_widgetbook_run_zone_bottom_navigation_use_cases
+                .buildBottomNavigationUseCase,
+          ),
+        ],
+      ),
+      _widgetbook.WidgetbookComponent(
+        name: 'RunZoneBottomNavigationItem',
+        useCases: [
+          _widgetbook.WidgetbookUseCase(
+            name: 'Selected',
+            builder: _runzone_widgetbook_run_zone_bottom_navigation_use_cases
+                .buildSelectedBottomNavigationItemUseCase,
+          ),
+          _widgetbook.WidgetbookUseCase(
+            name: 'Unselected',
+            builder: _runzone_widgetbook_run_zone_bottom_navigation_use_cases
+                .buildUnselectedBottomNavigationItemUseCase,
+          ),
+        ],
+      ),
+      _widgetbook.WidgetbookComponent(
+        name: 'RunZoneBottomNavigationStartButton',
+        useCases: [
+          _widgetbook.WidgetbookUseCase(
+            name: 'Default',
+            builder: _runzone_widgetbook_run_zone_bottom_navigation_use_cases
+                .buildBottomNavigationStartButtonUseCase,
+          ),
+        ],
+      ),
       _widgetbook.WidgetbookComponent(
         name: 'RunZoneChoiceChip',
         useCases: [
