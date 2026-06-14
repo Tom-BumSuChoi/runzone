@@ -43,14 +43,14 @@ flutter_native_splash:
   android: true
   ios: true
   web: false
-  color: "#F7F8F5"
+  color: "#F3F5F7"
   image: assets/branding/splash_content_light.png
-  color_dark: "#0A0B0D"
+  color_dark: "#050608"
   image_dark: assets/branding/splash_content_dark.png
   android_12:
-    color: "#F7F8F5"
+    color: "#F3F5F7"
     image: assets/branding/splash_content_light.png
-    color_dark: "#0A0B0D"
+    color_dark: "#050608"
     image_dark: assets/branding/splash_content_dark.png
 
 flutter:
