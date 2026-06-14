@@ -10,6 +10,10 @@
 // **************************************************************************
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:runzone/widgetbook/color_swatch_use_cases.dart'
+    as _runzone_widgetbook_color_swatch_use_cases;
+import 'package:runzone/widgetbook/heart_rate_zone_adjustment_screen_use_cases.dart'
+    as _runzone_widgetbook_heart_rate_zone_adjustment_screen_use_cases;
 import 'package:runzone/widgetbook/run_zone_bottom_navigation_use_cases.dart'
     as _runzone_widgetbook_run_zone_bottom_navigation_use_cases;
 import 'package:runzone/widgetbook/run_zone_choice_chip_use_cases.dart'
@@ -79,6 +83,16 @@ final directories = <_widgetbook.WidgetbookNode>[
         ],
       ),
       _widgetbook.WidgetbookComponent(
+        name: 'RunZoneColorSwatch',
+        useCases: [
+          _widgetbook.WidgetbookUseCase(
+            name: 'Default',
+            builder: _runzone_widgetbook_color_swatch_use_cases
+                .buildColorSwatchUseCase,
+          ),
+        ],
+      ),
+      _widgetbook.WidgetbookComponent(
         name: 'RunZonePrimaryButton',
         useCases: [
           _widgetbook.WidgetbookUseCase(
@@ -125,6 +139,22 @@ final directories = <_widgetbook.WidgetbookNode>[
             name: 'Default',
             builder: _runzone_widgetbook_run_zone_stepper_use_cases
                 .buildStepperUseCase,
+          ),
+        ],
+      ),
+    ],
+  ),
+  _widgetbook.WidgetbookCategory(
+    name: 'Profile',
+    children: [
+      _widgetbook.WidgetbookComponent(
+        name: 'HeartRateZoneBar',
+        useCases: [
+          _widgetbook.WidgetbookUseCase(
+            name: 'Default',
+            builder:
+                _runzone_widgetbook_heart_rate_zone_adjustment_screen_use_cases
+                    .buildHeartRateZoneBarUseCase,
           ),
         ],
       ),
