@@ -12,7 +12,7 @@ import 'package:runzone/features/profile/domain/runner_profile.dart';
 import 'package:runzone/features/profile/domain/running_career.dart';
 import 'package:runzone/features/profile/domain/weekly_frequency.dart';
 import 'package:runzone/features/profile/domain/weight.dart';
-import 'package:runzone/features/workout/presentation/heart_rate_zone_setup_screen.dart';
+import 'package:runzone/features/profile/presentation/runner_profile_setup_screen.dart';
 
 final class _SpyProfileRepository implements ProfileRepository {
   RunnerProfile? saved;
@@ -48,7 +48,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(MaterialApp(theme: AppTheme.light, home: const HeartRateZoneSetupScreen()));
+    await tester.pumpWidget(MaterialApp(theme: AppTheme.light, home: const RunnerProfileSetupScreen()));
 
     expect(find.text('남'), findsOneWidget);
     expect(find.text('1996'), findsOneWidget);
@@ -64,7 +64,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(MaterialApp(theme: AppTheme.light, home: const HeartRateZoneSetupScreen()));
+    await tester.pumpWidget(MaterialApp(theme: AppTheme.light, home: const RunnerProfileSetupScreen()));
 
     await tester.tap(find.text('여'));
     await tester.tap(find.byIcon(Icons.add).at(0));
@@ -96,7 +96,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(MaterialApp(theme: AppTheme.light, home: const HeartRateZoneSetupScreen()));
+    await tester.pumpWidget(MaterialApp(theme: AppTheme.light, home: const RunnerProfileSetupScreen()));
 
     await tester.tap(find.text('시작하기'));
     await tester.pump();
