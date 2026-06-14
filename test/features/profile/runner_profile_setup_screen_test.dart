@@ -2,17 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:runzone/app/di.dart';
 import 'package:runzone/core/design_system/app_theme.dart';
-import 'package:runzone/features/profile/domain/birth_year.dart';
-import 'package:runzone/features/profile/domain/gender.dart';
-import 'package:runzone/features/profile/domain/height.dart';
 import 'package:runzone/features/profile/domain/profile_repository.dart';
 import 'package:runzone/features/profile/domain/runner_profile.dart';
-import 'package:runzone/features/profile/domain/running_career.dart';
-import 'package:runzone/features/profile/domain/weekly_frequency.dart';
-import 'package:runzone/features/profile/domain/weight.dart';
 import 'package:runzone/features/profile/presentation/runner_profile_setup_screen.dart';
+import 'package:runzone/features/workout/domain/heart_rate_zone_calculator.dart';
 
 final class _SpyProfileRepository implements ProfileRepository {
   RunnerProfile? saved;
@@ -31,6 +27,7 @@ final class _SpyProfileRepository implements ProfileRepository {
 }
 
 void main() {
+  const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
   late _SpyProfileRepository repository;
 
   setUp(() {
@@ -84,6 +81,7 @@ void main() {
         weight: Weight(64),
         career: RunningCareer.advanced,
         weeklyFrequency: WeeklyFrequency(5),
+        heartRateZone: calculator.getHeartRateZone(age: DateTime.now().year - 1997),
       ),
     );
   });

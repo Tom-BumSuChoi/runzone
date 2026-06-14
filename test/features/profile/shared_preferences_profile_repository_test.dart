@@ -1,16 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:runzone/features/profile/data/shared_preferences_profile_repository.dart';
-import 'package:runzone/features/profile/domain/birth_year.dart';
-import 'package:runzone/features/profile/domain/gender.dart';
-import 'package:runzone/features/profile/domain/height.dart';
-import 'package:runzone/features/profile/domain/runner_profile.dart';
-import 'package:runzone/features/profile/domain/running_career.dart';
-import 'package:runzone/features/profile/domain/weekly_frequency.dart';
-import 'package:runzone/features/profile/domain/weight.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
+
+import 'package:runzone/features/profile/data/shared_preferences_profile_repository.dart';
+import 'package:runzone/features/profile/domain/runner_profile.dart';
 
 final class _FailingSharedPreferencesStore extends InMemorySharedPreferencesStore {
   _FailingSharedPreferencesStore() : super.empty();
@@ -18,6 +13,14 @@ final class _FailingSharedPreferencesStore extends InMemorySharedPreferencesStor
   @override
   Future<bool> setValue(String valueType, String key, Object value) async => false;
 }
+
+const HeartRateZone _heartRateZone = HeartRateZone(
+  zone1: HeartRateZoneRange(lower: 95, upper: 130),
+  zone2: HeartRateZoneRange(lower: 131, upper: 147),
+  zone3: HeartRateZoneRange(lower: 148, upper: 164),
+  zone4: HeartRateZoneRange(lower: 165, upper: 180),
+  zone5: HeartRateZoneRange(lower: 181, upper: 190),
+);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +38,7 @@ void main() {
       weight: Weight(65),
       career: RunningCareer.beginner,
       weeklyFrequency: WeeklyFrequency(3),
+      heartRateZone: _heartRateZone,
     );
 
     // When
@@ -50,6 +54,13 @@ void main() {
       'weight': 65,
       'career': 'beginner',
       'weeklyFrequency': 3,
+      'heartRateZone': <String, Object>{
+        'zone1': <String, Object>{'lower': 95, 'upper': 130},
+        'zone2': <String, Object>{'lower': 131, 'upper': 147},
+        'zone3': <String, Object>{'lower': 148, 'upper': 164},
+        'zone4': <String, Object>{'lower': 165, 'upper': 180},
+        'zone5': <String, Object>{'lower': 181, 'upper': 190},
+      },
     });
   });
 
@@ -65,6 +76,7 @@ void main() {
       weight: Weight(65),
       career: RunningCareer.beginner,
       weeklyFrequency: WeeklyFrequency(3),
+      heartRateZone: _heartRateZone,
     );
 
     // When & Then
@@ -82,6 +94,7 @@ void main() {
       weight: Weight(65),
       career: RunningCareer.beginner,
       weeklyFrequency: WeeklyFrequency(3),
+      heartRateZone: _heartRateZone,
     );
     await repository.save(profile);
 
