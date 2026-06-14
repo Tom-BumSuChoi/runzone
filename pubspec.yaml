@@ -18,6 +18,7 @@ dependencies:
   widgetbook: ^3.8.1
   shared_preferences: ^2.5.5
   widgetbook_annotation: ^3.11.0
+  flutter_svg: ^2.3.0
 
 dev_dependencies:
   flutter_test:
@@ -55,6 +56,9 @@ flutter_native_splash:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/icons/
 
   fonts:
     - family: IBM Plex Sans KR
