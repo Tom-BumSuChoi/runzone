@@ -21,6 +21,9 @@ final class _SpyProfileRepository implements ProfileRepository {
   Future<void> save(RunnerProfile profile) async {
     saved = profile;
   }
+
+  @override
+  Stream<RunnerProfile?> watchProfile() => Stream<RunnerProfile?>.empty();
 }
 
 void main() {

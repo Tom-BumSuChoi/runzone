@@ -64,6 +64,51 @@ void main() {
     });
   });
 
+  test('Given 저장된 러너 프로필이 없으면 When 프로필 stream 구독 후 save 하면 Then null 다음 저장된 RunnerProfile을 방출한다', () async {
+    // Given
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    final SharedPreferencesProfileRepository repository = SharedPreferencesProfileRepository(preferences);
+    final RunnerProfile profile = RunnerProfile(
+      birthYear: BirthYear(1996),
+      gender: Gender.male,
+      height: Height(170),
+      weight: Weight(65),
+      career: RunningCareer.beginner,
+      weeklyFrequency: WeeklyFrequency(3),
+      heartRateZone: _heartRateZone,
+    );
+    final Future<void> expectation = expectLater(repository.watchProfile(), emitsInOrder(<Object?>[null, profile]));
+
+    // When
+    await Future<void>.delayed(Duration.zero);
+    await repository.save(profile);
+
+    // Then
+    await expectation;
+  });
+
+  test('Given 저장된 러너 프로필이 있으면 When 프로필 stream을 구독하면 Then 현재 RunnerProfile을 먼저 방출한다', () async {
+    // Given
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    final SharedPreferencesProfileRepository repository = SharedPreferencesProfileRepository(preferences);
+    final RunnerProfile profile = RunnerProfile(
+      birthYear: BirthYear(1996),
+      gender: Gender.male,
+      height: Height(170),
+      weight: Weight(65),
+      career: RunningCareer.beginner,
+      weeklyFrequency: WeeklyFrequency(3),
+      heartRateZone: _heartRateZone,
+    );
+    await repository.save(profile);
+
+    // When
+    final Future<RunnerProfile?> emitted = repository.watchProfile().first;
+
+    // Then
+    await expectLater(emitted, completion(profile));
+  });
+
   test('Given SharedPreferences 저장이 실패하면 When save 하면 Then StateError를 던진다', () async {
     // Given
     SharedPreferencesStorePlatform.instance = _FailingSharedPreferencesStore();

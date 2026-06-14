@@ -1,19 +1,30 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../features/profile/domain/profile_repository.dart';
+import '../../features/profile/domain/runner_profile.dart';
 
 part 'app_state.dart';
 
 final class AppCubit extends Cubit<AppState> {
-  AppCubit({required this._repository}) : super(const AppInitial()) {
-    _initialize();
+  AppCubit({required ProfileRepository repository}) : super(const AppInitial()) {
+    _profileSubscription = repository.watchProfile().listen(_emitProfileStatus);
   }
 
-  final ProfileRepository _repository;
+  late final StreamSubscription<RunnerProfile?> _profileSubscription;
 
-  Future<void> _initialize() async {
-    final profile = await _repository.load();
+  void _emitProfileStatus(RunnerProfile? profile) {
+    if (isClosed) {
+      return;
+    }
     emit(AppReady(hasProfile: profile != null));
+  }
+
+  @override
+  Future<void> close() async {
+    await _profileSubscription.cancel();
+    return super.close();
   }
 }

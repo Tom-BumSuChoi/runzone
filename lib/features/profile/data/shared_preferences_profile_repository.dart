@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +12,7 @@ final class SharedPreferencesProfileRepository implements ProfileRepository {
   static const String _key = 'runner_profile';
 
   final SharedPreferences _preferences;
+  final StreamController<RunnerProfile?> _profileController = StreamController<RunnerProfile?>.broadcast();
 
   @override
   Future<void> save(RunnerProfile profile) async {
@@ -28,6 +30,7 @@ final class SharedPreferencesProfileRepository implements ProfileRepository {
     if (!saved) {
       throw StateError('Failed to save runner profile.');
     }
+    _profileController.add(profile);
   }
 
   @override
@@ -48,6 +51,12 @@ final class SharedPreferencesProfileRepository implements ProfileRepository {
       weeklyFrequency: WeeklyFrequency(map['weeklyFrequency'] as int),
       heartRateZone: _heartRateZoneFromJson(map['heartRateZone']),
     );
+  }
+
+  @override
+  Stream<RunnerProfile?> watchProfile() async* {
+    yield await load();
+    yield* _profileController.stream;
   }
 
   Map<String, Object> _heartRateZoneToJson(HeartRateZone zone) {

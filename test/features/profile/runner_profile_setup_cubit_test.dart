@@ -12,6 +12,9 @@ class _FakeProfileRepository implements ProfileRepository {
 
   @override
   Future<RunnerProfile?> load() async => null;
+
+  @override
+  Stream<RunnerProfile?> watchProfile() => Stream<RunnerProfile?>.empty();
 }
 
 class _SpyProfileRepository implements ProfileRepository {
@@ -24,6 +27,9 @@ class _SpyProfileRepository implements ProfileRepository {
 
   @override
   Future<RunnerProfile?> load() async => null;
+
+  @override
+  Stream<RunnerProfile?> watchProfile() => Stream<RunnerProfile?>.empty();
 }
 
 class _ThrowingProfileRepository implements ProfileRepository {
@@ -34,6 +40,9 @@ class _ThrowingProfileRepository implements ProfileRepository {
 
   @override
   Future<RunnerProfile?> load() async => null;
+
+  @override
+  Stream<RunnerProfile?> watchProfile() => Stream<RunnerProfile?>.empty();
 }
 
 void main() {
