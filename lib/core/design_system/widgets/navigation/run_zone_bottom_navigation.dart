@@ -17,21 +17,18 @@ final class RunZoneBottomNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return SafeArea(
-      top: false,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colorScheme.surface,
-          border: Border(top: BorderSide(color: colorScheme.outline)),
-        ),
-        child: SizedBox(
-          height: AppSizing.navigationHeight,
-          child: Padding(
-            padding: AppSpacing.navigationInsets,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [for (final item in items) Expanded(child: item)],
-            ),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        border: Border(top: BorderSide(color: colorScheme.outline)),
+      ),
+      child: SizedBox(
+        height: AppSizing.navigationHeight,
+        child: Padding(
+          padding: AppSpacing.navigationInsets,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [for (final item in items) Expanded(child: item)],
           ),
         ),
       ),

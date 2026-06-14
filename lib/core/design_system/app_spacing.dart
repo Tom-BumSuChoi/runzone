@@ -8,6 +8,7 @@ abstract final class AppSpacing {
   static const chipPaddingVertical = 8.0;
   static const chipPaddingHorizontal = 14.0;
   static const navigationPaddingTop = 12.0;
+  static const navigationPaddingHorizontal = 14.0;
   static const navigationStartButtonLift = 6.0;
 
   static const chipGap = 8.0;
@@ -23,7 +24,15 @@ abstract final class AppSpacing {
 
   static const cardInsets = EdgeInsets.all(cardPadding);
   static const screenInsets = EdgeInsets.all(screenPadding);
-  static const buttonInsets = EdgeInsets.symmetric(vertical: buttonPaddingVertical, horizontal: buttonPaddingHorizontal);
+  static const buttonInsets = EdgeInsets.symmetric(
+    vertical: buttonPaddingVertical,
+    horizontal: buttonPaddingHorizontal,
+  );
   static const chipInsets = EdgeInsets.symmetric(vertical: chipPaddingVertical, horizontal: chipPaddingHorizontal);
-  static const navigationInsets = EdgeInsets.fromLTRB(0, navigationPaddingTop, 0, 0);
+  static const navigationInsets = EdgeInsets.fromLTRB(
+    navigationPaddingHorizontal,
+    navigationPaddingTop,
+    navigationPaddingHorizontal,
+    0,
+  );
 }
