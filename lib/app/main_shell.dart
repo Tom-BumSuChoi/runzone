@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:runzone/app/cubit/main_shell_cubit.dart';
-import 'package:runzone/core/design_system/widgets/navigation/run_zone_bottom_navigation.dart';
+
+import '../core/design_system/widgets/navigation/run_zone_bottom_navigation.dart';
+import '../features/profile/presentation/heart_rate_zone_adjustment_screen.dart';
+import 'cubit/main_shell_cubit.dart';
 
 extension _MainShellTabLabel on MainShellTab {
   String get label => switch (this) {
@@ -31,7 +33,10 @@ final class _MainShellView extends StatelessWidget {
       builder: (context, state) {
         final cubit = context.read<MainShellCubit>();
         return Scaffold(
-          body: Center(child: Text(state.selectedTab.label)),
+          body: switch (state.selectedTab) {
+            MainShellTab.myPage => const HeartRateZoneAdjustmentScreen(),
+            _ => Center(child: Text(state.selectedTab.label)),
+          },
           bottomNavigationBar: RunZoneBottomNavigation(
             items: [
               RunZoneBottomNavigationItem(
