@@ -34,6 +34,11 @@ abstract final class AppTheme {
       mutedText: AppColors.gray500,
     ),
     dividerTheme: const DividerThemeData(color: AppColors.gray700),
+    sliderTheme: const SliderThemeData(
+      activeTrackColor: AppColors.lime300,
+      inactiveTrackColor: AppColors.gray600,
+      thumbColor: AppColors.lime300,
+    ),
     filledButtonTheme: FilledButtonThemeData(
       style: _filledButtonStyle(
         backgroundColor: AppColors.lime300,
@@ -72,6 +77,11 @@ abstract final class AppTheme {
       mutedText: AppColors.gray400,
     ),
     dividerTheme: const DividerThemeData(color: AppColors.gray400),
+    sliderTheme: const SliderThemeData(
+      activeTrackColor: AppColors.lime400,
+      inactiveTrackColor: AppColors.gray500,
+      thumbColor: AppColors.lime400,
+    ),
     filledButtonTheme: FilledButtonThemeData(
       style: _filledButtonStyle(
         backgroundColor: AppColors.lime400,
