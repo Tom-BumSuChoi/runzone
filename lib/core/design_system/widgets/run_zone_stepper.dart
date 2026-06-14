@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../app_radius.dart';
-import '../app_semantic_colors.dart';
 import '../app_sizing.dart';
 import '../app_spacing.dart';
 import '../app_typography.dart';
@@ -35,7 +34,7 @@ final class RunZoneStepper extends StatelessWidget {
   }
 
   Widget _button(BuildContext context, IconData icon, VoidCallback onTap) {
-    final colors = AppSemanticColors.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -43,8 +42,8 @@ final class RunZoneStepper extends StatelessWidget {
         height: AppSizing.stepperButton,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: colors.secondarySurface,
-          border: Border.all(color: colors.secondaryLine),
+          color: colorScheme.surfaceContainerHighest,
+          border: Border.all(color: colorScheme.outlineVariant),
           borderRadius: AppRadius.smallBorder,
         ),
         child: Icon(icon, size: AppSpacing.iconSmall),

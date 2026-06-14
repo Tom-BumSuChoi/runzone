@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:runzone/core/design_system/app_semantic_colors.dart';
 
 import '../app_radius.dart';
 import '../app_spacing.dart';
@@ -14,10 +13,10 @@ final class RunZoneChoiceChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = AppSemanticColors.of(context);
-    final background = isSelected ? colors.accent : colors.secondarySurface;
-    final foreground = isSelected ? colors.accentInk : colors.dimText;
-    final border = isSelected ? Colors.transparent : colors.secondaryLine;
+    final colorScheme = Theme.of(context).colorScheme;
+    final background = isSelected ? colorScheme.primary : colorScheme.surfaceContainerHighest;
+    final foreground = isSelected ? colorScheme.onPrimary : colorScheme.onSurfaceVariant;
+    final border = isSelected ? Colors.transparent : colorScheme.outlineVariant;
 
     return GestureDetector(
       onTap: onTap,

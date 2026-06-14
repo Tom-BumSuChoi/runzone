@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
 import 'app_radius.dart';
-import 'app_semantic_colors.dart';
 import 'app_sizing.dart';
 import 'app_spacing.dart';
 import 'app_typography.dart';
@@ -14,70 +13,76 @@ abstract final class AppTheme {
     useMaterial3: true,
     brightness: Brightness.dark,
     fontFamily: AppTypography.sansKorean,
-    scaffoldBackgroundColor: AppColors.pageBackground,
+    scaffoldBackgroundColor: AppColors.gray1000,
     colorScheme: const ColorScheme.dark(
-      primary: AppColors.accent,
-      onPrimary: AppColors.accentInk,
-      secondary: AppColors.secondaryAccent,
-      onSecondary: AppColors.accentInk,
-      surface: AppColors.surface,
-      onSurface: AppColors.text,
-      error: AppColors.zone5,
+      primary: AppColors.lime300,
+      onPrimary: AppColors.gray950,
+      secondary: AppColors.lime400,
+      onSecondary: AppColors.gray950,
+      surface: AppColors.gray900,
+      onSurface: AppColors.gray100,
+      surfaceContainerHighest: AppColors.gray850,
+      onSurfaceVariant: AppColors.gray400,
+      outline: AppColors.gray700,
+      outlineVariant: AppColors.gray600,
+      error: AppColors.red500,
       onError: AppColors.white,
     ),
     textTheme: _textTheme(
-      text: AppColors.text,
-      dimText: AppColors.dimText,
-      mutedText: AppColors.mutedText,
+      text: AppColors.gray100,
+      dimText: AppColors.gray400,
+      mutedText: AppColors.gray500,
     ),
-    dividerTheme: const DividerThemeData(color: AppColors.line),
+    dividerTheme: const DividerThemeData(color: AppColors.gray700),
     filledButtonTheme: FilledButtonThemeData(
       style: _filledButtonStyle(
-        backgroundColor: AppColors.accent,
-        foregroundColor: AppColors.accentInk,
+        backgroundColor: AppColors.lime300,
+        foregroundColor: AppColors.gray950,
       ),
     ),
     bottomSheetTheme: const BottomSheetThemeData(
-      backgroundColor: AppColors.surface,
-      modalBackgroundColor: AppColors.surface,
+      backgroundColor: AppColors.gray900,
+      modalBackgroundColor: AppColors.gray900,
       shape: RoundedRectangleBorder(borderRadius: AppRadius.bottomSheetBorder),
     ),
-    extensions: const [AppSemanticColors.dark],
   );
 
   static final light = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
     fontFamily: AppTypography.sansKorean,
-    scaffoldBackgroundColor: AppColors.lightPageBackground,
+    scaffoldBackgroundColor: AppColors.gray100,
     colorScheme: const ColorScheme.light(
-      primary: AppColors.lightAccent,
-      onPrimary: AppColors.lightAccentInk,
-      secondary: AppColors.lightSecondaryAccent,
-      onSecondary: AppColors.lightAccentInk,
-      surface: AppColors.lightSurface,
-      onSurface: AppColors.lightText,
-      error: AppColors.zone5,
+      primary: AppColors.lime400,
+      onPrimary: AppColors.gray950,
+      secondary: AppColors.lime500,
+      onSecondary: AppColors.gray950,
+      surface: AppColors.white,
+      onSurface: AppColors.gray950,
+      surfaceContainerHighest: AppColors.gray100,
+      onSurfaceVariant: AppColors.gray500,
+      outline: AppColors.gray400,
+      outlineVariant: AppColors.gray500,
+      error: AppColors.red500,
       onError: AppColors.white,
     ),
     textTheme: _textTheme(
-      text: AppColors.lightText,
-      dimText: AppColors.lightDimText,
-      mutedText: AppColors.lightMutedText,
+      text: AppColors.gray950,
+      dimText: AppColors.gray500,
+      mutedText: AppColors.gray400,
     ),
-    dividerTheme: const DividerThemeData(color: AppColors.lightLine),
+    dividerTheme: const DividerThemeData(color: AppColors.gray400),
     filledButtonTheme: FilledButtonThemeData(
       style: _filledButtonStyle(
-        backgroundColor: AppColors.lightAccent,
-        foregroundColor: AppColors.lightAccentInk,
+        backgroundColor: AppColors.lime400,
+        foregroundColor: AppColors.gray950,
       ),
     ),
     bottomSheetTheme: const BottomSheetThemeData(
-      backgroundColor: AppColors.lightSurface,
-      modalBackgroundColor: AppColors.lightSurface,
+      backgroundColor: AppColors.white,
+      modalBackgroundColor: AppColors.white,
       shape: RoundedRectangleBorder(borderRadius: AppRadius.bottomSheetBorder),
     ),
-    extensions: const [AppSemanticColors.light],
   );
 
   static TextTheme _textTheme({
