@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../app_sizing.dart';
+import '../../app_sizing.dart';
 
 final class RunZoneProfileField extends StatelessWidget {
   const RunZoneProfileField({required this.label, required this.trailing, this.subLabel, super.key});

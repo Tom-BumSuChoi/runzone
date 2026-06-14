@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../app_radius.dart';
-import '../app_sizing.dart';
-import '../app_spacing.dart';
-import '../app_typography.dart';
+import '../../app_radius.dart';
+import '../../app_sizing.dart';
+import '../../app_spacing.dart';
+import '../../app_typography.dart';
 
 final class RunZoneStepper extends StatelessWidget {
   const RunZoneStepper({
@@ -46,7 +46,7 @@ final class RunZoneStepper extends StatelessWidget {
           border: Border.all(color: colorScheme.outlineVariant),
           borderRadius: AppRadius.smallBorder,
         ),
-        child: Icon(icon, size: AppSpacing.iconSmall),
+        child: Icon(icon, size: AppSizing.stepperIconSize),
       ),
     );
   }
