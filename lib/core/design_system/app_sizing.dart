@@ -2,6 +2,10 @@ abstract final class AppSizing {
   static const progressSegmentHeight = 4.0;
   static const stepperButton = 32.0;
   static const stepperValueWidth = 56.0;
+  static const stepperIconSize = 17.0;
   static const touchTarget = 44.0;
   static const rowHeight = 44.0;
+  static const navigationHeight = 78.0;
+  static const navigationIconSize = 24.0;
+  static const navigationStartButtonSize = 50.0;
 }
