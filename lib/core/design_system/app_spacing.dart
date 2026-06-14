@@ -12,6 +12,7 @@ abstract final class AppSpacing {
   static const navigationStartButtonLift = 6.0;
 
   static const chipGap = 8.0;
+  static const controlGroupGap = 14.0;
   static const controlLabelGap = 6.0;
   static const stepperGap = 12.0;
   static const progressSegmentGap = 6.0;
