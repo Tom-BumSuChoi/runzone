@@ -12,7 +12,7 @@ final class RunZoneSectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: AppTypography.eyebrow.copyWith(color: AppColors.mutedText),
+      style: AppTypography.eyebrow.copyWith(color: AppColors.gray500),
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../app_radius.dart';
-import '../app_semantic_colors.dart';
 import '../app_spacing.dart';
 
 final class RunZoneCard extends StatelessWidget {
@@ -12,11 +11,11 @@ final class RunZoneCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = AppSemanticColors.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: colors.surface,
-        border: Border.all(color: colors.line),
+        color: colorScheme.surface,
+        border: Border.all(color: colorScheme.outline),
         borderRadius: AppRadius.mediumBorder,
       ),
       child: Padding(padding: padding, child: child),

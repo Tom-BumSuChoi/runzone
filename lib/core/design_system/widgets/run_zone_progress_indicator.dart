@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:runzone/core/design_system/app_radius.dart';
-import 'package:runzone/core/design_system/app_semantic_colors.dart';
 import 'package:runzone/core/design_system/app_sizing.dart';
 import 'package:runzone/core/design_system/app_spacing.dart';
 
@@ -14,11 +13,11 @@ final class RunZoneProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = AppSemanticColors.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
     final segments = <Widget>[];
 
     for (var i = 0; i < totalSteps; i++) {
-      final color = i < currentStep ? colors.accent : colors.secondaryLine;
+      final color = i < currentStep ? colorScheme.primary : colorScheme.outlineVariant;
       segments.add(_Segment(color: color));
     }
 

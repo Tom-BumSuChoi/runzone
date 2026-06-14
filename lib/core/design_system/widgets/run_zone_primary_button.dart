@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:runzone/core/design_system/app_semantic_colors.dart';
 
 import '../app_radius.dart';
 import '../app_spacing.dart';
@@ -13,18 +12,18 @@ final class RunZonePrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = AppSemanticColors.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return SizedBox(
       width: double.infinity,
       child: GestureDetector(
         onTap: onPressed,
         child: DecoratedBox(
-          decoration: BoxDecoration(color: colors.accent, borderRadius: AppRadius.smallBorder),
+          decoration: BoxDecoration(color: colorScheme.primary, borderRadius: AppRadius.smallBorder),
           child: Padding(
             padding: AppSpacing.buttonInsets,
             child: Center(
-              child: Text(label, style: AppTypography.heading3.copyWith(color: colors.accentInk)),
+              child: Text(label, style: AppTypography.heading3.copyWith(color: colorScheme.onPrimary)),
             ),
           ),
         ),
