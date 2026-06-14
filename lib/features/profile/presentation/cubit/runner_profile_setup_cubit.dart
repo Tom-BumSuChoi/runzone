@@ -1,16 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../workout/domain/heart_rate_zone.dart';
 import '../../../workout/domain/heart_rate_zone_calculator.dart';
-import '../../domain/birth_year.dart';
-import '../../domain/gender.dart';
-import '../../domain/height.dart';
 import '../../domain/profile_repository.dart';
 import '../../domain/runner_profile.dart';
-import '../../domain/running_career.dart';
-import '../../domain/weekly_frequency.dart';
-import '../../domain/weight.dart';
 
 part 'runner_profile_setup_state.dart';
 
