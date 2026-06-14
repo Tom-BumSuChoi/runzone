@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import '../core/design_system/app_color_scheme.dart';
 import '../core/design_system/widgets/slider/labeled_slider.dart';
 
 @widgetbook.UseCase(name: 'Default', type: RunZoneLabeledSlider, path: '[Design System]')
 Widget buildLabeledSliderUseCase(BuildContext context) {
   var value = 131.0;
+  final colorScheme = Theme.of(context).colorScheme;
 
   return StatefulBuilder(
     builder: (context, setState) {
@@ -16,8 +18,8 @@ Widget buildLabeledSliderUseCase(BuildContext context) {
         value: value,
         minimum: 95,
         maximum: 143,
-        leadingColor: const Color(0xFF2F80ED),
-        trailingColor: const Color(0xFF27AE60),
+        leadingColor: colorScheme.zoneOne,
+        trailingColor: colorScheme.zoneTwo,
         onChanged: (nextValue) => setState(() => value = nextValue),
       );
     },
