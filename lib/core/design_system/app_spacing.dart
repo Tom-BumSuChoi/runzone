@@ -16,6 +16,7 @@ abstract final class AppSpacing {
   static const controlLabelGap = 6.0;
   static const stepperGap = 12.0;
   static const progressSegmentGap = 6.0;
+  static const zoneSegmentGap = 4.0;
 
   static const inlineLabelGap = SizedBox(width: 6);
   static const inlineValueGap = SizedBox(width: 4);
