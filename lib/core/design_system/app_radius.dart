@@ -6,6 +6,7 @@ abstract final class AppRadius {
   static const largeValue = 22.0;
   static const xlargeValue = 30.0;
   static const badgeValue = 8.0;
+  static const colorSwatchValue = 2.0;
   static const chipValue = 11.0;
   static const toggleValue = 14.0;
   static const zoneSegmentValue = 7.0;
@@ -19,6 +20,7 @@ abstract final class AppRadius {
   static const large = Radius.circular(largeValue);
   static const xlarge = Radius.circular(xlargeValue);
   static const badge = Radius.circular(badgeValue);
+  static const colorSwatch = Radius.circular(colorSwatchValue);
   static const chip = Radius.circular(chipValue);
   static const toggle = Radius.circular(toggleValue);
   static const zoneSegment = Radius.circular(zoneSegmentValue);
@@ -33,6 +35,7 @@ abstract final class AppRadius {
   static const largeBorder = BorderRadius.all(large);
   static const xlargeBorder = BorderRadius.all(xlarge);
   static const badgeBorder = BorderRadius.all(badge);
+  static const colorSwatchBorder = BorderRadius.all(colorSwatch);
   static const chipBorder = BorderRadius.all(chip);
   static const toggleBorder = BorderRadius.all(toggle);
   static const zoneSegmentTopBorder = BorderRadius.vertical(top: zoneSegment);
