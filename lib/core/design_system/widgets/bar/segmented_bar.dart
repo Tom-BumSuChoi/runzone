@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../app_radius.dart';
 import '../../app_sizing.dart';
 import '../../app_spacing.dart';
-import '../label/run_zone_caption_label.dart';
+import '../label/run_zone_label_small_label.dart';
 
 final class RunZoneSegmentedBar extends StatelessWidget {
   const RunZoneSegmentedBar({required this.segments, super.key});
@@ -66,7 +66,7 @@ final class _RunZoneSegmentedBarItem extends StatelessWidget {
           ),
         ),
         AppSpacing.titleDescriptionGap,
-        RunZoneCaptionLabel(label, color: colorScheme.onSurfaceVariant),
+        RunZoneLabelSmallLabel(label, color: colorScheme.onSurfaceVariant),
       ],
     );
   }

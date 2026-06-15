@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../app_sizing.dart';
+import '../label/run_zone_body_medium_label.dart';
+import '../label/run_zone_body_small_label.dart';
 
 final class RunZoneProfileField extends StatelessWidget {
   const RunZoneProfileField({required this.label, required this.trailing, this.subLabel, super.key});
@@ -11,7 +13,6 @@ final class RunZoneProfileField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     return SizedBox(
       height: AppSizing.rowHeight,
       child: Row(
@@ -20,8 +21,8 @@ final class RunZoneProfileField extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(label, style: textTheme.bodyMedium),
-              if (subLabel != null) Text(subLabel!, style: textTheme.bodySmall),
+              RunZoneBodyMediumLabel(label),
+              if (subLabel != null) RunZoneBodySmallLabel(subLabel!),
             ],
           ),
           const Spacer(),

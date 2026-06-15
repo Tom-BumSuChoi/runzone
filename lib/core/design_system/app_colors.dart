@@ -18,6 +18,7 @@ abstract final class AppColors {
   static const lime300 = Color(0xFFE8FF3A);
   static const lime400 = Color(0xFFC6E000);
   static const lime500 = Color(0xFFAAC400);
+  static const lime700 = Color(0xFF5C6B00);
 
   static const blue500 = Color(0xFF3B82F6);
   static const green500 = Color(0xFF22C55E);

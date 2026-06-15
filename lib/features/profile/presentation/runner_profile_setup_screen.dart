@@ -7,7 +7,9 @@ import '../../../core/design_system/widgets/button/run_zone_primary_button.dart'
 import '../../../core/design_system/widgets/card/run_zone_card.dart';
 import '../../../core/design_system/widgets/chip/run_zone_choice_chip.dart';
 import '../../../core/design_system/widgets/field/run_zone_profile_field.dart';
-import '../../../core/design_system/widgets/label/run_zone_section_label.dart';
+import '../../../core/design_system/widgets/label/run_zone_body_small_label.dart';
+import '../../../core/design_system/widgets/label/run_zone_headline_large_label.dart';
+import '../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
 import '../../../core/design_system/widgets/progress/run_zone_progress_indicator.dart';
 import '../../../core/design_system/widgets/stepper/run_zone_stepper.dart';
 import '../domain/profile_repository.dart';
@@ -64,15 +66,14 @@ final class _SetupHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: .start,
       children: [
         const RunZoneProgressIndicator(totalSteps: 2, currentStep: 2),
         AppSpacing.headerTitleGap,
-        Text('프로필 입력', style: textTheme.headlineLarge),
+        const RunZoneHeadlineLargeLabel('프로필 입력'),
         AppSpacing.titleDescriptionGap,
-        Text('이 정보로 당신의 심박존을 자동 계산해요', style: textTheme.bodySmall),
+        const RunZoneBodySmallLabel('이 정보로 당신의 심박존을 자동 계산해요'),
       ],
     );
   }
@@ -89,7 +90,7 @@ final class _BasicInfoSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: .start,
       children: [
-        const RunZoneSectionLabel('기본 정보'),
+        const RunZoneLabelSmallLabel('기본 정보'),
         AppSpacing.sectionLabelGap,
         RunZoneCard(
           child: Column(
@@ -165,7 +166,7 @@ final class _CareerSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: .start,
       children: [
-        const RunZoneSectionLabel('러닝 경력'),
+        const RunZoneLabelSmallLabel('러닝 경력'),
         AppSpacing.sectionLabelGap,
         Row(
           spacing: AppSpacing.chipGap,
@@ -212,7 +213,7 @@ final class _WeeklyFrequencySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: .start,
       children: [
-        const RunZoneSectionLabel('주간 러닝 빈도'),
+        const RunZoneLabelSmallLabel('주간 러닝 빈도'),
         AppSpacing.sectionLabelGap,
         Row(
           spacing: AppSpacing.chipGap,
@@ -238,12 +239,11 @@ final class _SetupFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     return Column(
       children: [
         SizedBox(
           width: double.infinity,
-          child: Text('나중에 설정에서 언제든 변경할 수 있어요', textAlign: TextAlign.center, style: textTheme.labelSmall),
+          child: const RunZoneLabelSmallLabel('나중에 설정에서 언제든 변경할 수 있어요', textAlign: TextAlign.center),
         ),
         AppSpacing.footerHintGap,
         RunZonePrimaryButton(label: '시작하기', onPressed: onComplete),

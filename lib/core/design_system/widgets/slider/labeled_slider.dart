@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../app_spacing.dart';
 import '../swatch/color_swatch.dart';
-import '../label/run_zone_caption_label.dart';
-import '../label/run_zone_emphasis_label.dart';
+import '../label/run_zone_label_medium_label.dart';
+import '../label/run_zone_title_small_label.dart';
 
 final class RunZoneLabeledSlider extends StatelessWidget {
   const RunZoneLabeledSlider({
@@ -64,19 +64,17 @@ final class _RunZoneLabeledSliderHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Row(
       children: [
         RunZoneColorSwatch(color: leadingColor),
         AppSpacing.inlineLabelGap,
-        RunZoneCaptionLabel(label),
+        RunZoneLabelMediumLabel(label, color: Theme.of(context).colorScheme.onSurface),
         AppSpacing.inlineLabelGap,
         RunZoneColorSwatch(color: trailingColor),
         const Spacer(),
-        RunZoneEmphasisLabel(valueLabel),
+        RunZoneTitleSmallLabel(valueLabel, color: Theme.of(context).colorScheme.primary),
         AppSpacing.inlineValueGap,
-        RunZoneCaptionLabel(unitLabel, color: colorScheme.onSurfaceVariant),
+        RunZoneLabelMediumLabel(unitLabel),
       ],
     );
   }

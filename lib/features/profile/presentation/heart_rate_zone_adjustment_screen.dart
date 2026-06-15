@@ -6,10 +6,10 @@ import '../../../core/design_system/app_color_scheme.dart';
 import '../../../core/design_system/app_spacing.dart';
 import '../../../core/design_system/widgets/bar/segmented_bar.dart';
 import '../../../core/design_system/widgets/card/run_zone_card.dart';
-import '../../../core/design_system/widgets/label/run_zone_section_label.dart';
+import '../../../core/design_system/widgets/label/run_zone_body_large_label.dart';
+import '../../../core/design_system/widgets/label/run_zone_headline_large_label.dart';
+import '../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
 import '../../../core/design_system/widgets/slider/labeled_slider.dart';
-import '../../../core/design_system/widgets/label/run_zone_description_label.dart';
-import '../../../core/design_system/widgets/label/run_zone_title_label.dart';
 import '../domain/profile_repository.dart';
 import 'cubit/heart_rate_zone_adjustment_cubit.dart';
 
@@ -41,9 +41,9 @@ final class _HeartRateZoneAdjustmentView extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const RunZoneTitleLabel('심박존 조정'),
+                  const RunZoneHeadlineLargeLabel('심박존 조정'),
                   AppSpacing.titleDescriptionGap,
-                  const RunZoneDescriptionLabel('슬라이더로 각 존의 경계를 직접 맞춰요.'),
+                  const RunZoneBodyLargeLabel('슬라이더로 각 존의 경계를 직접 맞춰요.'),
                   AppSpacing.sectionGap,
                   switch (state) {
                     HeartRateZoneAdjustmentLoading() => const SizedBox.shrink(),
@@ -72,7 +72,7 @@ final class _HeartRateZoneAdjustmentContent extends StatelessWidget {
       children: [
         _HeartRateZoneSegmentedBarCard(state: state),
         AppSpacing.sectionGap,
-        const RunZoneSectionLabel('존 경계'),
+        const RunZoneLabelSmallLabel('존 경계'),
         AppSpacing.sectionLabelGap,
         _HeartRateZoneBoundaryCard(state: state, cubit: cubit),
       ],

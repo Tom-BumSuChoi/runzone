@@ -3,15 +3,10 @@ import 'package:flutter/material.dart';
 import '../../app_radius.dart';
 import '../../app_sizing.dart';
 import '../../app_spacing.dart';
-import '../../app_typography.dart';
+import '../label/run_zone_title_large_label.dart';
 
 final class RunZoneStepper extends StatelessWidget {
-  const RunZoneStepper({
-    required this.value,
-    required this.onDecrement,
-    required this.onIncrement,
-    super.key,
-  });
+  const RunZoneStepper({required this.value, required this.onDecrement, required this.onIncrement, super.key});
 
   final int value;
   final VoidCallback onDecrement;
@@ -26,7 +21,7 @@ final class RunZoneStepper extends StatelessWidget {
         _button(context, Icons.remove, onDecrement),
         SizedBox(
           width: AppSizing.stepperValueWidth,
-          child: Text('$value', textAlign: TextAlign.center, style: AppTypography.stepperValue),
+          child: RunZoneTitleLargeLabel('$value', textAlign: TextAlign.center),
         ),
         _button(context, Icons.add, onIncrement),
       ],
