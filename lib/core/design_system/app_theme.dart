@@ -28,22 +28,17 @@ abstract final class AppTheme {
       error: AppColors.red500,
       onError: AppColors.white,
     ),
-    textTheme: _textTheme(
-      text: AppColors.gray100,
-      dimText: AppColors.gray400,
-      mutedText: AppColors.gray500,
-    ),
+    textTheme: _textTheme(text: AppColors.gray100, dimText: AppColors.gray400, mutedText: AppColors.gray500),
     dividerTheme: const DividerThemeData(color: AppColors.gray700),
-    sliderTheme: const SliderThemeData(
+    sliderTheme: SliderThemeData(
       activeTrackColor: AppColors.lime300,
       inactiveTrackColor: AppColors.gray600,
+      overlayShape: SliderComponentShape.noOverlay,
+      padding: EdgeInsets.zero,
       thumbColor: AppColors.lime300,
     ),
     filledButtonTheme: FilledButtonThemeData(
-      style: _filledButtonStyle(
-        backgroundColor: AppColors.lime300,
-        foregroundColor: AppColors.gray950,
-      ),
+      style: _filledButtonStyle(backgroundColor: AppColors.lime300, foregroundColor: AppColors.gray950),
     ),
     bottomSheetTheme: const BottomSheetThemeData(
       backgroundColor: AppColors.gray900,
@@ -71,22 +66,17 @@ abstract final class AppTheme {
       error: AppColors.red500,
       onError: AppColors.white,
     ),
-    textTheme: _textTheme(
-      text: AppColors.gray950,
-      dimText: AppColors.gray500,
-      mutedText: AppColors.gray400,
-    ),
+    textTheme: _textTheme(text: AppColors.gray950, dimText: AppColors.gray500, mutedText: AppColors.gray400),
     dividerTheme: const DividerThemeData(color: AppColors.gray400),
-    sliderTheme: const SliderThemeData(
+    sliderTheme: SliderThemeData(
       activeTrackColor: AppColors.lime400,
       inactiveTrackColor: AppColors.gray500,
+      overlayShape: SliderComponentShape.noOverlay,
+      padding: EdgeInsets.zero,
       thumbColor: AppColors.lime400,
     ),
     filledButtonTheme: FilledButtonThemeData(
-      style: _filledButtonStyle(
-        backgroundColor: AppColors.lime400,
-        foregroundColor: AppColors.gray950,
-      ),
+      style: _filledButtonStyle(backgroundColor: AppColors.lime400, foregroundColor: AppColors.gray950),
     ),
     bottomSheetTheme: const BottomSheetThemeData(
       backgroundColor: AppColors.white,
@@ -95,11 +85,7 @@ abstract final class AppTheme {
     ),
   );
 
-  static TextTheme _textTheme({
-    required Color text,
-    required Color dimText,
-    required Color mutedText,
-  }) {
+  static TextTheme _textTheme({required Color text, required Color dimText, required Color mutedText}) {
     return TextTheme(
       displayLarge: TextStyle(
         fontFamily: _fontFamily,
@@ -209,20 +195,13 @@ abstract final class AppTheme {
     );
   }
 
-  static ButtonStyle _filledButtonStyle({
-    required Color backgroundColor,
-    required Color foregroundColor,
-  }) {
+  static ButtonStyle _filledButtonStyle({required Color backgroundColor, required Color foregroundColor}) {
     return ButtonStyle(
       backgroundColor: WidgetStatePropertyAll(backgroundColor),
       foregroundColor: WidgetStatePropertyAll(foregroundColor),
-      minimumSize: const WidgetStatePropertyAll(
-        Size(AppSizing.touchTarget, AppSizing.touchTarget),
-      ),
+      minimumSize: const WidgetStatePropertyAll(Size(AppSizing.touchTarget, AppSizing.touchTarget)),
       padding: const WidgetStatePropertyAll(AppSpacing.buttonInsets),
-      shape: const WidgetStatePropertyAll(
-        RoundedRectangleBorder(borderRadius: AppRadius.smallBorder),
-      ),
+      shape: const WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: AppRadius.smallBorder)),
     );
   }
 }
