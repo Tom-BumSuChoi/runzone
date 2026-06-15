@@ -16,10 +16,7 @@ final class RunZoneLabelMediumLabel extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign,
-      style: textTheme.labelMedium?.copyWith(
-        color: color ?? colorScheme.onSurfaceVariant,
-        fontWeight: fontWeight,
-      ),
+      style: textTheme.labelMedium?.copyWith(color: color ?? colorScheme.onSurfaceVariant, fontWeight: fontWeight),
     );
   }
 }
