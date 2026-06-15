@@ -5,6 +5,7 @@ import '../../../app/di.dart';
 import '../../../core/design_system/app_color_scheme.dart';
 import '../../../core/design_system/app_spacing.dart';
 import '../../../core/design_system/widgets/bar/segmented_bar.dart';
+import '../../../core/design_system/widgets/button/run_zone_inline_action_button.dart';
 import '../../../core/design_system/widgets/card/run_zone_card.dart';
 import '../../../core/design_system/widgets/label/run_zone_body_large_label.dart';
 import '../../../core/design_system/widgets/label/run_zone_headline_large_label.dart';
@@ -75,7 +76,20 @@ final class _HeartRateZoneAdjustmentContent extends StatelessWidget {
         const RunZoneLabelSmallLabel('존 경계'),
         AppSpacing.sectionLabelGap,
         _HeartRateZoneBoundaryCard(state: state, cubit: cubit),
+        AppSpacing.footerHintGap,
+        const _ProfileRestoreButton(),
       ],
+    );
+  }
+}
+
+final class _ProfileRestoreButton extends StatelessWidget {
+  const _ProfileRestoreButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: RunZoneInlineActionButton(iconAsset: 'assets/icons/refresh.svg', label: '프로필 기준으로 되돌리기', onPressed: null),
     );
   }
 }
