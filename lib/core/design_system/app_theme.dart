@@ -13,6 +13,7 @@ abstract final class AppTheme {
     useMaterial3: true,
     brightness: Brightness.dark,
     fontFamily: _fontFamily,
+    splashFactory: NoSplash.splashFactory,
     scaffoldBackgroundColor: AppColors.gray1000,
     colorScheme: const ColorScheme.dark(
       primary: AppColors.lime300,
@@ -51,6 +52,7 @@ abstract final class AppTheme {
     useMaterial3: true,
     brightness: Brightness.light,
     fontFamily: _fontFamily,
+    splashFactory: NoSplash.splashFactory,
     scaffoldBackgroundColor: AppColors.gray100,
     colorScheme: const ColorScheme.light(
       primary: AppColors.lime400,
@@ -200,8 +202,10 @@ abstract final class AppTheme {
       backgroundColor: WidgetStatePropertyAll(backgroundColor),
       foregroundColor: WidgetStatePropertyAll(foregroundColor),
       minimumSize: const WidgetStatePropertyAll(Size(AppSizing.touchTarget, AppSizing.touchTarget)),
+      overlayColor: const WidgetStatePropertyAll(Colors.transparent),
       padding: const WidgetStatePropertyAll(AppSpacing.buttonInsets),
       shape: const WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: AppRadius.smallBorder)),
+      splashFactory: NoSplash.splashFactory,
     );
   }
 }
