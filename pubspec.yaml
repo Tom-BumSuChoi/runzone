@@ -72,11 +72,3 @@ flutter:
           weight: 600
         - asset: assets/fonts/IBMPlexSansKR-Bold.ttf
           weight: 700
-    - family: IBM Plex Mono
-      fonts:
-        - asset: assets/fonts/IBMPlexMono-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/IBMPlexMono-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/IBMPlexMono-Bold.ttf
-          weight: 700

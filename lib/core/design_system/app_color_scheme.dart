@@ -8,4 +8,6 @@ extension RunZoneColorScheme on ColorScheme {
   Color get zoneThree => AppColors.yellow500;
   Color get zoneFour => AppColors.orange500;
   Color get zoneFive => AppColors.red500;
+
+  Color get valueEmphasis => brightness == Brightness.dark ? AppColors.lime300 : AppColors.lime700;
 }

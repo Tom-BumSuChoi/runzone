@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../core/design_system/widgets/label/run_zone_body_medium_label.dart';
 import '../core/design_system/widgets/navigation/run_zone_bottom_navigation.dart';
 import '../features/profile/presentation/heart_rate_zone_adjustment_screen.dart';
 import 'cubit/main_shell_cubit.dart';
@@ -35,7 +36,7 @@ final class _MainShellView extends StatelessWidget {
         return Scaffold(
           body: switch (state.selectedTab) {
             MainShellTab.myPage => const HeartRateZoneAdjustmentScreen(),
-            _ => Center(child: Text(state.selectedTab.label)),
+            _ => Center(child: RunZoneBodyMediumLabel(state.selectedTab.label)),
           },
           bottomNavigationBar: RunZoneBottomNavigation(
             items: [

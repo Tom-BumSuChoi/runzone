@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../app_sizing.dart';
 import '../../app_spacing.dart';
-import '../label/run_zone_navigation_label.dart';
+import '../label/run_zone_label_small_label.dart';
 import 'run_zone_bottom_navigation_slot.dart';
 
 final class RunZoneBottomNavigationItem extends RunZoneBottomNavigationSlot {
@@ -38,7 +38,7 @@ final class RunZoneBottomNavigationItem extends RunZoneBottomNavigationSlot {
             colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
           ),
           AppSpacing.navigationLabelGap,
-          RunZoneNavigationLabel(label, color: color),
+          RunZoneLabelSmallLabel(label, color: color),
         ],
       ),
     );

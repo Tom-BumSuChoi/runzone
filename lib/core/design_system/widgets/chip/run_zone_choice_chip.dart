@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app_radius.dart';
 import '../../app_spacing.dart';
-import '../../app_typography.dart';
+import '../label/run_zone_label_medium_label.dart';
 
 final class RunZoneChoiceChip extends StatelessWidget {
   const RunZoneChoiceChip({super.key, required this.label, required this.isSelected, required this.onTap});
@@ -28,12 +28,10 @@ final class RunZoneChoiceChip extends StatelessWidget {
         ),
         child: Padding(
           padding: AppSpacing.chipInsets,
-          child: Text(
+          child: RunZoneLabelMediumLabel(
             label,
-            style: AppTypography.eyebrow.copyWith(
-              color: foreground,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-            ),
+            color: foreground,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
       ),

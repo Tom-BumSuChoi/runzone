@@ -4,15 +4,15 @@ import 'app_colors.dart';
 import 'app_radius.dart';
 import 'app_sizing.dart';
 import 'app_spacing.dart';
-import 'app_typography.dart';
 
 abstract final class AppTheme {
+  static const _fontFamily = 'IBM Plex Sans KR';
   static const themeMode = ThemeMode.system;
 
   static final dark = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    fontFamily: AppTypography.sansKorean,
+    fontFamily: _fontFamily,
     scaffoldBackgroundColor: AppColors.gray1000,
     colorScheme: const ColorScheme.dark(
       primary: AppColors.lime300,
@@ -55,7 +55,7 @@ abstract final class AppTheme {
   static final light = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
-    fontFamily: AppTypography.sansKorean,
+    fontFamily: _fontFamily,
     scaffoldBackgroundColor: AppColors.gray100,
     colorScheme: const ColorScheme.light(
       primary: AppColors.lime400,
@@ -101,14 +101,111 @@ abstract final class AppTheme {
     required Color mutedText,
   }) {
     return TextTheme(
-      displayLarge: AppTypography.display.copyWith(color: text),
-      headlineLarge: AppTypography.heading1.copyWith(color: text),
-      headlineMedium: AppTypography.heading2.copyWith(color: text),
-      headlineSmall: AppTypography.heading3.copyWith(color: text),
-      bodyMedium: AppTypography.body.copyWith(color: text),
-      bodySmall: AppTypography.small.copyWith(color: dimText),
-      labelMedium: AppTypography.metadataTag.copyWith(color: mutedText),
-      labelSmall: AppTypography.caption.copyWith(color: mutedText),
+      displayLarge: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 64,
+        fontWeight: FontWeight.w600,
+        height: 0.9,
+        color: text,
+      ),
+      displayMedium: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 52,
+        fontWeight: FontWeight.w800,
+        height: 1,
+        color: text,
+      ),
+      displaySmall: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 28,
+        fontWeight: FontWeight.w800,
+        height: 1,
+        color: text,
+      ),
+      headlineLarge: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 28,
+        fontWeight: FontWeight.w600,
+        height: 1.2,
+        color: text,
+      ),
+      headlineMedium: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 22,
+        fontWeight: FontWeight.w600,
+        height: 1.25,
+        color: text,
+      ),
+      headlineSmall: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        height: 1.3,
+        color: text,
+      ),
+      titleLarge: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        height: 1.1,
+        color: text,
+      ),
+      titleMedium: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+        height: 1.1,
+        color: text,
+      ),
+      titleSmall: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 12,
+        fontWeight: FontWeight.w700,
+        height: 1.2,
+        color: text,
+      ),
+      bodyLarge: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        height: 1.55,
+        color: dimText,
+      ),
+      bodyMedium: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        height: 1.55,
+        color: text,
+      ),
+      bodySmall: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 12,
+        fontWeight: FontWeight.w400,
+        height: 1.55,
+        color: dimText,
+      ),
+      labelLarge: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        height: 1.2,
+        color: text,
+      ),
+      labelMedium: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        height: 1.5,
+        color: mutedText,
+      ),
+      labelSmall: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 11,
+        fontWeight: FontWeight.w600,
+        height: 1.5,
+        color: mutedText,
+      ),
     );
   }
 

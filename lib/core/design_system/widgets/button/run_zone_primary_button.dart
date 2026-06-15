@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app_radius.dart';
 import '../../app_spacing.dart';
-import '../../app_typography.dart';
+import '../label/run_zone_label_large_label.dart';
 
 final class RunZonePrimaryButton extends StatelessWidget {
   const RunZonePrimaryButton({required this.label, required this.onPressed, super.key});
@@ -23,7 +23,7 @@ final class RunZonePrimaryButton extends StatelessWidget {
           child: Padding(
             padding: AppSpacing.buttonInsets,
             child: Center(
-              child: Text(label, style: AppTypography.heading3.copyWith(color: colorScheme.onPrimary)),
+              child: RunZoneLabelLargeLabel(label, color: colorScheme.onPrimary),
             ),
           ),
         ),
