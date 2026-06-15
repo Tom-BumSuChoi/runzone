@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../app_spacing.dart';
 import '../swatch/color_swatch.dart';
-import '../text/caption_label.dart';
-import '../text/emphasis_label.dart';
+import '../label/run_zone_caption_label.dart';
+import '../label/run_zone_emphasis_label.dart';
 
 final class RunZoneLabeledSlider extends StatelessWidget {
   const RunZoneLabeledSlider({
