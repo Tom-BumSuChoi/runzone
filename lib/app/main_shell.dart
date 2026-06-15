@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../core/design_system/widgets/label/run_zone_body_medium_label.dart';
 import '../core/design_system/widgets/navigation/run_zone_bottom_navigation.dart';
 import '../features/profile/presentation/heart_rate_zone_adjustment_screen.dart';
+import '../features/workout/presentation/workout_setup_screen.dart';
 import 'cubit/main_shell_cubit.dart';
 
 extension _MainShellTabLabel on MainShellTab {
@@ -27,6 +28,15 @@ final class MainShell extends StatelessWidget {
 
 final class _MainShellView extends StatelessWidget {
   const _MainShellView();
+
+  void _showWorkoutSetup(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (_) => const WorkoutSetupScreen(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +62,7 @@ final class _MainShellView extends StatelessWidget {
                 isSelected: state.selectedTab == MainShellTab.plan,
                 onTap: () => cubit.selectTab(MainShellTab.plan),
               ),
-              RunZoneBottomNavigationStartButton(onTap: () => cubit.selectTab(MainShellTab.start)),
+              RunZoneBottomNavigationStartButton(onTap: () => _showWorkoutSetup(context)),
               RunZoneBottomNavigationItem(
                 label: MainShellTab.stats.label,
                 iconAsset: 'assets/icons/activity.svg',

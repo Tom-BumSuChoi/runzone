@@ -17,25 +17,23 @@ final class _WorkoutSetupScreenState extends State<WorkoutSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: AppSpacing.screenInsets,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const RunZoneHeadlineLargeLabel('운동 전 설정'),
-              AppSpacing.titleDescriptionGap,
-              const RunZoneBodyLargeLabel('오늘 운동에 사용할 목표와 기기 상태를 확인해요.'),
-              const SizedBox(height: AppSpacing.controlGroupGap),
-              _WorkoutEnvironmentSelector(
-                selectedEnvironment: _workoutEnvironment,
-                onSelectionChanged: (workoutEnvironment) {
-                  setState(() => _workoutEnvironment = workoutEnvironment);
-                },
-              ),
-            ],
-          ),
+    return SafeArea(
+      child: Padding(
+        padding: AppSpacing.screenInsets,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const RunZoneHeadlineLargeLabel('운동 전 설정'),
+            AppSpacing.titleDescriptionGap,
+            const RunZoneBodyLargeLabel('오늘 운동에 사용할 목표와 기기 상태를 확인해요.'),
+            const SizedBox(height: AppSpacing.controlGroupGap),
+            _WorkoutEnvironmentSelector(
+              selectedEnvironment: _workoutEnvironment,
+              onSelectionChanged: (workoutEnvironment) {
+                setState(() => _workoutEnvironment = workoutEnvironment);
+              },
+            ),
+          ],
         ),
       ),
     );
