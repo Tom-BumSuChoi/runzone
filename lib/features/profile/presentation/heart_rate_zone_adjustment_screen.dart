@@ -77,19 +77,25 @@ final class _HeartRateZoneAdjustmentContent extends StatelessWidget {
         AppSpacing.sectionLabelGap,
         _HeartRateZoneBoundaryCard(state: state, cubit: cubit),
         AppSpacing.footerHintGap,
-        const _ProfileRestoreButton(),
+        _ProfileRestoreButton(onPressed: cubit.restoreProfileZones),
       ],
     );
   }
 }
 
 final class _ProfileRestoreButton extends StatelessWidget {
-  const _ProfileRestoreButton();
+  const _ProfileRestoreButton({required this.onPressed});
+
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: RunZoneInlineActionButton(iconAsset: 'assets/icons/refresh.svg', label: '프로필 기준으로 되돌리기', onPressed: null),
+    return Center(
+      child: RunZoneInlineActionButton(
+        iconAsset: 'assets/icons/refresh.svg',
+        label: '프로필 기준으로 되돌리기',
+        onPressed: onPressed,
+      ),
     );
   }
 }

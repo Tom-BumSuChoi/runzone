@@ -6,16 +6,27 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:runzone/features/profile/domain/profile_repository.dart';
 import 'package:runzone/features/profile/domain/runner_profile.dart';
 import 'package:runzone/features/profile/presentation/cubit/heart_rate_zone_adjustment_cubit.dart';
+import 'package:runzone/features/workout/domain/heart_rate_zone_calculator.dart';
 
 final class _SpyProfileRepository implements ProfileRepository {
   _SpyProfileRepository(this._profile);
 
   final RunnerProfile? _profile;
+  final Completer<void> _loadCompleter = Completer<void>();
   RunnerProfile? saved;
   Future<RunnerProfile?>? loadFuture;
 
+  Future<void> get loadCompleted => _loadCompleter.future;
+
   @override
-  Future<RunnerProfile?> load() async => loadFuture ?? _profile;
+  Future<RunnerProfile?> load() async {
+    final RunnerProfile? loadedProfile = await (loadFuture ?? Future<RunnerProfile?>.value(_profile));
+    if (!_loadCompleter.isCompleted) {
+      _loadCompleter.complete();
+    }
+
+    return loadedProfile;
+  }
 
   @override
   Future<void> save(RunnerProfile profile) async {
@@ -28,6 +39,8 @@ final class _SpyProfileRepository implements ProfileRepository {
 
 void main() {
   late _SpyProfileRepository repository;
+
+  const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
 
   const HeartRateZone heartRateZone = HeartRateZone(
     zone1: HeartRateZoneRange(lower: 90, upper: 120),
@@ -61,7 +74,7 @@ void main() {
     'Given 저장된 프로필 When 존 경계를 변경하면 Then 상태를 바꾸고 프로필을 즉시 저장한다',
     build: () => HeartRateZoneAdjustmentCubit(repository),
     act: (cubit) async {
-      await Future<void>.delayed(Duration.zero);
+      await repository.loadCompleted;
       await cubit.updateZoneOneUpperBound(125);
     },
     expect: () => [
@@ -79,6 +92,28 @@ void main() {
     verify: (cubit) {
       expect(repository.saved?.heartRateZone.zone1.upper, 125);
       expect(repository.saved?.heartRateZone.zone2.lower, 126);
+    },
+  );
+
+  blocTest<HeartRateZoneAdjustmentCubit, HeartRateZoneAdjustmentState>(
+    'Given 조정된 심박존 When 프로필 기준으로 되돌리면 Then 기본 심박존을 즉시 저장한다',
+    build: () => HeartRateZoneAdjustmentCubit(repository),
+    act: (cubit) async {
+      await repository.loadCompleted;
+      await cubit.restoreProfileZones();
+    },
+    expect: () {
+      final HeartRateZone profileZone = calculator.getHeartRateZone(age: DateTime.now().year - profile.birthYear.year);
+
+      return [
+        const HeartRateZoneAdjustmentEditing(zone: heartRateZone),
+        HeartRateZoneAdjustmentEditing(zone: profileZone),
+      ];
+    },
+    verify: (cubit) {
+      final HeartRateZone profileZone = calculator.getHeartRateZone(age: DateTime.now().year - profile.birthYear.year);
+
+      expect(repository.saved?.heartRateZone, profileZone);
     },
   );
 
