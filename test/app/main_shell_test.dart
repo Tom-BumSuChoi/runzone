@@ -48,8 +48,8 @@ void main() {
     await getIt.reset();
   });
 
-  testWidgets('Given 메인 쉘 When 마이페이지를 누르면 Then 심박존 조정 화면이 보인다', (tester) async {
-    tester.view.physicalSize = const Size(375, 667);
+  testWidgets('Given 저장된 프로필이 있는 메인 쉘 When 마이페이지를 누르면 Then 심박존 경계값이 보인다', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -61,5 +61,14 @@ void main() {
     await tester.pump();
 
     expect(find.text('심박존 조정'), findsOneWidget);
+    expect(find.text('Z1 → Z2'), findsOneWidget);
+    expect(find.text('120'), findsOneWidget);
+    expect(find.text('Z2 → Z3'), findsOneWidget);
+    expect(find.text('140'), findsOneWidget);
+    expect(find.text('Z3 → Z4'), findsOneWidget);
+    expect(find.text('160'), findsOneWidget);
+    expect(find.text('Z4 → Z5'), findsOneWidget);
+    expect(find.text('180'), findsOneWidget);
+    expect(find.text('bpm'), findsWidgets);
   });
 }
