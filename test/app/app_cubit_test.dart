@@ -12,7 +12,10 @@ final class _FakeProfileRepository implements ProfileRepository {
   _FakeProfileRepository(this._profile);
 
   RunnerProfile? _profile;
+  final Completer<void> _initialProfileCompleter = Completer<void>();
   final StreamController<RunnerProfile?> _controller = StreamController<RunnerProfile?>.broadcast();
+
+  Future<void> get initialProfileEmitted => _initialProfileCompleter.future;
 
   @override
   Future<void> save(RunnerProfile profile) async {
@@ -26,6 +29,9 @@ final class _FakeProfileRepository implements ProfileRepository {
   @override
   Stream<RunnerProfile?> watchProfile() async* {
     yield _profile;
+    if (!_initialProfileCompleter.isCompleted) {
+      _initialProfileCompleter.complete();
+    }
     yield* _controller.stream;
   }
 
@@ -85,7 +91,7 @@ void main() {
       'Given 저장된 프로필이 없으면 When repository가 프로필 변경을 알리면 Then hasProfile=true를 방출한다',
       build: () => AppCubit(repository: repository),
       act: (cubit) async {
-        await Future<void>.delayed(Duration.zero);
+        await repository.initialProfileEmitted;
         repository.emitProfile(profile);
       },
       expect: () => const [AppReady(hasProfile: false), AppReady(hasProfile: true)],

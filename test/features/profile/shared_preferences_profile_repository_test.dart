@@ -80,7 +80,7 @@ void main() {
     final Future<void> expectation = expectLater(repository.watchProfile(), emitsInOrder(<Object?>[null, profile]));
 
     // When
-    await Future<void>.delayed(Duration.zero);
+    await pumpEventQueue();
     await repository.save(profile);
 
     // Then

@@ -1,10 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../workout/domain/heart_rate_zone_calculator.dart';
 import '../../domain/profile_repository.dart';
 import '../../domain/runner_profile.dart';
 
 part 'heart_rate_zone_adjustment_state.dart';
+
+const HeartRateZoneCalculator _calculator = HeartRateZoneCalculator();
 
 final class HeartRateZoneAdjustmentCubit extends Cubit<HeartRateZoneAdjustmentState> {
   HeartRateZoneAdjustmentCubit(this._repository) : super(const HeartRateZoneAdjustmentLoading()) {
@@ -81,6 +84,22 @@ final class HeartRateZoneAdjustmentCubit extends Cubit<HeartRateZoneAdjustmentSt
     }
 
     await _emitAndSave(editingState, _zoneWith(editingState, zoneFourUpperBound: nextValue));
+  }
+
+  Future<void> restoreProfileZones() async {
+    final HeartRateZoneAdjustmentEditing? editingState = _editingState;
+    final RunnerProfile? profile = _profile;
+    if (editingState == null || profile == null) {
+      return;
+    }
+
+    final int age = DateTime.now().year - profile.birthYear.year;
+    final HeartRateZone profileZone = _calculator.getHeartRateZone(age: age);
+    if (profileZone == editingState.zone) {
+      return;
+    }
+
+    await _emitAndSave(editingState, profileZone);
   }
 
   int _clamp(int value, int minimum, int maximum) => value.clamp(minimum, maximum).toInt();
