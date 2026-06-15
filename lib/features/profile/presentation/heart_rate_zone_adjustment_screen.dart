@@ -8,8 +8,8 @@ import '../../../core/design_system/widgets/bar/segmented_bar.dart';
 import '../../../core/design_system/widgets/card/run_zone_card.dart';
 import '../../../core/design_system/widgets/label/run_zone_section_label.dart';
 import '../../../core/design_system/widgets/slider/labeled_slider.dart';
-import '../../../core/design_system/widgets/text/description_label.dart';
-import '../../../core/design_system/widgets/text/title_label.dart';
+import '../../../core/design_system/widgets/label/run_zone_description_label.dart';
+import '../../../core/design_system/widgets/label/run_zone_title_label.dart';
 import '../domain/profile_repository.dart';
 import 'cubit/heart_rate_zone_adjustment_cubit.dart';
 
