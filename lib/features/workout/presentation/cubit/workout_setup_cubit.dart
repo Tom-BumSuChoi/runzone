@@ -1,8 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../domain/heart_rate_zone.dart';
-import '../../domain/workout_duration_goal.dart';
+import '../../domain/workout_plan.dart';
 
 part 'workout_setup_state.dart';
 
@@ -115,5 +114,53 @@ final class WorkoutSetupCubit extends Cubit<WorkoutSetupState> {
         plan: TargetZoneWorkoutPlan(durationGoal: plan.durationGoal, targetHeartRateZone: nextHeartRateZone),
       ),
     );
+  }
+
+  void increaseIntervalWarmUpDuration() {
+    _updateIntervalPlan((plan) => plan.increaseWarmUpDuration());
+  }
+
+  void decreaseIntervalWarmUpDuration() {
+    _updateIntervalPlan((plan) => plan.decreaseWarmUpDuration());
+  }
+
+  void increaseIntervalHighIntensityDistance() {
+    _updateIntervalPlan((plan) => plan.increaseHighIntensityDistance());
+  }
+
+  void decreaseIntervalHighIntensityDistance() {
+    _updateIntervalPlan((plan) => plan.decreaseHighIntensityDistance());
+  }
+
+  void increaseIntervalRecoveryDuration() {
+    _updateIntervalPlan((plan) => plan.increaseRecoveryDuration());
+  }
+
+  void decreaseIntervalRecoveryDuration() {
+    _updateIntervalPlan((plan) => plan.decreaseRecoveryDuration());
+  }
+
+  void increaseIntervalRepeatCount() {
+    _updateIntervalPlan((plan) => plan.increaseRepeatCount());
+  }
+
+  void decreaseIntervalRepeatCount() {
+    _updateIntervalPlan((plan) => plan.decreaseRepeatCount());
+  }
+
+  void _updateIntervalPlan(IntervalWorkoutPlan Function(IntervalWorkoutPlan plan) update) {
+    final plan = state.plan;
+
+    if (plan is! IntervalWorkoutPlan) {
+      return;
+    }
+
+    final nextPlan = update(plan);
+
+    if (nextPlan == plan) {
+      return;
+    }
+
+    emit(state.copyWith(plan: nextPlan));
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:runzone/features/workout/domain/heart_rate_zone.dart';
 import 'package:runzone/features/workout/domain/workout_duration_goal.dart';
+import 'package:runzone/features/workout/domain/workout_plan.dart';
 import 'package:runzone/features/workout/presentation/cubit/workout_setup_cubit.dart';
 
 void main() {

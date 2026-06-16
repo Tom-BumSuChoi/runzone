@@ -2,58 +2,6 @@ part of 'workout_setup_cubit.dart';
 
 enum WorkoutEnvironment { indoor, outdoor }
 
-sealed class WorkoutPlan extends Equatable {
-  const WorkoutPlan();
-}
-
-final class TargetZoneWorkoutPlan extends WorkoutPlan {
-  static const initial = TargetZoneWorkoutPlan(
-    durationGoal: WorkoutDurationGoal(minutes: WorkoutDurationGoal.initialMinutes),
-    targetHeartRateZone: HeartRateZone.zone2,
-  );
-
-  const TargetZoneWorkoutPlan({required this.durationGoal, required this.targetHeartRateZone});
-
-  final WorkoutDurationGoal durationGoal;
-  final HeartRateZone targetHeartRateZone;
-
-  @override
-  List<Object?> get props => [durationGoal, targetHeartRateZone];
-}
-
-final class IntervalWorkoutPlan extends WorkoutPlan {
-  static const initial = IntervalWorkoutPlan(
-    warmUpDuration: Duration(minutes: 5),
-    highIntensityDistanceMeters: 400,
-    recoveryDuration: Duration(seconds: 90),
-    repeatCount: 6,
-  );
-
-  const IntervalWorkoutPlan({
-    required this.warmUpDuration,
-    required this.highIntensityDistanceMeters,
-    required this.recoveryDuration,
-    required this.repeatCount,
-  });
-
-  final Duration warmUpDuration;
-  final int highIntensityDistanceMeters;
-  final Duration recoveryDuration;
-  final int repeatCount;
-
-  @override
-  List<Object?> get props => [warmUpDuration, highIntensityDistanceMeters, recoveryDuration, repeatCount];
-}
-
-final class FreeWorkoutPlan extends WorkoutPlan {
-  static const initial = FreeWorkoutPlan();
-
-  const FreeWorkoutPlan();
-
-  @override
-  List<Object?> get props => [];
-}
-
 final class WorkoutSetupState extends Equatable {
   const WorkoutSetupState({
     required this.environment,

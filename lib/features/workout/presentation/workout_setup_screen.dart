@@ -15,6 +15,7 @@ import '../../../core/design_system/widgets/label/run_zone_label_small_label.dar
 import '../../../core/design_system/widgets/label/run_zone_title_medium_label.dart';
 import '../../../core/design_system/widgets/stepper/run_zone_stepper.dart';
 import '../domain/heart_rate_zone.dart';
+import '../domain/workout_plan.dart';
 import 'cubit/workout_setup_cubit.dart';
 
 final class WorkoutSetupScreen extends StatelessWidget {
