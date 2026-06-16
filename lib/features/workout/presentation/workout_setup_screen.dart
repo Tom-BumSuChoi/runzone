@@ -27,7 +27,12 @@ final class WorkoutSetupScreen extends StatelessWidget {
         children: [
           Expanded(
             child: Padding(
-              padding: AppSpacing.screenInsets,
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.screenPadding,
+                AppSpacing.screenPadding,
+                AppSpacing.screenPadding,
+                0,
+              ),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,11 +58,22 @@ final class WorkoutSetupScreen extends StatelessWidget {
                     const _WorkoutCoachingSection(),
                     const _WorkoutStartRequirementSection(),
                     AppSpacing.sectionGap,
-                    const _WorkoutStartButton(),
                   ],
                 ),
               ),
             ),
+          ),
+          Builder(
+            builder: (context) {
+              final colorScheme = Theme.of(context).colorScheme;
+
+              return DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: colorScheme.outline)),
+                ),
+                child: const Padding(padding: AppSpacing.screenInsets, child: _WorkoutStartButton()),
+              );
+            },
           ),
         ],
       ),
