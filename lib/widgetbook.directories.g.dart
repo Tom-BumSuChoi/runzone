@@ -24,8 +24,8 @@ import 'package:runzone/widgetbook/run_zone_choice_chip_use_cases.dart'
     as _runzone_widgetbook_run_zone_choice_chip_use_cases;
 import 'package:runzone/widgetbook/run_zone_primary_button_use_cases.dart'
     as _runzone_widgetbook_run_zone_primary_button_use_cases;
-import 'package:runzone/widgetbook/run_zone_profile_field_use_cases.dart'
-    as _runzone_widgetbook_run_zone_profile_field_use_cases;
+import 'package:runzone/widgetbook/run_zone_list_item_use_cases.dart'
+    as _runzone_widgetbook_run_zone_list_item_use_cases;
 import 'package:runzone/widgetbook/run_zone_progress_indicator_use_cases.dart'
     as _runzone_widgetbook_run_zone_progress_indicator_use_cases;
 import 'package:runzone/widgetbook/run_zone_segmented_control_use_cases.dart'
@@ -129,17 +129,12 @@ final directories = <_widgetbook.WidgetbookNode>[
         ],
       ),
       _widgetbook.WidgetbookComponent(
-        name: 'RunZoneProfileField',
+        name: 'RunZoneListItem',
         useCases: [
           _widgetbook.WidgetbookUseCase(
-            name: 'With Chips',
-            builder: _runzone_widgetbook_run_zone_profile_field_use_cases
-                .buildProfileFieldWithChipsUseCase,
-          ),
-          _widgetbook.WidgetbookUseCase(
-            name: 'With Stepper',
-            builder: _runzone_widgetbook_run_zone_profile_field_use_cases
-                .buildProfileFieldWithStepperUseCase,
+            name: 'Default',
+            builder: _runzone_widgetbook_run_zone_list_item_use_cases
+                .buildListItemUseCase,
           ),
         ],
       ),
