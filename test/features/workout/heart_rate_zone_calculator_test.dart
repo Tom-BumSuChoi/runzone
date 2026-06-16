@@ -22,13 +22,10 @@ void main() {
     const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
 
     // When
-    final HeartRateZone heartRateZone = calculator.getHeartRateZone(age: age);
+    final HeartRateZoneTable heartRateZone = calculator.getHeartRateZone(age: age);
 
     // Then
-    expect(
-      heartRateZone.zone2,
-      const HeartRateZoneRange(lower: 112, upper: 130),
-    );
+    expect(heartRateZone.zone2, const HeartRateZoneRange(lower: 112, upper: 130));
   });
 
   test('Given 30세 사용자 When 심박존을 계산하면 Then Z1부터 Z5까지 50퍼센트부터 100퍼센트까지 나뉜다', () {
@@ -37,12 +34,12 @@ void main() {
     const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
 
     // When
-    final HeartRateZone heartRateZone = calculator.getHeartRateZone(age: age);
+    final HeartRateZoneTable heartRateZone = calculator.getHeartRateZone(age: age);
 
     // Then (최대심박 187 기준, 50~100%)
     expect(
       heartRateZone,
-      const HeartRateZone(
+      const HeartRateZoneTable(
         zone1: HeartRateZoneRange(lower: 94, upper: 111),
         zone2: HeartRateZoneRange(lower: 112, upper: 130),
         zone3: HeartRateZoneRange(lower: 131, upper: 149),
@@ -58,54 +55,18 @@ void main() {
 
     for (final int age in [20, 30, 45, 60]) {
       // When
-      final HeartRateZone heartRateZone = calculator.getHeartRateZone(age: age);
+      final HeartRateZoneTable heartRateZone = calculator.getHeartRateZone(age: age);
 
       // Then
-      expect(
-        heartRateZone.zone1.upper + 1,
-        heartRateZone.zone2.lower,
-        reason: 'age $age',
-      );
-      expect(
-        heartRateZone.zone2.upper + 1,
-        heartRateZone.zone3.lower,
-        reason: 'age $age',
-      );
-      expect(
-        heartRateZone.zone3.upper + 1,
-        heartRateZone.zone4.lower,
-        reason: 'age $age',
-      );
-      expect(
-        heartRateZone.zone4.upper + 1,
-        heartRateZone.zone5.lower,
-        reason: 'age $age',
-      );
-      expect(
-        heartRateZone.zone1.lower,
-        lessThan(heartRateZone.zone1.upper),
-        reason: 'age $age',
-      );
-      expect(
-        heartRateZone.zone2.lower,
-        lessThan(heartRateZone.zone2.upper),
-        reason: 'age $age',
-      );
-      expect(
-        heartRateZone.zone3.lower,
-        lessThan(heartRateZone.zone3.upper),
-        reason: 'age $age',
-      );
-      expect(
-        heartRateZone.zone4.lower,
-        lessThan(heartRateZone.zone4.upper),
-        reason: 'age $age',
-      );
-      expect(
-        heartRateZone.zone5.lower,
-        lessThan(heartRateZone.zone5.upper),
-        reason: 'age $age',
-      );
+      expect(heartRateZone.zone1.upper + 1, heartRateZone.zone2.lower, reason: 'age $age');
+      expect(heartRateZone.zone2.upper + 1, heartRateZone.zone3.lower, reason: 'age $age');
+      expect(heartRateZone.zone3.upper + 1, heartRateZone.zone4.lower, reason: 'age $age');
+      expect(heartRateZone.zone4.upper + 1, heartRateZone.zone5.lower, reason: 'age $age');
+      expect(heartRateZone.zone1.lower, lessThan(heartRateZone.zone1.upper), reason: 'age $age');
+      expect(heartRateZone.zone2.lower, lessThan(heartRateZone.zone2.upper), reason: 'age $age');
+      expect(heartRateZone.zone3.lower, lessThan(heartRateZone.zone3.upper), reason: 'age $age');
+      expect(heartRateZone.zone4.lower, lessThan(heartRateZone.zone4.upper), reason: 'age $age');
+      expect(heartRateZone.zone5.lower, lessThan(heartRateZone.zone5.upper), reason: 'age $age');
     }
   });
 
@@ -128,7 +89,7 @@ void main() {
 
     for (final int age in [0, -1, 121]) {
       // When
-      HeartRateZone calculate() => calculator.getHeartRateZone(age: age);
+      HeartRateZoneTable calculate() => calculator.getHeartRateZone(age: age);
 
       // Then
       expect(calculate, throwsArgumentError, reason: 'age $age');
@@ -142,31 +103,25 @@ void main() {
     const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
 
     // When
-    final HeartRateZoneType zoneType = calculator.getZoneType(
-      age: age,
-      heartRate: heartRate,
-    );
+    final HeartRateZone zoneType = calculator.getZoneType(age: age, heartRate: heartRate);
 
     // Then
-    expect(zoneType, HeartRateZoneType.zone2);
+    expect(zoneType, HeartRateZone.zone2);
   });
 
-  test(
-    'Given 계산된 심박존과 125bpm When 심박존 객체에 현재 심박존 판별을 요청하면 Then Zone2를 반환한다',
-    () {
-      // Given
-      const int age = 30;
-      const int heartRate = 125;
-      const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
-      final HeartRateZone heartRateZone = calculator.getHeartRateZone(age: age);
+  test('Given 계산된 심박존과 125bpm When 심박존 객체에 현재 심박존 판별을 요청하면 Then Zone2를 반환한다', () {
+    // Given
+    const int age = 30;
+    const int heartRate = 125;
+    const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
+    final HeartRateZoneTable heartRateZone = calculator.getHeartRateZone(age: age);
 
-      // When
-      final HeartRateZoneType zoneType = heartRateZone.getZoneType(heartRate);
+    // When
+    final HeartRateZone zoneType = heartRateZone.getZoneType(heartRate);
 
-      // Then
-      expect(zoneType, HeartRateZoneType.zone2);
-    },
-  );
+    // Then
+    expect(zoneType, HeartRateZone.zone2);
+  });
 
   test('Given 30세 사용자와 187bpm When 현재 심박존을 판별하면 Then Zone5를 반환한다', () {
     // Given
@@ -175,13 +130,10 @@ void main() {
     const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
 
     // When
-    final HeartRateZoneType zoneType = calculator.getZoneType(
-      age: age,
-      heartRate: heartRate,
-    );
+    final HeartRateZone zoneType = calculator.getZoneType(age: age, heartRate: heartRate);
 
     // Then
-    expect(zoneType, HeartRateZoneType.zone5);
+    expect(zoneType, HeartRateZone.zone5);
   });
 
   test('Given 30세 사용자와 Zone1 하한 미만 심박 When 현재 심박존을 판별하면 Then Zone1을 반환한다', () {
@@ -191,15 +143,10 @@ void main() {
 
     for (final int heartRate in [60, 80, 93]) {
       // When
-      HeartRateZoneType calculate() =>
-          calculator.getZoneType(age: age, heartRate: heartRate);
+      HeartRateZone calculate() => calculator.getZoneType(age: age, heartRate: heartRate);
 
       // Then
-      expect(
-        calculate(),
-        HeartRateZoneType.zone1,
-        reason: 'heartRate $heartRate',
-      );
+      expect(calculate(), HeartRateZone.zone1, reason: 'heartRate $heartRate');
     }
   });
 
@@ -210,8 +157,7 @@ void main() {
 
     for (final int heartRate in [0, -1]) {
       // When
-      HeartRateZoneType calculate() =>
-          calculator.getZoneType(age: age, heartRate: heartRate);
+      HeartRateZone calculate() => calculator.getZoneType(age: age, heartRate: heartRate);
 
       // Then
       expect(calculate, throwsArgumentError, reason: 'heartRate $heartRate');
@@ -225,15 +171,10 @@ void main() {
 
     for (final int heartRate in [188, 200]) {
       // When
-      HeartRateZoneType calculate() =>
-          calculator.getZoneType(age: age, heartRate: heartRate);
+      HeartRateZone calculate() => calculator.getZoneType(age: age, heartRate: heartRate);
 
       // Then
-      expect(
-        calculate(),
-        HeartRateZoneType.zone5,
-        reason: 'heartRate $heartRate',
-      );
+      expect(calculate(), HeartRateZone.zone5, reason: 'heartRate $heartRate');
     }
   });
 }

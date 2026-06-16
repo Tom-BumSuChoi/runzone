@@ -14,7 +14,7 @@ final class HeartRateZoneAdjustmentLoading extends HeartRateZoneAdjustmentState 
 final class HeartRateZoneAdjustmentEditing extends HeartRateZoneAdjustmentState {
   const HeartRateZoneAdjustmentEditing({required this.zone});
 
-  final HeartRateZone zone;
+  final HeartRateZoneTable zone;
 
   int get zoneOneUpperBound => zone.zone1.upper;
 
@@ -30,19 +30,19 @@ final class HeartRateZoneAdjustmentEditing extends HeartRateZoneAdjustmentState 
 
   int get zoneOneMinimum => minimumHeartRate;
 
-  int get zoneOneMaximum => zoneTwoUpperBound - HeartRateZone.minimumZoneWidth;
+  int get zoneOneMaximum => zoneTwoUpperBound - HeartRateZoneTable.minimumZoneWidth;
 
-  int get zoneTwoMinimum => zoneOneUpperBound + HeartRateZone.minimumZoneWidth;
+  int get zoneTwoMinimum => zoneOneUpperBound + HeartRateZoneTable.minimumZoneWidth;
 
-  int get zoneTwoMaximum => zoneThreeUpperBound - HeartRateZone.minimumZoneWidth;
+  int get zoneTwoMaximum => zoneThreeUpperBound - HeartRateZoneTable.minimumZoneWidth;
 
-  int get zoneThreeMinimum => zoneTwoUpperBound + HeartRateZone.minimumZoneWidth;
+  int get zoneThreeMinimum => zoneTwoUpperBound + HeartRateZoneTable.minimumZoneWidth;
 
-  int get zoneThreeMaximum => zoneFourUpperBound - HeartRateZone.minimumZoneWidth;
+  int get zoneThreeMaximum => zoneFourUpperBound - HeartRateZoneTable.minimumZoneWidth;
 
-  int get zoneFourMinimum => zoneThreeUpperBound + HeartRateZone.minimumZoneWidth;
+  int get zoneFourMinimum => zoneThreeUpperBound + HeartRateZoneTable.minimumZoneWidth;
 
-  int get zoneFourMaximum => maximumHeartRate - HeartRateZone.minimumZoneWidth;
+  int get zoneFourMaximum => maximumHeartRate - HeartRateZoneTable.minimumZoneWidth;
 
   double get zoneOneHeightFactor => _heightFactor(zoneOneUpperBound);
 
@@ -54,7 +54,7 @@ final class HeartRateZoneAdjustmentEditing extends HeartRateZoneAdjustmentState 
 
   double get zoneFiveHeightFactor => _heightFactor(maximumHeartRate);
 
-  HeartRateZoneAdjustmentEditing copyWith({HeartRateZone? zone}) {
+  HeartRateZoneAdjustmentEditing copyWith({HeartRateZoneTable? zone}) {
     return HeartRateZoneAdjustmentEditing(zone: zone ?? this.zone);
   }
 

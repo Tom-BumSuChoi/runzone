@@ -42,7 +42,7 @@ void main() {
 
   const HeartRateZoneCalculator calculator = HeartRateZoneCalculator();
 
-  const HeartRateZone heartRateZone = HeartRateZone(
+  const HeartRateZoneTable heartRateZone = HeartRateZoneTable(
     zone1: HeartRateZoneRange(lower: 90, upper: 120),
     zone2: HeartRateZoneRange(lower: 121, upper: 140),
     zone3: HeartRateZoneRange(lower: 141, upper: 160),
@@ -80,7 +80,7 @@ void main() {
     expect: () => [
       const HeartRateZoneAdjustmentEditing(zone: heartRateZone),
       const HeartRateZoneAdjustmentEditing(
-        zone: HeartRateZone(
+        zone: HeartRateZoneTable(
           zone1: HeartRateZoneRange(lower: 90, upper: 125),
           zone2: HeartRateZoneRange(lower: 126, upper: 140),
           zone3: HeartRateZoneRange(lower: 141, upper: 160),
@@ -103,7 +103,7 @@ void main() {
       await cubit.restoreProfileZones();
     },
     expect: () {
-      final HeartRateZone profileZone = calculator.getHeartRateZone(age: DateTime.now().year - profile.birthYear.year);
+      final HeartRateZoneTable profileZone = calculator.getHeartRateZone(age: DateTime.now().year - profile.birthYear.year);
 
       return [
         const HeartRateZoneAdjustmentEditing(zone: heartRateZone),
@@ -111,7 +111,7 @@ void main() {
       ];
     },
     verify: (cubit) {
-      final HeartRateZone profileZone = calculator.getHeartRateZone(age: DateTime.now().year - profile.birthYear.year);
+      final HeartRateZoneTable profileZone = calculator.getHeartRateZone(age: DateTime.now().year - profile.birthYear.year);
 
       expect(repository.saved?.heartRateZone, profileZone);
     },

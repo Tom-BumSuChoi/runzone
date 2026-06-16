@@ -34,9 +34,9 @@ final class RunnerProfile extends Equatable {
   final Weight weight;
   final RunningCareer career;
   final WeeklyFrequency weeklyFrequency;
-  final HeartRateZone heartRateZone;
+  final HeartRateZoneTable heartRateZone;
 
-  RunnerProfile copyWith({HeartRateZone? heartRateZone}) {
+  RunnerProfile copyWith({HeartRateZoneTable? heartRateZone}) {
     return RunnerProfile(
       birthYear: birthYear,
       gender: gender,

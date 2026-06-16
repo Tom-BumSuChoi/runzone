@@ -5,7 +5,7 @@ final class HeartRateZoneSummaryState extends Equatable {
 
   factory HeartRateZoneSummaryState.initial() => const HeartRateZoneSummaryState();
 
-  final HeartRateZone? zone;
+  final HeartRateZoneTable? zone;
 
   @override
   List<Object?> get props => [zone];

@@ -32,7 +32,7 @@ final class RunnerProfileSetupState extends Equatable {
 
   int get age => DateTime.now().year - birthYear.year;
 
-  HeartRateZone get zone => _calculator.getHeartRateZone(age: age);
+  HeartRateZoneTable get zone => _calculator.getHeartRateZone(age: age);
 
   RunnerProfileSetupState copyWith({
     BirthYear? birthYear,
