@@ -15,6 +15,7 @@ import '../../../core/design_system/widgets/label/run_zone_label_small_label.dar
 import '../../../core/design_system/widgets/label/run_zone_title_medium_label.dart';
 import '../../../core/design_system/widgets/stepper/run_zone_stepper.dart';
 import '../domain/heart_rate_zone.dart';
+import '../domain/workout_duration_goal.dart';
 import '../domain/workout_plan.dart';
 import 'cubit/workout_setup_cubit.dart';
 
@@ -140,18 +141,30 @@ final class _WorkoutGoalField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final value = switch (field.control) {
-      _WorkoutGoalFieldControl.targetZoneDuration => '${(state.plan as TargetZoneWorkoutPlan).durationGoal.minutes}분',
-      _WorkoutGoalFieldControl.targetHeartRateZone => (state.plan as TargetZoneWorkoutPlan).targetHeartRateZone.label,
+      _WorkoutGoalFieldControl.targetZoneDuration => _targetZonePlan(state).durationGoal.label,
+      _WorkoutGoalFieldControl.targetHeartRateZone => _targetZonePlan(state).targetHeartRateZone.label,
+      _WorkoutGoalFieldControl.intervalWarmUpDuration => _intervalPlan(state).warmUpDuration.minutesLabel,
+      _WorkoutGoalFieldControl.intervalHighIntensityDistance => '${_intervalPlan(state).highIntensityDistanceMeters}m',
+      _WorkoutGoalFieldControl.intervalRecoveryDuration => _intervalPlan(state).recoveryDuration.secondsLabel,
+      _WorkoutGoalFieldControl.intervalRepeatCount => '${_intervalPlan(state).repeatCount}회',
       _WorkoutGoalFieldControl.none => field.value ?? (throw StateError('Workout goal field value is required.')),
     };
     final onDecrement = switch (field.control) {
       _WorkoutGoalFieldControl.targetZoneDuration => context.read<WorkoutSetupCubit>().decreaseTargetZoneDuration,
       _WorkoutGoalFieldControl.targetHeartRateZone => context.read<WorkoutSetupCubit>().decreaseTargetHeartRateZone,
+      _WorkoutGoalFieldControl.intervalWarmUpDuration => context.read<WorkoutSetupCubit>().decreaseIntervalWarmUpDuration,
+      _WorkoutGoalFieldControl.intervalHighIntensityDistance => context.read<WorkoutSetupCubit>().decreaseIntervalHighIntensityDistance,
+      _WorkoutGoalFieldControl.intervalRecoveryDuration => context.read<WorkoutSetupCubit>().decreaseIntervalRecoveryDuration,
+      _WorkoutGoalFieldControl.intervalRepeatCount => context.read<WorkoutSetupCubit>().decreaseIntervalRepeatCount,
       _WorkoutGoalFieldControl.none => () {},
     };
     final onIncrement = switch (field.control) {
       _WorkoutGoalFieldControl.targetZoneDuration => context.read<WorkoutSetupCubit>().increaseTargetZoneDuration,
       _WorkoutGoalFieldControl.targetHeartRateZone => context.read<WorkoutSetupCubit>().increaseTargetHeartRateZone,
+      _WorkoutGoalFieldControl.intervalWarmUpDuration => context.read<WorkoutSetupCubit>().increaseIntervalWarmUpDuration,
+      _WorkoutGoalFieldControl.intervalHighIntensityDistance => context.read<WorkoutSetupCubit>().increaseIntervalHighIntensityDistance,
+      _WorkoutGoalFieldControl.intervalRecoveryDuration => context.read<WorkoutSetupCubit>().increaseIntervalRecoveryDuration,
+      _WorkoutGoalFieldControl.intervalRepeatCount => context.read<WorkoutSetupCubit>().increaseIntervalRepeatCount,
       _WorkoutGoalFieldControl.none => () {},
     };
 
@@ -171,7 +184,15 @@ final class _WorkoutGoalField extends StatelessWidget {
   }
 }
 
-enum _WorkoutGoalFieldControl { none, targetZoneDuration, targetHeartRateZone }
+enum _WorkoutGoalFieldControl {
+  none,
+  targetZoneDuration,
+  targetHeartRateZone,
+  intervalWarmUpDuration,
+  intervalHighIntensityDistance,
+  intervalRecoveryDuration,
+  intervalRepeatCount,
+}
 
 final class _WorkoutGoalFieldData {
   const _WorkoutGoalFieldData({
@@ -265,10 +286,30 @@ const _workoutPlanSpecs = [
     description: '강도 구간과 회복 구간을 번갈아 달려요.',
     goalSectionLabel: '인터벌 구성',
     goalFields: [
-      _WorkoutGoalFieldData(label: '워밍업', description: '몸을 천천히 올려요', value: '5분', isAdjustable: true),
-      _WorkoutGoalFieldData(label: '고강도', description: '목표 Z4', value: '400m', isAdjustable: true),
-      _WorkoutGoalFieldData(label: '회복', description: '목표 Z1-Z2', value: '90초', isAdjustable: true),
-      _WorkoutGoalFieldData(label: '반복', description: '고강도와 회복 반복', value: '6회', isAdjustable: true),
+      _WorkoutGoalFieldData(
+        label: '워밍업',
+        description: '몸을 천천히 올려요',
+        isAdjustable: true,
+        control: _WorkoutGoalFieldControl.intervalWarmUpDuration,
+      ),
+      _WorkoutGoalFieldData(
+        label: '고강도',
+        description: '목표 Z4',
+        isAdjustable: true,
+        control: _WorkoutGoalFieldControl.intervalHighIntensityDistance,
+      ),
+      _WorkoutGoalFieldData(
+        label: '회복',
+        description: '목표 Z1-Z2',
+        isAdjustable: true,
+        control: _WorkoutGoalFieldControl.intervalRecoveryDuration,
+      ),
+      _WorkoutGoalFieldData(
+        label: '반복',
+        description: '고강도와 회복 반복',
+        isAdjustable: true,
+        control: _WorkoutGoalFieldControl.intervalRepeatCount,
+      ),
     ],
   ),
   _WorkoutPlanSpec(
@@ -335,6 +376,36 @@ extension on HeartRateZone {
       HeartRateZone.zone5 => 'Z5',
     };
   }
+}
+
+extension on WorkoutDurationGoal {
+  String get label => '$minutes분';
+}
+
+extension on Duration {
+  String get minutesLabel => '$inMinutes분';
+
+  String get secondsLabel => '$inSeconds초';
+}
+
+TargetZoneWorkoutPlan _targetZonePlan(WorkoutSetupState state) {
+  final plan = state.plan;
+
+  if (plan is TargetZoneWorkoutPlan) {
+    return plan;
+  }
+
+  throw StateError('TargetZoneWorkoutPlan is required.');
+}
+
+IntervalWorkoutPlan _intervalPlan(WorkoutSetupState state) {
+  final plan = state.plan;
+
+  if (plan is IntervalWorkoutPlan) {
+    return plan;
+  }
+
+  throw StateError('IntervalWorkoutPlan is required.');
 }
 
 final class _WorkoutDeviceSectionLabel extends StatelessWidget {
