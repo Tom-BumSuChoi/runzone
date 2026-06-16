@@ -17,4 +17,12 @@ final class WorkoutSetupCubit extends Cubit<WorkoutSetupState> {
   void toggleTreadmillConnection() {
     emit(state.copyWith(isTreadmillConnected: !state.isTreadmillConnected));
   }
+
+  void toggleAutoPace() {
+    emit(state.copyWith(isAutoPaceEnabled: !state.isAutoPaceEnabled));
+  }
+
+  void toggleZoneAlert() {
+    emit(state.copyWith(isZoneAlertEnabled: !state.isZoneAlertEnabled));
+  }
 }
