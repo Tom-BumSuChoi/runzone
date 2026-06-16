@@ -26,7 +26,7 @@ final class WorkoutSetupState extends Equatable {
   final bool isZoneAlertEnabled;
 
   bool get canStart {
-    return environment == WorkoutEnvironment.outdoor || isTreadmillConnected;
+    return isHeartRateDeviceConnected && (environment == WorkoutEnvironment.outdoor || isTreadmillConnected);
   }
 
   WorkoutSetupState copyWith({
