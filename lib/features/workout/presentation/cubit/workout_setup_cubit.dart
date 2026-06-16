@@ -25,4 +25,12 @@ final class WorkoutSetupCubit extends Cubit<WorkoutSetupState> {
   void toggleZoneAlert() {
     emit(state.copyWith(isZoneAlertEnabled: !state.isZoneAlertEnabled));
   }
+
+  void increaseZoneTwoDuration() {
+    emit(state.copyWith(zoneTwoDurationMinutes: state.zoneTwoDurationMinutes + 5));
+  }
+
+  void decreaseZoneTwoDuration() {
+    emit(state.copyWith(zoneTwoDurationMinutes: state.zoneTwoDurationMinutes - 5));
+  }
 }
