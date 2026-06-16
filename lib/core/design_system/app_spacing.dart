@@ -24,6 +24,7 @@ abstract final class AppSpacing {
   static const inlineLabelGap = SizedBox(width: 6);
   static const inlineValueGap = SizedBox(width: 4);
   static const navigationLabelGap = SizedBox(height: 6);
+  static const controlGroupSpacer = SizedBox(height: controlGroupGap);
   static const sectionGap = SizedBox(height: 18);
   static const sectionLabelGap = SizedBox(height: 6);
   static const headerTitleGap = SizedBox(height: 22);

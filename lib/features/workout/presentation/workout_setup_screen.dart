@@ -5,6 +5,7 @@ import '../../../core/design_system/app_spacing.dart';
 import '../../../core/design_system/widgets/control/run_zone_segmented_control.dart';
 import '../../../core/design_system/widgets/label/run_zone_body_large_label.dart';
 import '../../../core/design_system/widgets/label/run_zone_headline_large_label.dart';
+import '../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
 import 'cubit/workout_setup_cubit.dart';
 
 final class WorkoutSetupScreen extends StatelessWidget {
@@ -23,8 +24,10 @@ final class WorkoutSetupScreen extends StatelessWidget {
               const RunZoneHeadlineLargeLabel('운동 전 설정'),
               AppSpacing.titleDescriptionGap,
               const RunZoneBodyLargeLabel('오늘 운동에 사용할 목표와 기기 상태를 확인해요.'),
-              const SizedBox(height: AppSpacing.controlGroupGap),
+              AppSpacing.controlGroupSpacer,
               const _WorkoutEnvironmentControl(),
+              AppSpacing.sectionGap,
+              const RunZoneLabelSmallLabel('훈련 종류'),
             ],
           ),
         ),
