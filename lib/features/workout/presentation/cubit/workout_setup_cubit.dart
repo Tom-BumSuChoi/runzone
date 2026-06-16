@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../domain/heart_rate_zone.dart';
 import '../../domain/workout_duration_goal.dart';
 
 part 'workout_setup_state.dart';
@@ -28,11 +29,19 @@ final class WorkoutSetupCubit extends Cubit<WorkoutSetupState> {
     emit(state.copyWith(isZoneAlertEnabled: !state.isZoneAlertEnabled));
   }
 
-  void increaseZoneTwoDuration() {
-    emit(state.copyWith(zoneTwoDurationGoal: state.zoneTwoDurationGoal.increase()));
+  void increaseTargetZoneDuration() {
+    emit(state.copyWith(targetZoneDurationGoal: state.targetZoneDurationGoal.increase()));
   }
 
-  void decreaseZoneTwoDuration() {
-    emit(state.copyWith(zoneTwoDurationGoal: state.zoneTwoDurationGoal.decrease()));
+  void decreaseTargetZoneDuration() {
+    emit(state.copyWith(targetZoneDurationGoal: state.targetZoneDurationGoal.decrease()));
+  }
+
+  void increaseTargetHeartRateZone() {
+    emit(state.copyWith(targetHeartRateZone: state.targetHeartRateZone.increase()));
+  }
+
+  void decreaseTargetHeartRateZone() {
+    emit(state.copyWith(targetHeartRateZone: state.targetHeartRateZone.decrease()));
   }
 }

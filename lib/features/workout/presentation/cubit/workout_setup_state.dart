@@ -2,7 +2,7 @@ part of 'workout_setup_cubit.dart';
 
 enum WorkoutEnvironment { indoor, outdoor }
 
-enum WorkoutTrainingType { zoneTwo, interval, free }
+enum WorkoutTrainingType { targetZone, interval, free }
 
 final class WorkoutSetupState extends Equatable {
   const WorkoutSetupState({
@@ -12,11 +12,15 @@ final class WorkoutSetupState extends Equatable {
     this.isTreadmillConnected = false,
     this.isAutoPaceEnabled = true,
     this.isZoneAlertEnabled = true,
-    this.zoneTwoDurationGoal = const WorkoutDurationGoal(minutes: WorkoutDurationGoal.initialMinutes),
+    this.targetZoneDurationGoal = const WorkoutDurationGoal(minutes: WorkoutDurationGoal.initialMinutes),
+    this.targetHeartRateZone = HeartRateZone.zone2,
   });
 
   factory WorkoutSetupState.initial() {
-    return const WorkoutSetupState(environment: WorkoutEnvironment.indoor, trainingType: WorkoutTrainingType.zoneTwo);
+    return const WorkoutSetupState(
+      environment: WorkoutEnvironment.indoor,
+      trainingType: WorkoutTrainingType.targetZone,
+    );
   }
 
   final WorkoutEnvironment environment;
@@ -25,7 +29,8 @@ final class WorkoutSetupState extends Equatable {
   final bool isTreadmillConnected;
   final bool isAutoPaceEnabled;
   final bool isZoneAlertEnabled;
-  final WorkoutDurationGoal zoneTwoDurationGoal;
+  final WorkoutDurationGoal targetZoneDurationGoal;
+  final HeartRateZone targetHeartRateZone;
 
   bool get canStart {
     return isHeartRateDeviceConnected && (environment == WorkoutEnvironment.outdoor || isTreadmillConnected);
@@ -38,7 +43,8 @@ final class WorkoutSetupState extends Equatable {
     bool? isTreadmillConnected,
     bool? isAutoPaceEnabled,
     bool? isZoneAlertEnabled,
-    WorkoutDurationGoal? zoneTwoDurationGoal,
+    WorkoutDurationGoal? targetZoneDurationGoal,
+    HeartRateZone? targetHeartRateZone,
   }) {
     return WorkoutSetupState(
       environment: environment ?? this.environment,
@@ -47,7 +53,8 @@ final class WorkoutSetupState extends Equatable {
       isTreadmillConnected: isTreadmillConnected ?? this.isTreadmillConnected,
       isAutoPaceEnabled: isAutoPaceEnabled ?? this.isAutoPaceEnabled,
       isZoneAlertEnabled: isZoneAlertEnabled ?? this.isZoneAlertEnabled,
-      zoneTwoDurationGoal: zoneTwoDurationGoal ?? this.zoneTwoDurationGoal,
+      targetZoneDurationGoal: targetZoneDurationGoal ?? this.targetZoneDurationGoal,
+      targetHeartRateZone: targetHeartRateZone ?? this.targetHeartRateZone,
     );
   }
 
@@ -59,6 +66,7 @@ final class WorkoutSetupState extends Equatable {
     isTreadmillConnected,
     isAutoPaceEnabled,
     isZoneAlertEnabled,
-    zoneTwoDurationGoal,
+    targetZoneDurationGoal,
+    targetHeartRateZone,
   ];
 }

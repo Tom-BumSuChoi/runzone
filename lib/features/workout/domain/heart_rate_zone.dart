@@ -2,7 +2,33 @@ import 'package:equatable/equatable.dart';
 
 import 'heart_rate_zone_range.dart';
 
-enum HeartRateZone { zone1, zone2, zone3, zone4, zone5 }
+enum HeartRateZone {
+  zone1,
+  zone2,
+  zone3,
+  zone4,
+  zone5;
+
+  HeartRateZone increase() {
+    final nextIndex = index + 1;
+
+    if (nextIndex >= HeartRateZone.values.length) {
+      return this;
+    }
+
+    return HeartRateZone.values[nextIndex];
+  }
+
+  HeartRateZone decrease() {
+    final nextIndex = index - 1;
+
+    if (nextIndex < 0) {
+      return this;
+    }
+
+    return HeartRateZone.values[nextIndex];
+  }
+}
 
 final class HeartRateZoneTable extends Equatable {
   static const int minimumZoneWidth = 5;
@@ -42,11 +68,7 @@ final class HeartRateZoneTable extends Equatable {
 
   void _validateHeartRate(int heartRate) {
     if (heartRate < _minimumHeartRate) {
-      throw ArgumentError.value(
-        heartRate,
-        'heartRate',
-        'must be at least $_minimumHeartRate',
-      );
+      throw ArgumentError.value(heartRate, 'heartRate', 'must be at least $_minimumHeartRate');
     }
   }
 
