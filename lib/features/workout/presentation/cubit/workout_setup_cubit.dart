@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../domain/workout_duration_goal.dart';
+
 part 'workout_setup_state.dart';
 
 final class WorkoutSetupCubit extends Cubit<WorkoutSetupState> {
@@ -27,10 +29,10 @@ final class WorkoutSetupCubit extends Cubit<WorkoutSetupState> {
   }
 
   void increaseZoneTwoDuration() {
-    emit(state.copyWith(zoneTwoDurationMinutes: state.zoneTwoDurationMinutes + 5));
+    emit(state.copyWith(zoneTwoDurationGoal: state.zoneTwoDurationGoal.increase()));
   }
 
   void decreaseZoneTwoDuration() {
-    emit(state.copyWith(zoneTwoDurationMinutes: state.zoneTwoDurationMinutes - 5));
+    emit(state.copyWith(zoneTwoDurationGoal: state.zoneTwoDurationGoal.decrease()));
   }
 }
