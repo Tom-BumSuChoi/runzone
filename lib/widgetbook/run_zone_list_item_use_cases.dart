@@ -16,7 +16,7 @@ Widget buildListItemUseCase(BuildContext context) {
     builder: (context, setState) {
       final title = context.knobs.string(label: 'Title', initialValue: '키');
       final subtitle = context.knobs.string(label: 'Subtitle', initialValue: 'cm');
-      final trailingType = context.knobs.list(
+      final trailingType = context.knobs.object.dropdown(
         label: 'Trailing',
         options: ['Stepper', 'Chips'],
         initialOption: 'Stepper',
