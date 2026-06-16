@@ -219,4 +219,76 @@ void main() {
       expect((plan as TargetZoneWorkoutPlan).targetHeartRateZone, HeartRateZone.zone5);
     },
   );
+
+  blocTest<WorkoutSetupCubit, WorkoutSetupState>(
+    'Given 인터벌 계획 When 워밍업 시간을 증가하면 Then 1분 증가한 인터벌 계획을 방출한다',
+    build: WorkoutSetupCubit.new,
+    seed: () => const WorkoutSetupState(environment: WorkoutEnvironment.indoor, plan: IntervalWorkoutPlan.initial),
+    act: (cubit) => cubit.increaseIntervalWarmUpDuration(),
+    expect: () => [
+      const WorkoutSetupState(
+        environment: WorkoutEnvironment.indoor,
+        plan: IntervalWorkoutPlan(
+          warmUpDuration: Duration(minutes: 6),
+          highIntensityDistanceMeters: 400,
+          recoveryDuration: Duration(seconds: 90),
+          repeatCount: 6,
+        ),
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSetupCubit, WorkoutSetupState>(
+    'Given 인터벌 계획 When 고강도 거리를 증가하면 Then 100m 증가한 인터벌 계획을 방출한다',
+    build: WorkoutSetupCubit.new,
+    seed: () => const WorkoutSetupState(environment: WorkoutEnvironment.indoor, plan: IntervalWorkoutPlan.initial),
+    act: (cubit) => cubit.increaseIntervalHighIntensityDistance(),
+    expect: () => [
+      const WorkoutSetupState(
+        environment: WorkoutEnvironment.indoor,
+        plan: IntervalWorkoutPlan(
+          warmUpDuration: Duration(minutes: 5),
+          highIntensityDistanceMeters: 500,
+          recoveryDuration: Duration(seconds: 90),
+          repeatCount: 6,
+        ),
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSetupCubit, WorkoutSetupState>(
+    'Given 인터벌 계획 When 회복 시간을 증가하면 Then 15초 증가한 인터벌 계획을 방출한다',
+    build: WorkoutSetupCubit.new,
+    seed: () => const WorkoutSetupState(environment: WorkoutEnvironment.indoor, plan: IntervalWorkoutPlan.initial),
+    act: (cubit) => cubit.increaseIntervalRecoveryDuration(),
+    expect: () => [
+      const WorkoutSetupState(
+        environment: WorkoutEnvironment.indoor,
+        plan: IntervalWorkoutPlan(
+          warmUpDuration: Duration(minutes: 5),
+          highIntensityDistanceMeters: 400,
+          recoveryDuration: Duration(seconds: 105),
+          repeatCount: 6,
+        ),
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSetupCubit, WorkoutSetupState>(
+    'Given 인터벌 계획 When 반복 횟수를 증가하면 Then 1회 증가한 인터벌 계획을 방출한다',
+    build: WorkoutSetupCubit.new,
+    seed: () => const WorkoutSetupState(environment: WorkoutEnvironment.indoor, plan: IntervalWorkoutPlan.initial),
+    act: (cubit) => cubit.increaseIntervalRepeatCount(),
+    expect: () => [
+      const WorkoutSetupState(
+        environment: WorkoutEnvironment.indoor,
+        plan: IntervalWorkoutPlan(
+          warmUpDuration: Duration(minutes: 5),
+          highIntensityDistanceMeters: 400,
+          recoveryDuration: Duration(seconds: 90),
+          repeatCount: 7,
+        ),
+      ),
+    ],
+  );
 }
