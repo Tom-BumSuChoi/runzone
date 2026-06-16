@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/profile/presentation/runner_profile_setup_screen.dart';
+import '../features/workout/presentation/workout_countdown_screen.dart';
+import '../features/workout/presentation/workout_live_screen.dart';
 import 'app_routes.dart';
 import 'cubit/app_cubit.dart';
 import 'main_shell.dart';
@@ -16,6 +18,14 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
       GoRoute(path: AppRoutes.splash, builder: (_, _) => const SplashScreen()),
       GoRoute(path: AppRoutes.profileSetup, builder: (_, _) => const RunnerProfileSetupScreen()),
       GoRoute(path: AppRoutes.home, builder: (_, _) => const MainShell()),
+      GoRoute(
+        path: AppRoutes.workoutCountdown,
+        pageBuilder: (_, _) => const NoTransitionPage(child: WorkoutCountdownScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.workoutLive,
+        pageBuilder: (_, _) => const NoTransitionPage(child: WorkoutLiveScreen()),
+      ),
     ],
   );
 }
