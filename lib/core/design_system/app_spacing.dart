@@ -7,6 +7,8 @@ abstract final class AppSpacing {
   static const buttonPaddingHorizontal = 18.0;
   static const chipPaddingVertical = 8.0;
   static const chipPaddingHorizontal = 14.0;
+  static const badgePaddingVertical = 4.0;
+  static const badgePaddingHorizontal = 10.0;
   static const segmentedControlPadding = 4.0;
   static const segmentedControlButtonPaddingVertical = 10.0;
   static const navigationPaddingTop = 12.0;
@@ -37,6 +39,7 @@ abstract final class AppSpacing {
     vertical: buttonPaddingVertical,
     horizontal: buttonPaddingHorizontal,
   );
+  static const badgeInsets = EdgeInsets.symmetric(vertical: badgePaddingVertical, horizontal: badgePaddingHorizontal);
   static const chipInsets = EdgeInsets.symmetric(vertical: chipPaddingVertical, horizontal: chipPaddingHorizontal);
   static const segmentedControlInsets = EdgeInsets.all(segmentedControlPadding);
   static const segmentedControlButtonInsets = EdgeInsets.symmetric(vertical: segmentedControlButtonPaddingVertical);

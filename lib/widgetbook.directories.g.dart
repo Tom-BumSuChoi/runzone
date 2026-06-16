@@ -16,6 +16,8 @@ import 'package:runzone/widgetbook/heart_rate_zone_adjustment_screen_use_cases.d
     as _runzone_widgetbook_heart_rate_zone_adjustment_screen_use_cases;
 import 'package:runzone/widgetbook/labeled_slider_use_cases.dart'
     as _runzone_widgetbook_labeled_slider_use_cases;
+import 'package:runzone/widgetbook/run_zone_badge_use_cases.dart'
+    as _runzone_widgetbook_run_zone_badge_use_cases;
 import 'package:runzone/widgetbook/run_zone_bottom_navigation_use_cases.dart'
     as _runzone_widgetbook_run_zone_bottom_navigation_use_cases;
 import 'package:runzone/widgetbook/run_zone_choice_chip_use_cases.dart'
@@ -36,6 +38,16 @@ final directories = <_widgetbook.WidgetbookNode>[
   _widgetbook.WidgetbookCategory(
     name: 'Design System',
     children: [
+      _widgetbook.WidgetbookComponent(
+        name: 'RunZoneBadge',
+        useCases: [
+          _widgetbook.WidgetbookUseCase(
+            name: 'Default',
+            builder:
+                _runzone_widgetbook_run_zone_badge_use_cases.buildBadgeUseCase,
+          ),
+        ],
+      ),
       _widgetbook.WidgetbookComponent(
         name: 'RunZoneBottomNavigation',
         useCases: [
