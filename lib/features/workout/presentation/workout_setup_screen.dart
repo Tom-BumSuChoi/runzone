@@ -48,7 +48,6 @@ final class WorkoutSetupScreen extends StatelessWidget {
                     const _WorkoutTrainingTypeChips(),
                     AppSpacing.controlGroupSpacer,
                     const _WorkoutTrainingTypeDescription(),
-                    AppSpacing.sectionGap,
                     const _WorkoutGoalSection(),
                     AppSpacing.sectionGap,
                     const _WorkoutDeviceSectionLabel(),
@@ -94,7 +93,12 @@ final class _WorkoutGoalSection extends StatelessWidget {
 
         return const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [_WorkoutGoalSectionLabel(), AppSpacing.sectionLabelGap, _WorkoutGoalSummaryCard()],
+          children: [
+            AppSpacing.sectionGap,
+            _WorkoutGoalSectionLabel(),
+            AppSpacing.sectionLabelGap,
+            _WorkoutGoalSummaryCard(),
+          ],
         );
       },
     );
