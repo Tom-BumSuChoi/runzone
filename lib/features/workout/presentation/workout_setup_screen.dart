@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../app/app_routes.dart';
 import '../../../core/design_system/app_spacing.dart';
 import '../../../core/design_system/widgets/badge/run_zone_badge.dart';
 import '../../../core/design_system/widgets/button/run_zone_primary_button.dart';
@@ -226,11 +228,19 @@ final class _WorkoutStartButtonArea extends StatelessWidget {
         padding: AppSpacing.screenInsets,
         child: BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
           builder: (context, state) {
-            return RunZonePrimaryButton(label: '운동 시작', onPressed: state.canStart ? () {} : null);
+            return RunZonePrimaryButton(
+              label: '운동 시작',
+              onPressed: state.canStart ? () => _startWorkout(context) : null,
+            );
           },
         ),
       ),
     );
+  }
+
+  void _startWorkout(BuildContext context) {
+    Navigator.of(context).pop();
+    context.go(AppRoutes.workoutCountdown);
   }
 }
 
