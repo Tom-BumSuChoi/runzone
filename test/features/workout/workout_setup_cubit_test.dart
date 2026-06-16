@@ -27,4 +27,13 @@ void main() {
       const WorkoutSetupState(environment: WorkoutEnvironment.indoor, trainingType: WorkoutTrainingType.interval),
     ],
   );
+
+  blocTest<WorkoutSetupCubit, WorkoutSetupState>(
+    'Given cubit When 러닝머신 연결 상태를 토글하면 Then 변경된 연결 상태를 방출한다',
+    build: WorkoutSetupCubit.new,
+    act: (cubit) => cubit.toggleTreadmillConnection(),
+    expect: () => [
+      const WorkoutSetupState(environment: WorkoutEnvironment.indoor, trainingType: WorkoutTrainingType.zoneTwo, isTreadmillConnected: true),
+    ],
+  );
 }

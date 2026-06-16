@@ -237,17 +237,44 @@ final class _WorkoutDeviceStatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const RunZoneCard(
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [RunZoneBodyMediumLabel('심박 기기'), RunZoneBodySmallLabel('Polar H10 · 정상 수신 중')],
+    return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
+      builder: (context, state) {
+        return RunZoneCard(
+          child: Column(
+            children: [
+              const Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [RunZoneBodyMediumLabel('심박 기기'), RunZoneBodySmallLabel('Polar H10 · 정상 수신 중')],
+                  ),
+                  Spacer(),
+                  RunZoneBadge('정상', isHighlighted: true),
+                ],
+              ),
+              if (state.environment == WorkoutEnvironment.indoor) ...[
+                const Divider(),
+                Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const RunZoneBodyMediumLabel('러닝머신'),
+                        RunZoneBodySmallLabel(state.isTreadmillConnected ? 'RUNZONE Treadmill · 연결됨' : '미연결'),
+                      ],
+                    ),
+                    const Spacer(),
+                    Switch(
+                      value: state.isTreadmillConnected,
+                      onChanged: (_) => context.read<WorkoutSetupCubit>().toggleTreadmillConnection(),
+                    ),
+                  ],
+                ),
+              ],
+            ],
           ),
-          Spacer(),
-          RunZoneBadge('정상', isHighlighted: true),
-        ],
-      ),
+        );
+      },
     );
   }
 }

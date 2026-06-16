@@ -13,4 +13,8 @@ final class WorkoutSetupCubit extends Cubit<WorkoutSetupState> {
   void changeTrainingType(WorkoutTrainingType trainingType) {
     emit(state.copyWith(trainingType: trainingType));
   }
+
+  void toggleTreadmillConnection() {
+    emit(state.copyWith(isTreadmillConnected: !state.isTreadmillConnected));
+  }
 }
