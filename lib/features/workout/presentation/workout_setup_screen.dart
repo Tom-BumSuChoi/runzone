@@ -26,64 +26,32 @@ final class WorkoutSetupScreen extends StatelessWidget {
       child: Column(
         children: [
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.screenPadding,
-                AppSpacing.screenPadding,
-                AppSpacing.screenPadding,
-                0,
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const RunZoneHeadlineLargeLabel('운동 전 설정'),
-                    AppSpacing.titleDescriptionGap,
-                    const RunZoneBodyLargeLabel('오늘 운동에 사용할 목표와 기기 상태를 확인해요.'),
-                    AppSpacing.controlGroupSpacer,
-                    const _WorkoutEnvironmentControl(),
-                    AppSpacing.sectionGap,
-                    const WorkoutPlanSection(),
-                    AppSpacing.sectionGap,
-                    const _WorkoutDeviceSectionLabel(),
-                    AppSpacing.sectionLabelGap,
-                    const _WorkoutDeviceStatusCard(),
-                    AppSpacing.sectionGap,
-                    const _WorkoutCoachingSection(),
-                    const _WorkoutStartRequirementSection(),
-                    AppSpacing.sectionGap,
-                  ],
-                ),
+            child: SingleChildScrollView(
+              padding: AppSpacing.screenInsets,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const RunZoneHeadlineLargeLabel('운동 전 설정'),
+                  AppSpacing.titleDescriptionGap,
+                  const RunZoneBodyLargeLabel('오늘 운동에 사용할 목표와 기기 상태를 확인해요.'),
+                  AppSpacing.controlGroupSpacer,
+                  const _WorkoutEnvironmentControl(),
+                  AppSpacing.sectionGap,
+                  const WorkoutPlanSection(),
+                  AppSpacing.sectionGap,
+                  const RunZoneLabelSmallLabel('기기 상태'),
+                  AppSpacing.sectionLabelGap,
+                  const _WorkoutDeviceStatusCard(),
+                  AppSpacing.sectionGap,
+                  const _WorkoutCoachingSection(),
+                  const _WorkoutStartRequirementSection(),
+                ],
               ),
             ),
           ),
-          Builder(
-            builder: (context) {
-              final colorScheme = Theme.of(context).colorScheme;
-
-              return DecoratedBox(
-                decoration: BoxDecoration(
-                  border: Border(top: BorderSide(color: colorScheme.outline)),
-                ),
-                child: const Padding(padding: AppSpacing.screenInsets, child: _WorkoutStartButton()),
-              );
-            },
-          ),
+          const _WorkoutStartButtonArea(),
         ],
       ),
-    );
-  }
-}
-
-final class _WorkoutDeviceSectionLabel extends StatelessWidget {
-  const _WorkoutDeviceSectionLabel();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
-      builder: (context, state) {
-        return RunZoneLabelSmallLabel(state.environment.deviceSectionLabel);
-      },
     );
   }
 }
@@ -276,6 +244,22 @@ final class _WorkoutStartButton extends StatelessWidget {
   }
 }
 
+final class _WorkoutStartButtonArea extends StatelessWidget {
+  const _WorkoutStartButtonArea();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: colorScheme.outline)),
+      ),
+      child: const Padding(padding: AppSpacing.screenInsets, child: _WorkoutStartButton()),
+    );
+  }
+}
+
 final class _WorkoutCoachingSection extends StatelessWidget {
   const _WorkoutCoachingSection();
 
@@ -319,15 +303,6 @@ final class _WorkoutCoachingCard extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-extension on WorkoutEnvironment {
-  String get deviceSectionLabel {
-    return switch (this) {
-      WorkoutEnvironment.indoor => '기기 상태',
-      WorkoutEnvironment.outdoor => '기기 상태',
-    };
   }
 }
 
