@@ -25,6 +25,10 @@ final class WorkoutSetupState extends Equatable {
   final bool isAutoPaceEnabled;
   final bool isZoneAlertEnabled;
 
+  bool get canStart {
+    return environment == WorkoutEnvironment.outdoor || isTreadmillConnected;
+  }
+
   WorkoutSetupState copyWith({
     WorkoutEnvironment? environment,
     WorkoutTrainingType? trainingType,

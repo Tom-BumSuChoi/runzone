@@ -8,22 +8,29 @@ final class RunZonePrimaryButton extends StatelessWidget {
   const RunZonePrimaryButton({required this.label, required this.onPressed, super.key});
 
   final String label;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final isEnabled = onPressed != null;
 
     return SizedBox(
       width: double.infinity,
       child: GestureDetector(
         onTap: onPressed,
         child: DecoratedBox(
-          decoration: BoxDecoration(color: colorScheme.primary, borderRadius: AppRadius.smallBorder),
+          decoration: BoxDecoration(
+            color: isEnabled ? colorScheme.primary : colorScheme.surfaceContainerHighest,
+            borderRadius: AppRadius.smallBorder,
+          ),
           child: Padding(
             padding: AppSpacing.buttonInsets,
             child: Center(
-              child: RunZoneLabelLargeLabel(label, color: colorScheme.onPrimary),
+              child: RunZoneLabelLargeLabel(
+                label,
+                color: isEnabled ? colorScheme.onPrimary : colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
         ),
