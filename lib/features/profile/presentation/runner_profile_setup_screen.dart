@@ -104,7 +104,7 @@ final class _BasicInfoSection extends StatelessWidget {
                 label: '출생 연도',
                 subLabel: '만 ${state.age}세',
                 trailing: RunZoneStepper(
-                  value: state.birthYear.year,
+                  label: '${state.birthYear.year}',
                   onDecrement: cubit.decrementBirthYear,
                   onIncrement: cubit.incrementBirthYear,
                 ),
@@ -114,7 +114,7 @@ final class _BasicInfoSection extends StatelessWidget {
                 label: '키',
                 subLabel: 'cm',
                 trailing: RunZoneStepper(
-                  value: state.height.centimeters,
+                  label: '${state.height.centimeters}',
                   onDecrement: cubit.decrementHeight,
                   onIncrement: cubit.incrementHeight,
                 ),
@@ -124,7 +124,7 @@ final class _BasicInfoSection extends StatelessWidget {
                 label: '체중',
                 subLabel: 'kg',
                 trailing: RunZoneStepper(
-                  value: state.weight.kilograms,
+                  label: '${state.weight.kilograms}',
                   onDecrement: cubit.decrementWeight,
                   onIncrement: cubit.incrementWeight,
                 ),
