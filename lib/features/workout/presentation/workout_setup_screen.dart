@@ -44,9 +44,7 @@ final class WorkoutSetupScreen extends StatelessWidget {
                     AppSpacing.controlGroupSpacer,
                     const _WorkoutTrainingTypeDescription(),
                     AppSpacing.sectionGap,
-                    const _WorkoutGoalSectionLabel(),
-                    AppSpacing.sectionLabelGap,
-                    const _WorkoutGoalSummaryCard(),
+                    const _WorkoutGoalSection(),
                     AppSpacing.sectionGap,
                     const _WorkoutDeviceSectionLabel(),
                     AppSpacing.sectionLabelGap,
@@ -63,6 +61,26 @@ final class WorkoutSetupScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+final class _WorkoutGoalSection extends StatelessWidget {
+  const _WorkoutGoalSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
+      builder: (context, state) {
+        if (state.trainingType == WorkoutTrainingType.free) {
+          return const SizedBox.shrink();
+        }
+
+        return const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [_WorkoutGoalSectionLabel(), AppSpacing.sectionLabelGap, _WorkoutGoalSummaryCard()],
+        );
+      },
     );
   }
 }
