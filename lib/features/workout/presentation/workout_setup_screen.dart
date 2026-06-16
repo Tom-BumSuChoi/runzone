@@ -24,29 +24,34 @@ final class WorkoutSetupScreen extends StatelessWidget {
       child: SafeArea(
         child: Padding(
           padding: AppSpacing.screenInsets,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const RunZoneHeadlineLargeLabel('운동 전 설정'),
-              AppSpacing.titleDescriptionGap,
-              const RunZoneBodyLargeLabel('오늘 운동에 사용할 목표와 기기 상태를 확인해요.'),
-              AppSpacing.controlGroupSpacer,
-              const _WorkoutEnvironmentControl(),
-              AppSpacing.sectionGap,
-              const RunZoneLabelSmallLabel('훈련 종류'),
-              AppSpacing.sectionLabelGap,
-              const _WorkoutTrainingTypeChips(),
-              AppSpacing.controlGroupSpacer,
-              const _WorkoutTrainingTypeDescription(),
-              AppSpacing.sectionGap,
-              const _WorkoutGoalSectionLabel(),
-              AppSpacing.sectionLabelGap,
-              const _WorkoutGoalSummaryCard(),
-              AppSpacing.sectionGap,
-              const _WorkoutDeviceSectionLabel(),
-              AppSpacing.sectionLabelGap,
-              const _WorkoutDeviceStatusCard(),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const RunZoneHeadlineLargeLabel('운동 전 설정'),
+                AppSpacing.titleDescriptionGap,
+                const RunZoneBodyLargeLabel('오늘 운동에 사용할 목표와 기기 상태를 확인해요.'),
+                AppSpacing.controlGroupSpacer,
+                const _WorkoutEnvironmentControl(),
+                AppSpacing.sectionGap,
+                const RunZoneLabelSmallLabel('훈련 종류'),
+                AppSpacing.sectionLabelGap,
+                const _WorkoutTrainingTypeChips(),
+                AppSpacing.controlGroupSpacer,
+                const _WorkoutTrainingTypeDescription(),
+                AppSpacing.sectionGap,
+                const _WorkoutGoalSectionLabel(),
+                AppSpacing.sectionLabelGap,
+                const _WorkoutGoalSummaryCard(),
+                AppSpacing.sectionGap,
+                const _WorkoutDeviceSectionLabel(),
+                AppSpacing.sectionLabelGap,
+                const _WorkoutDeviceStatusCard(),
+                AppSpacing.sectionGap,
+                const _WorkoutCoachingSection(),
+                const _WorkoutStartRequirementSection(),
+              ],
+            ),
           ),
         ),
       ),
@@ -279,11 +284,95 @@ final class _WorkoutDeviceStatusCard extends StatelessWidget {
   }
 }
 
+final class _WorkoutStartRequirementSection extends StatelessWidget {
+  const _WorkoutStartRequirementSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
+      builder: (context, state) {
+        if (state.isHeartRateDeviceConnected) {
+          return const SizedBox.shrink();
+        }
+
+        return const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [AppSpacing.sectionGap, _WorkoutStartRequirementCard()],
+        );
+      },
+    );
+  }
+}
+
+final class _WorkoutStartRequirementCard extends StatelessWidget {
+  const _WorkoutStartRequirementCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(color: colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: AppSpacing.cardInsets,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.info_outline, color: colorScheme.primary),
+            AppSpacing.inlineLabelGap,
+            const Expanded(child: RunZoneBodyMediumLabel('심박 기기 연결이 필요해요.')),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+final class _WorkoutCoachingSection extends StatelessWidget {
+  const _WorkoutCoachingSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
+      builder: (context, state) {
+        if (state.trainingType == WorkoutTrainingType.free) {
+          return const SizedBox.shrink();
+        }
+
+        return const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [RunZoneLabelSmallLabel('코칭'), AppSpacing.sectionLabelGap, _WorkoutCoachingCard()],
+        );
+      },
+    );
+  }
+}
+
+final class _WorkoutCoachingCard extends StatelessWidget {
+  const _WorkoutCoachingCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return const RunZoneCard(
+      child: Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [RunZoneBodyMediumLabel('존 이탈 알림'), RunZoneBodySmallLabel('목표 존 밖 20초 이상 유지 시')],
+          ),
+          Spacer(),
+          Switch(value: true, onChanged: null),
+        ],
+      ),
+    );
+  }
+}
+
 extension on WorkoutEnvironment {
   String get deviceSectionLabel {
     return switch (this) {
       WorkoutEnvironment.indoor => '기기 상태',
-      WorkoutEnvironment.outdoor => '위치 · 기기',
+      WorkoutEnvironment.outdoor => '기기 상태',
     };
   }
 }
