@@ -26,6 +26,8 @@ import 'package:runzone/widgetbook/run_zone_profile_field_use_cases.dart'
     as _runzone_widgetbook_run_zone_profile_field_use_cases;
 import 'package:runzone/widgetbook/run_zone_progress_indicator_use_cases.dart'
     as _runzone_widgetbook_run_zone_progress_indicator_use_cases;
+import 'package:runzone/widgetbook/run_zone_segmented_control_use_cases.dart'
+    as _runzone_widgetbook_run_zone_segmented_control_use_cases;
 import 'package:runzone/widgetbook/run_zone_stepper_use_cases.dart'
     as _runzone_widgetbook_run_zone_stepper_use_cases;
 import 'package:widgetbook/widgetbook.dart' as _widgetbook;
@@ -152,6 +154,16 @@ final directories = <_widgetbook.WidgetbookNode>[
             builder:
                 _runzone_widgetbook_heart_rate_zone_adjustment_screen_use_cases
                     .buildHeartRateZoneBarUseCase,
+          ),
+        ],
+      ),
+      _widgetbook.WidgetbookComponent(
+        name: 'RunZoneSegmentedControl',
+        useCases: [
+          _widgetbook.WidgetbookUseCase(
+            name: 'Default',
+            builder: _runzone_widgetbook_run_zone_segmented_control_use_cases
+                .buildSegmentedControlUseCase,
           ),
         ],
       ),
