@@ -211,19 +211,6 @@ final class _WorkoutStartRequirementCard extends StatelessWidget {
   }
 }
 
-final class _WorkoutStartButton extends StatelessWidget {
-  const _WorkoutStartButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
-      builder: (context, state) {
-        return RunZonePrimaryButton(label: '운동 시작', onPressed: state.canStart ? () {} : null);
-      },
-    );
-  }
-}
-
 final class _WorkoutStartButtonArea extends StatelessWidget {
   const _WorkoutStartButtonArea();
 
@@ -235,7 +222,14 @@ final class _WorkoutStartButtonArea extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: colorScheme.outline)),
       ),
-      child: const Padding(padding: AppSpacing.screenInsets, child: _WorkoutStartButton()),
+      child: Padding(
+        padding: AppSpacing.screenInsets,
+        child: BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
+          builder: (context, state) {
+            return RunZonePrimaryButton(label: '운동 시작', onPressed: state.canStart ? () {} : null);
+          },
+        ),
+      ),
     );
   }
 }
@@ -256,30 +250,19 @@ final class _WorkoutCoachingSection extends StatelessWidget {
           children: [
             const RunZoneLabelSmallLabel('코칭'),
             AppSpacing.sectionLabelGap,
-            _WorkoutCoachingCard(isZoneAlertEnabled: state.isZoneAlertEnabled),
+            RunZoneCard(
+              child: RunZoneListItem(
+                title: '존 이탈 알림',
+                subtitle: '목표 존 밖 20초 이상 유지 시',
+                trailing: Switch(
+                  value: state.isZoneAlertEnabled,
+                  onChanged: (_) => context.read<WorkoutSetupCubit>().toggleZoneAlert(),
+                ),
+              ),
+            ),
           ],
         );
       },
-    );
-  }
-}
-
-final class _WorkoutCoachingCard extends StatelessWidget {
-  const _WorkoutCoachingCard({required this.isZoneAlertEnabled});
-
-  final bool isZoneAlertEnabled;
-
-  @override
-  Widget build(BuildContext context) {
-    return RunZoneCard(
-      child: RunZoneListItem(
-        title: '존 이탈 알림',
-        subtitle: '목표 존 밖 20초 이상 유지 시',
-        trailing: Switch(
-          value: isZoneAlertEnabled,
-          onChanged: (_) => context.read<WorkoutSetupCubit>().toggleZoneAlert(),
-        ),
-      ),
     );
   }
 }
