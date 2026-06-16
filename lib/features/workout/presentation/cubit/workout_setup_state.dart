@@ -4,6 +4,44 @@ enum WorkoutEnvironment { indoor, outdoor }
 
 enum WorkoutTrainingType { targetZone, interval, free }
 
+sealed class WorkoutPlan extends Equatable {
+  const WorkoutPlan();
+}
+
+final class TargetZoneWorkoutPlan extends WorkoutPlan {
+  const TargetZoneWorkoutPlan({required this.durationGoal, required this.targetHeartRateZone});
+
+  final WorkoutDurationGoal durationGoal;
+  final HeartRateZone targetHeartRateZone;
+
+  @override
+  List<Object?> get props => [durationGoal, targetHeartRateZone];
+}
+
+final class IntervalWorkoutPlan extends WorkoutPlan {
+  const IntervalWorkoutPlan({
+    required this.warmUpDuration,
+    required this.highIntensityDistanceMeters,
+    required this.recoveryDuration,
+    required this.repeatCount,
+  });
+
+  final Duration warmUpDuration;
+  final int highIntensityDistanceMeters;
+  final Duration recoveryDuration;
+  final int repeatCount;
+
+  @override
+  List<Object?> get props => [warmUpDuration, highIntensityDistanceMeters, recoveryDuration, repeatCount];
+}
+
+final class FreeWorkoutPlan extends WorkoutPlan {
+  const FreeWorkoutPlan();
+
+  @override
+  List<Object?> get props => [];
+}
+
 final class WorkoutSetupState extends Equatable {
   const WorkoutSetupState({
     required this.environment,
