@@ -34,10 +34,25 @@ final class WorkoutSetupScreen extends StatelessWidget {
               const _WorkoutTrainingTypeChips(),
               AppSpacing.controlGroupSpacer,
               const _WorkoutTrainingTypeDescription(),
+              AppSpacing.sectionGap,
+              const _WorkoutGoalSectionLabel(),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+final class _WorkoutGoalSectionLabel extends StatelessWidget {
+  const _WorkoutGoalSectionLabel();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
+      builder: (context, state) {
+        return RunZoneLabelSmallLabel(state.trainingType.goalSectionLabel);
+      },
     );
   }
 }
@@ -104,6 +119,16 @@ final class _WorkoutTrainingTypeOption {
   final WorkoutTrainingType trainingType;
   final String label;
   final String description;
+}
+
+extension on WorkoutTrainingType {
+  String get goalSectionLabel {
+    return switch (this) {
+      WorkoutTrainingType.zoneTwo => '목표',
+      WorkoutTrainingType.interval => '인터벌 구성',
+      WorkoutTrainingType.free => '자유 러닝 설정',
+    };
+  }
 }
 
 final class _WorkoutEnvironmentControl extends StatelessWidget {
