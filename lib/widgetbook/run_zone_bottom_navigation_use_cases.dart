@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
 import '../core/design_system/widgets/navigation/run_zone_bottom_navigation.dart';
 
-@widgetbook.UseCase(name: 'Default', type: RunZoneBottomNavigation, path: '[Design System]')
+@widgetbook.UseCase(name: 'Default', type: RunZoneBottomNavigation, path: '[Design System]/Navigation')
 Widget buildBottomNavigationUseCase(BuildContext context) {
   return const _BottomNavigationDemo();
 }
 
-@widgetbook.UseCase(name: 'Selected', type: RunZoneBottomNavigationItem, path: '[Design System]')
-Widget buildSelectedBottomNavigationItemUseCase(BuildContext context) {
-  return RunZoneBottomNavigationItem(label: '홈', iconAsset: 'assets/icons/home.svg', isSelected: true, onTap: () {});
+@widgetbook.UseCase(name: 'Default', type: RunZoneBottomNavigationItem, path: '[Design System]/Navigation')
+Widget buildBottomNavigationItemUseCase(BuildContext context) {
+  final label = context.knobs.string(label: 'Label', initialValue: '홈');
+  final isSelected = context.knobs.boolean(label: 'Selected', initialValue: true);
+
+  return RunZoneBottomNavigationItem(
+    label: label,
+    iconAsset: 'assets/icons/home.svg',
+    isSelected: isSelected,
+    onTap: () {},
+  );
 }
 
-@widgetbook.UseCase(name: 'Unselected', type: RunZoneBottomNavigationItem, path: '[Design System]')
-Widget buildUnselectedBottomNavigationItemUseCase(BuildContext context) {
-  return RunZoneBottomNavigationItem(label: '홈', iconAsset: 'assets/icons/home.svg', isSelected: false, onTap: () {});
-}
-
-@widgetbook.UseCase(name: 'Default', type: RunZoneBottomNavigationStartButton, path: '[Design System]')
+@widgetbook.UseCase(name: 'Default', type: RunZoneBottomNavigationStartButton, path: '[Design System]/Navigation')
 Widget buildBottomNavigationStartButtonUseCase(BuildContext context) {
   return RunZoneBottomNavigationStartButton(onTap: () {});
 }

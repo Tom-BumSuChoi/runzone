@@ -7,7 +7,7 @@ import '../core/design_system/widgets/chip/run_zone_choice_chip.dart';
 import '../core/design_system/widgets/list/run_zone_list_item.dart';
 import '../core/design_system/widgets/stepper/run_zone_stepper.dart';
 
-@widgetbook.UseCase(name: 'Default', type: RunZoneListItem, path: '[Design System]')
+@widgetbook.UseCase(name: 'Default', type: RunZoneListItem, path: '[Design System]/List')
 Widget buildListItemUseCase(BuildContext context) {
   var stepperValue = 176;
   var isMale = true;
