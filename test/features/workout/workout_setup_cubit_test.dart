@@ -41,4 +41,30 @@ void main() {
       ),
     ],
   );
+
+  blocTest<WorkoutSetupCubit, WorkoutSetupState>(
+    'Given cubit When 자동 페이스 조절 상태를 토글하면 Then 변경된 자동 페이스 조절 상태를 방출한다',
+    build: WorkoutSetupCubit.new,
+    act: (cubit) => cubit.toggleAutoPace(),
+    expect: () => [
+      const WorkoutSetupState(
+        environment: WorkoutEnvironment.indoor,
+        trainingType: WorkoutTrainingType.zoneTwo,
+        isAutoPaceEnabled: false,
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSetupCubit, WorkoutSetupState>(
+    'Given cubit When 존 이탈 알림 상태를 토글하면 Then 변경된 존 이탈 알림 상태를 방출한다',
+    build: WorkoutSetupCubit.new,
+    act: (cubit) => cubit.toggleZoneAlert(),
+    expect: () => [
+      const WorkoutSetupState(
+        environment: WorkoutEnvironment.indoor,
+        trainingType: WorkoutTrainingType.zoneTwo,
+        isZoneAlertEnabled: false,
+      ),
+    ],
+  );
 }

@@ -10,6 +10,8 @@ final class WorkoutSetupState extends Equatable {
     required this.trainingType,
     this.isHeartRateDeviceConnected = true,
     this.isTreadmillConnected = false,
+    this.isAutoPaceEnabled = true,
+    this.isZoneAlertEnabled = true,
   });
 
   factory WorkoutSetupState.initial() {
@@ -20,21 +22,34 @@ final class WorkoutSetupState extends Equatable {
   final WorkoutTrainingType trainingType;
   final bool isHeartRateDeviceConnected;
   final bool isTreadmillConnected;
+  final bool isAutoPaceEnabled;
+  final bool isZoneAlertEnabled;
 
   WorkoutSetupState copyWith({
     WorkoutEnvironment? environment,
     WorkoutTrainingType? trainingType,
     bool? isHeartRateDeviceConnected,
     bool? isTreadmillConnected,
+    bool? isAutoPaceEnabled,
+    bool? isZoneAlertEnabled,
   }) {
     return WorkoutSetupState(
       environment: environment ?? this.environment,
       trainingType: trainingType ?? this.trainingType,
       isHeartRateDeviceConnected: isHeartRateDeviceConnected ?? this.isHeartRateDeviceConnected,
       isTreadmillConnected: isTreadmillConnected ?? this.isTreadmillConnected,
+      isAutoPaceEnabled: isAutoPaceEnabled ?? this.isAutoPaceEnabled,
+      isZoneAlertEnabled: isZoneAlertEnabled ?? this.isZoneAlertEnabled,
     );
   }
 
   @override
-  List<Object?> get props => [environment, trainingType, isHeartRateDeviceConnected, isTreadmillConnected];
+  List<Object?> get props => [
+    environment,
+    trainingType,
+    isHeartRateDeviceConnected,
+    isTreadmillConnected,
+    isAutoPaceEnabled,
+    isZoneAlertEnabled,
+  ];
 }

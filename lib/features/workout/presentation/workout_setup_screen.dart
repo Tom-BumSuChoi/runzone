@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/design_system/app_spacing.dart';
 import '../../../core/design_system/widgets/badge/run_zone_badge.dart';
+import '../../../core/design_system/widgets/button/run_zone_primary_button.dart';
 import '../../../core/design_system/widgets/card/run_zone_card.dart';
 import '../../../core/design_system/widgets/chip/run_zone_choice_chip.dart';
 import '../../../core/design_system/widgets/control/run_zone_segmented_control.dart';
@@ -11,6 +12,7 @@ import '../../../core/design_system/widgets/label/run_zone_body_medium_label.dar
 import '../../../core/design_system/widgets/label/run_zone_body_small_label.dart';
 import '../../../core/design_system/widgets/label/run_zone_headline_large_label.dart';
 import '../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
+import '../../../core/design_system/widgets/label/run_zone_title_medium_label.dart';
 import '../../../core/design_system/widgets/stepper/run_zone_stepper.dart';
 import 'cubit/workout_setup_cubit.dart';
 
@@ -21,39 +23,45 @@ final class WorkoutSetupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => WorkoutSetupCubit(),
-      child: SafeArea(
-        child: Padding(
-          padding: AppSpacing.screenInsets,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const RunZoneHeadlineLargeLabel('운동 전 설정'),
-                AppSpacing.titleDescriptionGap,
-                const RunZoneBodyLargeLabel('오늘 운동에 사용할 목표와 기기 상태를 확인해요.'),
-                AppSpacing.controlGroupSpacer,
-                const _WorkoutEnvironmentControl(),
-                AppSpacing.sectionGap,
-                const RunZoneLabelSmallLabel('훈련 종류'),
-                AppSpacing.sectionLabelGap,
-                const _WorkoutTrainingTypeChips(),
-                AppSpacing.controlGroupSpacer,
-                const _WorkoutTrainingTypeDescription(),
-                AppSpacing.sectionGap,
-                const _WorkoutGoalSectionLabel(),
-                AppSpacing.sectionLabelGap,
-                const _WorkoutGoalSummaryCard(),
-                AppSpacing.sectionGap,
-                const _WorkoutDeviceSectionLabel(),
-                AppSpacing.sectionLabelGap,
-                const _WorkoutDeviceStatusCard(),
-                AppSpacing.sectionGap,
-                const _WorkoutCoachingSection(),
-                const _WorkoutStartRequirementSection(),
-              ],
+      child: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: AppSpacing.screenInsets,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const RunZoneHeadlineLargeLabel('운동 전 설정'),
+                    AppSpacing.titleDescriptionGap,
+                    const RunZoneBodyLargeLabel('오늘 운동에 사용할 목표와 기기 상태를 확인해요.'),
+                    AppSpacing.controlGroupSpacer,
+                    const _WorkoutEnvironmentControl(),
+                    AppSpacing.sectionGap,
+                    const RunZoneLabelSmallLabel('훈련 종류'),
+                    AppSpacing.sectionLabelGap,
+                    const _WorkoutTrainingTypeChips(),
+                    AppSpacing.controlGroupSpacer,
+                    const _WorkoutTrainingTypeDescription(),
+                    AppSpacing.sectionGap,
+                    const _WorkoutGoalSectionLabel(),
+                    AppSpacing.sectionLabelGap,
+                    const _WorkoutGoalSummaryCard(),
+                    AppSpacing.sectionGap,
+                    const _WorkoutDeviceSectionLabel(),
+                    AppSpacing.sectionLabelGap,
+                    const _WorkoutDeviceStatusCard(),
+                    AppSpacing.sectionGap,
+                    const _WorkoutCoachingSection(),
+                    const _WorkoutStartRequirementSection(),
+                    AppSpacing.sectionGap,
+                    RunZonePrimaryButton(label: '운동 시작', onPressed: () {}),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -275,11 +283,80 @@ final class _WorkoutDeviceStatusCard extends StatelessWidget {
                     ),
                   ],
                 ),
+                if (state.isTreadmillConnected) ...[
+                  const Divider(),
+                  _WorkoutTreadmillPacePanel(isAutoPaceEnabled: state.isAutoPaceEnabled),
+                ],
               ],
             ],
           ),
         );
       },
+    );
+  }
+}
+
+final class _WorkoutTreadmillPacePanel extends StatelessWidget {
+  const _WorkoutTreadmillPacePanel({required this.isAutoPaceEnabled});
+
+  final bool isAutoPaceEnabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const RunZoneBodyMediumLabel('자동 속도 조절'),
+                  RunZoneBodySmallLabel(
+                    isAutoPaceEnabled ? '심박이 목표 존을 벗어나면 페이스를 자동 조정해요' : '수동 모드 — 운동 중 ▲▼ 버튼으로 직접 조작',
+                  ),
+                ],
+              ),
+            ),
+            Switch(value: isAutoPaceEnabled, onChanged: (_) => context.read<WorkoutSetupCubit>().toggleAutoPace()),
+          ],
+        ),
+        AppSpacing.controlGroupSpacer,
+        Row(
+          children: [
+            const Expanded(
+              child: _WorkoutPaceMetric(label: '시작 속도', value: '6', unit: 'km/h'),
+            ),
+            if (isAutoPaceEnabled) ...[
+              const SizedBox(width: AppSpacing.chipGap),
+              const Expanded(
+                child: _WorkoutPaceMetric(label: '조정 폭', value: '±0.5', unit: 'km/h'),
+              ),
+            ],
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+final class _WorkoutPaceMetric extends StatelessWidget {
+  const _WorkoutPaceMetric({required this.label, required this.value, required this.unit});
+
+  final String label;
+  final String value;
+  final String unit;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      children: [
+        RunZoneBodySmallLabel(label, textAlign: TextAlign.center),
+        RunZoneTitleMediumLabel(value, color: colorScheme.primary, textAlign: TextAlign.center),
+        RunZoneLabelSmallLabel(unit, color: colorScheme.onSurfaceVariant, textAlign: TextAlign.center),
+      ],
     );
   }
 }
@@ -311,19 +388,13 @@ final class _WorkoutStartRequirementCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(color: colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: AppSpacing.cardInsets,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.info_outline, color: colorScheme.primary),
-            AppSpacing.inlineLabelGap,
-            const Expanded(child: RunZoneBodyMediumLabel('심박 기기 연결이 필요해요.')),
-          ],
-        ),
-      ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(Icons.info_outline, color: colorScheme.primary),
+        AppSpacing.inlineLabelGap,
+        const Expanded(child: RunZoneBodyMediumLabel('심박 기기 연결이 필요해요.')),
+      ],
     );
   }
 }
@@ -339,9 +410,13 @@ final class _WorkoutCoachingSection extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        return const Column(
+        return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [RunZoneLabelSmallLabel('코칭'), AppSpacing.sectionLabelGap, _WorkoutCoachingCard()],
+          children: [
+            const RunZoneLabelSmallLabel('코칭'),
+            AppSpacing.sectionLabelGap,
+            _WorkoutCoachingCard(isZoneAlertEnabled: state.isZoneAlertEnabled),
+          ],
         );
       },
     );
@@ -349,19 +424,21 @@ final class _WorkoutCoachingSection extends StatelessWidget {
 }
 
 final class _WorkoutCoachingCard extends StatelessWidget {
-  const _WorkoutCoachingCard();
+  const _WorkoutCoachingCard({required this.isZoneAlertEnabled});
+
+  final bool isZoneAlertEnabled;
 
   @override
   Widget build(BuildContext context) {
-    return const RunZoneCard(
+    return RunZoneCard(
       child: Row(
         children: [
-          Column(
+          const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [RunZoneBodyMediumLabel('존 이탈 알림'), RunZoneBodySmallLabel('목표 존 밖 20초 이상 유지 시')],
           ),
-          Spacer(),
-          Switch(value: true, onChanged: null),
+          const Spacer(),
+          Switch(value: isZoneAlertEnabled, onChanged: (_) => context.read<WorkoutSetupCubit>().toggleZoneAlert()),
         ],
       ),
     );
