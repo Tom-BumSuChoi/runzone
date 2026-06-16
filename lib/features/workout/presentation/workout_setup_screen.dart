@@ -195,7 +195,9 @@ const _trainingTypeSpecs = [
     goalSectionLabel: '인터벌 구성',
     goalFields: [
       _WorkoutGoalFieldData(label: '워밍업', description: '몸을 천천히 올려요', value: '5분', isAdjustable: true),
-      _WorkoutGoalFieldData(label: '반복 횟수', description: '고강도와 회복 반복', value: '6회', isAdjustable: true),
+      _WorkoutGoalFieldData(label: '고강도', description: '목표 Z4', value: '400m', isAdjustable: true),
+      _WorkoutGoalFieldData(label: '회복', description: '목표 Z1-Z2', value: '90초', isAdjustable: true),
+      _WorkoutGoalFieldData(label: '반복', description: '고강도와 회복 반복', value: '6회', isAdjustable: true),
     ],
   ),
   _WorkoutTrainingTypeSpec(
