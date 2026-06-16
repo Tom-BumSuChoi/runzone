@@ -53,7 +53,7 @@ final class WorkoutSetupScreen extends StatelessWidget {
                     const _WorkoutCoachingSection(),
                     const _WorkoutStartRequirementSection(),
                     AppSpacing.sectionGap,
-                    RunZonePrimaryButton(label: '운동 시작', onPressed: () {}),
+                    const _WorkoutStartButton(),
                   ],
                 ),
               ),
@@ -305,7 +305,10 @@ final class _WorkoutDeviceStatusCard extends StatelessWidget {
                 ),
                 if (state.isTreadmillConnected) ...[
                   const Divider(),
-                  _WorkoutTreadmillPacePanel(isAutoPaceEnabled: state.isAutoPaceEnabled),
+                  _WorkoutTreadmillPacePanel(
+                    canUseAutoPace: state.trainingType != WorkoutTrainingType.free,
+                    isAutoPaceEnabled: state.isAutoPaceEnabled,
+                  ),
                 ],
               ],
             ],
@@ -317,37 +320,45 @@ final class _WorkoutDeviceStatusCard extends StatelessWidget {
 }
 
 final class _WorkoutTreadmillPacePanel extends StatelessWidget {
-  const _WorkoutTreadmillPacePanel({required this.isAutoPaceEnabled});
+  const _WorkoutTreadmillPacePanel({required this.canUseAutoPace, required this.isAutoPaceEnabled});
 
+  final bool canUseAutoPace;
   final bool isAutoPaceEnabled;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        if (canUseAutoPace) ...[
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const RunZoneBodyMediumLabel('자동 속도 조절'),
+                    RunZoneBodySmallLabel(
+                      isAutoPaceEnabled ? '심박이 목표 존을 벗어나면 페이스를 자동 조정해요' : '수동 모드 — 운동 중 ▲▼ 버튼으로 직접 조작',
+                    ),
+                  ],
+                ),
+              ),
+              Switch(value: isAutoPaceEnabled, onChanged: (_) => context.read<WorkoutSetupCubit>().toggleAutoPace()),
+            ],
+          ),
+          AppSpacing.controlGroupSpacer,
+        ],
         Row(
           children: [
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const RunZoneBodyMediumLabel('자동 속도 조절'),
-                  RunZoneBodySmallLabel(
-                    isAutoPaceEnabled ? '심박이 목표 존을 벗어나면 페이스를 자동 조정해요' : '수동 모드 — 운동 중 ▲▼ 버튼으로 직접 조작',
-                  ),
-                ],
+              child: _WorkoutPaceMetric(
+                label: '시작 속도',
+                description: canUseAutoPace ? null : '운동 중 직접 조절할 수 있어요',
+                value: '6',
+                unit: 'km/h',
               ),
             ),
-            Switch(value: isAutoPaceEnabled, onChanged: (_) => context.read<WorkoutSetupCubit>().toggleAutoPace()),
-          ],
-        ),
-        AppSpacing.controlGroupSpacer,
-        Row(
-          children: [
-            const Expanded(
-              child: _WorkoutPaceMetric(label: '시작 속도', value: '6', unit: 'km/h'),
-            ),
-            if (isAutoPaceEnabled) ...[
+            if (canUseAutoPace && isAutoPaceEnabled) ...[
               const SizedBox(width: AppSpacing.chipGap),
               const Expanded(
                 child: _WorkoutPaceMetric(label: '조정 폭', value: '±0.5', unit: 'km/h'),
@@ -361,11 +372,12 @@ final class _WorkoutTreadmillPacePanel extends StatelessWidget {
 }
 
 final class _WorkoutPaceMetric extends StatelessWidget {
-  const _WorkoutPaceMetric({required this.label, required this.value, required this.unit});
+  const _WorkoutPaceMetric({required this.label, required this.value, required this.unit, this.description});
 
   final String label;
   final String value;
   final String unit;
+  final String? description;
 
   @override
   Widget build(BuildContext context) {
@@ -374,6 +386,7 @@ final class _WorkoutPaceMetric extends StatelessWidget {
     return Column(
       children: [
         RunZoneBodySmallLabel(label, textAlign: TextAlign.center),
+        if (description case final description?) RunZoneBodySmallLabel(description, textAlign: TextAlign.center),
         RunZoneTitleMediumLabel(value, color: colorScheme.primary, textAlign: TextAlign.center),
         RunZoneLabelSmallLabel(unit, color: colorScheme.onSurfaceVariant, textAlign: TextAlign.center),
       ],
@@ -388,13 +401,19 @@ final class _WorkoutStartRequirementSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
       builder: (context, state) {
-        if (state.isHeartRateDeviceConnected) {
+        final message = switch ((state.isHeartRateDeviceConnected, state.canStart)) {
+          (false, _) => '심박 기기 연결이 필요해요.',
+          (true, false) => '러닝머신 연결이 필요해요.',
+          (true, true) => null,
+        };
+
+        if (message == null) {
           return const SizedBox.shrink();
         }
 
-        return const Column(
+        return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [AppSpacing.sectionGap, _WorkoutStartRequirementCard()],
+          children: [AppSpacing.sectionGap, _WorkoutStartRequirementCard(message)],
         );
       },
     );
@@ -402,7 +421,9 @@ final class _WorkoutStartRequirementSection extends StatelessWidget {
 }
 
 final class _WorkoutStartRequirementCard extends StatelessWidget {
-  const _WorkoutStartRequirementCard();
+  const _WorkoutStartRequirementCard(this.message);
+
+  final String message;
 
   @override
   Widget build(BuildContext context) {
@@ -413,8 +434,21 @@ final class _WorkoutStartRequirementCard extends StatelessWidget {
       children: [
         Icon(Icons.info_outline, color: colorScheme.primary),
         AppSpacing.inlineLabelGap,
-        const Expanded(child: RunZoneBodyMediumLabel('심박 기기 연결이 필요해요.')),
+        Expanded(child: RunZoneBodyMediumLabel(message)),
       ],
+    );
+  }
+}
+
+final class _WorkoutStartButton extends StatelessWidget {
+  const _WorkoutStartButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
+      builder: (context, state) {
+        return RunZonePrimaryButton(label: '운동 시작', onPressed: state.canStart ? () {} : null);
+      },
     );
   }
 }
