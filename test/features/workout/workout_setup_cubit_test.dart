@@ -1,20 +1,25 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:runzone/features/workout/domain/heart_rate_zone.dart';
 import 'package:runzone/features/workout/domain/workout_duration_goal.dart';
 import 'package:runzone/features/workout/presentation/cubit/workout_setup_cubit.dart';
 
 void main() {
-  test('Given 새로 생성한 cubit When 초기 상태를 확인하면 Then 실내 운동 환경과 존2 지속주와 연결된 심박 기기 상태를 가진다', () {
+  test('Given 새로 생성한 cubit When 초기 상태를 확인하면 Then 실내 운동 환경과 목표존 지속주와 연결된 심박 기기 상태를 가진다', () {
     final WorkoutSetupCubit cubit = WorkoutSetupCubit();
 
     expect(cubit.state, WorkoutSetupState.initial());
     expect(cubit.state.isHeartRateDeviceConnected, isTrue);
-    expect(cubit.state.zoneTwoDurationGoal, WorkoutDurationGoal.initial());
+    expect(cubit.state.targetZoneDurationGoal, WorkoutDurationGoal.initial());
+    expect(cubit.state.targetHeartRateZone, HeartRateZone.zone2);
   });
 
   test('Given 실내 운동 환경과 러닝머신 미연결 상태 When 시작 가능 여부를 확인하면 Then 시작할 수 없다', () {
-    const state = WorkoutSetupState(environment: WorkoutEnvironment.indoor, trainingType: WorkoutTrainingType.zoneTwo);
+    const state = WorkoutSetupState(
+      environment: WorkoutEnvironment.indoor,
+      trainingType: WorkoutTrainingType.targetZone,
+    );
 
     expect(state.canStart, isFalse);
   });
@@ -22,7 +27,7 @@ void main() {
   test('Given 실내 운동 환경과 러닝머신 연결 상태 When 시작 가능 여부를 확인하면 Then 시작할 수 있다', () {
     const state = WorkoutSetupState(
       environment: WorkoutEnvironment.indoor,
-      trainingType: WorkoutTrainingType.zoneTwo,
+      trainingType: WorkoutTrainingType.targetZone,
       isTreadmillConnected: true,
     );
 
@@ -32,7 +37,7 @@ void main() {
   test('Given 실내 운동 환경과 러닝머신 연결 상태지만 심박 기기가 미연결이면 When 시작 가능 여부를 확인하면 Then 시작할 수 없다', () {
     const state = WorkoutSetupState(
       environment: WorkoutEnvironment.indoor,
-      trainingType: WorkoutTrainingType.zoneTwo,
+      trainingType: WorkoutTrainingType.targetZone,
       isHeartRateDeviceConnected: false,
       isTreadmillConnected: true,
     );
@@ -41,7 +46,10 @@ void main() {
   });
 
   test('Given 야외 운동 환경 When 시작 가능 여부를 확인하면 Then 러닝머신 연결 없이 시작할 수 있다', () {
-    const state = WorkoutSetupState(environment: WorkoutEnvironment.outdoor, trainingType: WorkoutTrainingType.zoneTwo);
+    const state = WorkoutSetupState(
+      environment: WorkoutEnvironment.outdoor,
+      trainingType: WorkoutTrainingType.targetZone,
+    );
 
     expect(state.canStart, isTrue);
   });
@@ -49,7 +57,7 @@ void main() {
   test('Given 야외 운동 환경이지만 심박 기기가 미연결이면 When 시작 가능 여부를 확인하면 Then 시작할 수 없다', () {
     const state = WorkoutSetupState(
       environment: WorkoutEnvironment.outdoor,
-      trainingType: WorkoutTrainingType.zoneTwo,
+      trainingType: WorkoutTrainingType.targetZone,
       isHeartRateDeviceConnected: false,
     );
 
@@ -61,7 +69,7 @@ void main() {
     build: WorkoutSetupCubit.new,
     act: (cubit) => cubit.changeEnvironment(WorkoutEnvironment.outdoor),
     expect: () => [
-      const WorkoutSetupState(environment: WorkoutEnvironment.outdoor, trainingType: WorkoutTrainingType.zoneTwo),
+      const WorkoutSetupState(environment: WorkoutEnvironment.outdoor, trainingType: WorkoutTrainingType.targetZone),
     ],
   );
 
@@ -81,7 +89,7 @@ void main() {
     expect: () => [
       const WorkoutSetupState(
         environment: WorkoutEnvironment.indoor,
-        trainingType: WorkoutTrainingType.zoneTwo,
+        trainingType: WorkoutTrainingType.targetZone,
         isTreadmillConnected: true,
       ),
     ],
@@ -94,7 +102,7 @@ void main() {
     expect: () => [
       const WorkoutSetupState(
         environment: WorkoutEnvironment.indoor,
-        trainingType: WorkoutTrainingType.zoneTwo,
+        trainingType: WorkoutTrainingType.targetZone,
         isAutoPaceEnabled: false,
       ),
     ],
@@ -107,61 +115,113 @@ void main() {
     expect: () => [
       const WorkoutSetupState(
         environment: WorkoutEnvironment.indoor,
-        trainingType: WorkoutTrainingType.zoneTwo,
+        trainingType: WorkoutTrainingType.targetZone,
         isZoneAlertEnabled: false,
       ),
     ],
   );
 
   blocTest<WorkoutSetupCubit, WorkoutSetupState>(
-    'Given cubit When 존2 목표 시간을 증가하면 Then 5분 증가한 목표 시간을 방출한다',
+    'Given cubit When 목표존 목표 시간을 증가하면 Then 5분 증가한 목표 시간을 방출한다',
     build: WorkoutSetupCubit.new,
-    act: (cubit) => cubit.increaseZoneTwoDuration(),
+    act: (cubit) => cubit.increaseTargetZoneDuration(),
     expect: () => [
       const WorkoutSetupState(
         environment: WorkoutEnvironment.indoor,
-        trainingType: WorkoutTrainingType.zoneTwo,
-        zoneTwoDurationGoal: WorkoutDurationGoal(minutes: 45),
+        trainingType: WorkoutTrainingType.targetZone,
+        targetZoneDurationGoal: WorkoutDurationGoal(minutes: 45),
       ),
     ],
   );
 
   blocTest<WorkoutSetupCubit, WorkoutSetupState>(
-    'Given cubit When 존2 목표 시간을 감소하면 Then 5분 감소한 목표 시간을 방출한다',
+    'Given cubit When 목표존 목표 시간을 감소하면 Then 5분 감소한 목표 시간을 방출한다',
     build: WorkoutSetupCubit.new,
-    act: (cubit) => cubit.decreaseZoneTwoDuration(),
+    act: (cubit) => cubit.decreaseTargetZoneDuration(),
     expect: () => [
       const WorkoutSetupState(
         environment: WorkoutEnvironment.indoor,
-        trainingType: WorkoutTrainingType.zoneTwo,
-        zoneTwoDurationGoal: WorkoutDurationGoal(minutes: 35),
+        trainingType: WorkoutTrainingType.targetZone,
+        targetZoneDurationGoal: WorkoutDurationGoal(minutes: 35),
       ),
     ],
   );
 
   blocTest<WorkoutSetupCubit, WorkoutSetupState>(
-    'Given 존2 목표 시간이 5분인 cubit When 존2 목표 시간을 감소하면 Then 변경된 상태를 방출하지 않고 5분을 유지한다',
+    'Given 목표존 목표 시간이 5분인 cubit When 목표존 목표 시간을 감소하면 Then 변경된 상태를 방출하지 않고 5분을 유지한다',
     build: WorkoutSetupCubit.new,
     seed: () => const WorkoutSetupState(
       environment: WorkoutEnvironment.indoor,
-      trainingType: WorkoutTrainingType.zoneTwo,
-      zoneTwoDurationGoal: WorkoutDurationGoal(minutes: 5),
+      trainingType: WorkoutTrainingType.targetZone,
+      targetZoneDurationGoal: WorkoutDurationGoal(minutes: 5),
     ),
-    act: (cubit) => cubit.decreaseZoneTwoDuration(),
+    act: (cubit) => cubit.decreaseTargetZoneDuration(),
     expect: () => <WorkoutSetupState>[],
-    verify: (cubit) => expect(cubit.state.zoneTwoDurationGoal, const WorkoutDurationGoal(minutes: 5)),
+    verify: (cubit) => expect(cubit.state.targetZoneDurationGoal, const WorkoutDurationGoal(minutes: 5)),
   );
 
   blocTest<WorkoutSetupCubit, WorkoutSetupState>(
-    'Given 존2 목표 시간이 995분인 cubit When 존2 목표 시간을 증가하면 Then 변경된 상태를 방출하지 않고 995분을 유지한다',
+    'Given 목표존 목표 시간이 995분인 cubit When 목표존 목표 시간을 증가하면 Then 변경된 상태를 방출하지 않고 995분을 유지한다',
     build: WorkoutSetupCubit.new,
     seed: () => const WorkoutSetupState(
       environment: WorkoutEnvironment.indoor,
-      trainingType: WorkoutTrainingType.zoneTwo,
-      zoneTwoDurationGoal: WorkoutDurationGoal(minutes: 995),
+      trainingType: WorkoutTrainingType.targetZone,
+      targetZoneDurationGoal: WorkoutDurationGoal(minutes: 995),
     ),
-    act: (cubit) => cubit.increaseZoneTwoDuration(),
+    act: (cubit) => cubit.increaseTargetZoneDuration(),
     expect: () => <WorkoutSetupState>[],
-    verify: (cubit) => expect(cubit.state.zoneTwoDurationGoal, const WorkoutDurationGoal(minutes: 995)),
+    verify: (cubit) => expect(cubit.state.targetZoneDurationGoal, const WorkoutDurationGoal(minutes: 995)),
+  );
+
+  blocTest<WorkoutSetupCubit, WorkoutSetupState>(
+    'Given cubit When 목표 심박존을 증가하면 Then 다음 목표 심박존을 방출한다',
+    build: WorkoutSetupCubit.new,
+    act: (cubit) => cubit.increaseTargetHeartRateZone(),
+    expect: () => [
+      const WorkoutSetupState(
+        environment: WorkoutEnvironment.indoor,
+        trainingType: WorkoutTrainingType.targetZone,
+        targetHeartRateZone: HeartRateZone.zone3,
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSetupCubit, WorkoutSetupState>(
+    'Given cubit When 목표 심박존을 감소하면 Then 이전 목표 심박존을 방출한다',
+    build: WorkoutSetupCubit.new,
+    act: (cubit) => cubit.decreaseTargetHeartRateZone(),
+    expect: () => [
+      const WorkoutSetupState(
+        environment: WorkoutEnvironment.indoor,
+        trainingType: WorkoutTrainingType.targetZone,
+        targetHeartRateZone: HeartRateZone.zone1,
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSetupCubit, WorkoutSetupState>(
+    'Given 목표 심박존이 Z1인 cubit When 목표 심박존을 감소하면 Then 변경된 상태를 방출하지 않고 Z1을 유지한다',
+    build: WorkoutSetupCubit.new,
+    seed: () => const WorkoutSetupState(
+      environment: WorkoutEnvironment.indoor,
+      trainingType: WorkoutTrainingType.targetZone,
+      targetHeartRateZone: HeartRateZone.zone1,
+    ),
+    act: (cubit) => cubit.decreaseTargetHeartRateZone(),
+    expect: () => <WorkoutSetupState>[],
+    verify: (cubit) => expect(cubit.state.targetHeartRateZone, HeartRateZone.zone1),
+  );
+
+  blocTest<WorkoutSetupCubit, WorkoutSetupState>(
+    'Given 목표 심박존이 Z5인 cubit When 목표 심박존을 증가하면 Then 변경된 상태를 방출하지 않고 Z5를 유지한다',
+    build: WorkoutSetupCubit.new,
+    seed: () => const WorkoutSetupState(
+      environment: WorkoutEnvironment.indoor,
+      trainingType: WorkoutTrainingType.targetZone,
+      targetHeartRateZone: HeartRateZone.zone5,
+    ),
+    act: (cubit) => cubit.increaseTargetHeartRateZone(),
+    expect: () => <WorkoutSetupState>[],
+    verify: (cubit) => expect(cubit.state.targetHeartRateZone, HeartRateZone.zone5),
   );
 }

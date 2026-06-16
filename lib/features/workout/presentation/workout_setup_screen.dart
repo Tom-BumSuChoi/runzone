@@ -14,6 +14,7 @@ import '../../../core/design_system/widgets/label/run_zone_headline_large_label.
 import '../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
 import '../../../core/design_system/widgets/label/run_zone_title_medium_label.dart';
 import '../../../core/design_system/widgets/stepper/run_zone_stepper.dart';
+import '../domain/heart_rate_zone.dart';
 import 'cubit/workout_setup_cubit.dart';
 
 final class WorkoutSetupScreen extends StatelessWidget {
@@ -138,15 +139,18 @@ final class _WorkoutGoalField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final value = switch (field.control) {
-      _WorkoutGoalFieldControl.zoneTwoDuration => '${state.zoneTwoDurationGoal.minutes}분',
+      _WorkoutGoalFieldControl.targetZoneDuration => '${state.targetZoneDurationGoal.minutes}분',
+      _WorkoutGoalFieldControl.targetHeartRateZone => state.targetHeartRateZone.label,
       _WorkoutGoalFieldControl.none => field.value ?? (throw StateError('Workout goal field value is required.')),
     };
     final onDecrement = switch (field.control) {
-      _WorkoutGoalFieldControl.zoneTwoDuration => context.read<WorkoutSetupCubit>().decreaseZoneTwoDuration,
+      _WorkoutGoalFieldControl.targetZoneDuration => context.read<WorkoutSetupCubit>().decreaseTargetZoneDuration,
+      _WorkoutGoalFieldControl.targetHeartRateZone => context.read<WorkoutSetupCubit>().decreaseTargetHeartRateZone,
       _WorkoutGoalFieldControl.none => () {},
     };
     final onIncrement = switch (field.control) {
-      _WorkoutGoalFieldControl.zoneTwoDuration => context.read<WorkoutSetupCubit>().increaseZoneTwoDuration,
+      _WorkoutGoalFieldControl.targetZoneDuration => context.read<WorkoutSetupCubit>().increaseTargetZoneDuration,
+      _WorkoutGoalFieldControl.targetHeartRateZone => context.read<WorkoutSetupCubit>().increaseTargetHeartRateZone,
       _WorkoutGoalFieldControl.none => () {},
     };
 
@@ -166,7 +170,7 @@ final class _WorkoutGoalField extends StatelessWidget {
   }
 }
 
-enum _WorkoutGoalFieldControl { none, zoneTwoDuration }
+enum _WorkoutGoalFieldControl { none, targetZoneDuration, targetHeartRateZone }
 
 final class _WorkoutGoalFieldData {
   const _WorkoutGoalFieldData({
@@ -235,18 +239,23 @@ final class _WorkoutTrainingTypeDescription extends StatelessWidget {
 
 const _trainingTypeSpecs = [
   _WorkoutTrainingTypeSpec(
-    trainingType: WorkoutTrainingType.zoneTwo,
-    label: '존2 지속주',
-    description: 'Zone 2를 유지하며 안정적으로 달려요.',
+    trainingType: WorkoutTrainingType.targetZone,
+    label: '목표존 지속주',
+    description: '선택한 심박존을 유지하며 안정적으로 달려요.',
     goalSectionLabel: '목표',
     goalFields: [
       _WorkoutGoalFieldData(
         label: '목표 시간',
         description: '운동 시작 후에도 조정 가능',
         isAdjustable: true,
-        control: _WorkoutGoalFieldControl.zoneTwoDuration,
+        control: _WorkoutGoalFieldControl.targetZoneDuration,
       ),
-      _WorkoutGoalFieldData(label: '목표 심박존', description: '지방 연소 / 기초 지구력', value: 'Z2', isAdjustable: true),
+      _WorkoutGoalFieldData(
+        label: '목표 심박존',
+        description: '선택한 심박존을 유지',
+        isAdjustable: true,
+        control: _WorkoutGoalFieldControl.targetHeartRateZone,
+      ),
     ],
   ),
   _WorkoutTrainingTypeSpec(
@@ -292,6 +301,18 @@ final class _WorkoutTrainingTypeSpec {
 extension on WorkoutTrainingType {
   _WorkoutTrainingTypeSpec get spec {
     return _trainingTypeSpecs.firstWhere((spec) => spec.trainingType == this);
+  }
+}
+
+extension on HeartRateZone {
+  String get label {
+    return switch (this) {
+      HeartRateZone.zone1 => 'Z1',
+      HeartRateZone.zone2 => 'Z2',
+      HeartRateZone.zone3 => 'Z3',
+      HeartRateZone.zone4 => 'Z4',
+      HeartRateZone.zone5 => 'Z5',
+    };
   }
 }
 
