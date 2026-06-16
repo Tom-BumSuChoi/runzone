@@ -7,6 +7,10 @@ final class WorkoutSetupCubit extends Cubit<WorkoutSetupState> {
   WorkoutSetupCubit() : super(WorkoutSetupState.initial());
 
   void changeEnvironment(WorkoutEnvironment environment) {
-    emit(WorkoutSetupState(environment: environment));
+    emit(state.copyWith(environment: environment));
+  }
+
+  void changeTrainingType(WorkoutTrainingType trainingType) {
+    emit(state.copyWith(trainingType: trainingType));
   }
 }
