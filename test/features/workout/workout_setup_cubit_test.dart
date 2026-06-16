@@ -9,6 +9,7 @@ void main() {
 
     expect(cubit.state, WorkoutSetupState.initial());
     expect(cubit.state.isHeartRateDeviceConnected, isTrue);
+    expect(cubit.state.zoneTwoDurationMinutes, 40);
   });
 
   test('Given 실내 운동 환경과 러닝머신 미연결 상태 When 시작 가능 여부를 확인하면 Then 시작할 수 없다', () {
@@ -107,6 +108,32 @@ void main() {
         environment: WorkoutEnvironment.indoor,
         trainingType: WorkoutTrainingType.zoneTwo,
         isZoneAlertEnabled: false,
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSetupCubit, WorkoutSetupState>(
+    'Given cubit When 존2 목표 시간을 증가하면 Then 5분 증가한 목표 시간을 방출한다',
+    build: WorkoutSetupCubit.new,
+    act: (cubit) => cubit.increaseZoneTwoDuration(),
+    expect: () => [
+      const WorkoutSetupState(
+        environment: WorkoutEnvironment.indoor,
+        trainingType: WorkoutTrainingType.zoneTwo,
+        zoneTwoDurationMinutes: 45,
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSetupCubit, WorkoutSetupState>(
+    'Given cubit When 존2 목표 시간을 감소하면 Then 5분 감소한 목표 시간을 방출한다',
+    build: WorkoutSetupCubit.new,
+    act: (cubit) => cubit.decreaseZoneTwoDuration(),
+    expect: () => [
+      const WorkoutSetupState(
+        environment: WorkoutEnvironment.indoor,
+        trainingType: WorkoutTrainingType.zoneTwo,
+        zoneTwoDurationMinutes: 35,
       ),
     ],
   );

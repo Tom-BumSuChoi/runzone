@@ -12,6 +12,7 @@ final class WorkoutSetupState extends Equatable {
     this.isTreadmillConnected = false,
     this.isAutoPaceEnabled = true,
     this.isZoneAlertEnabled = true,
+    this.zoneTwoDurationMinutes = 40,
   });
 
   factory WorkoutSetupState.initial() {
@@ -24,6 +25,7 @@ final class WorkoutSetupState extends Equatable {
   final bool isTreadmillConnected;
   final bool isAutoPaceEnabled;
   final bool isZoneAlertEnabled;
+  final int zoneTwoDurationMinutes;
 
   bool get canStart {
     return isHeartRateDeviceConnected && (environment == WorkoutEnvironment.outdoor || isTreadmillConnected);
@@ -36,6 +38,7 @@ final class WorkoutSetupState extends Equatable {
     bool? isTreadmillConnected,
     bool? isAutoPaceEnabled,
     bool? isZoneAlertEnabled,
+    int? zoneTwoDurationMinutes,
   }) {
     return WorkoutSetupState(
       environment: environment ?? this.environment,
@@ -44,6 +47,7 @@ final class WorkoutSetupState extends Equatable {
       isTreadmillConnected: isTreadmillConnected ?? this.isTreadmillConnected,
       isAutoPaceEnabled: isAutoPaceEnabled ?? this.isAutoPaceEnabled,
       isZoneAlertEnabled: isZoneAlertEnabled ?? this.isZoneAlertEnabled,
+      zoneTwoDurationMinutes: zoneTwoDurationMinutes ?? this.zoneTwoDurationMinutes,
     );
   }
 
@@ -55,5 +59,6 @@ final class WorkoutSetupState extends Equatable {
     isTreadmillConnected,
     isAutoPaceEnabled,
     isZoneAlertEnabled,
+    zoneTwoDurationMinutes,
   ];
 }
