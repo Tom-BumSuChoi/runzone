@@ -13,8 +13,16 @@ final class WorkoutSetupCubit extends Cubit<WorkoutSetupState> {
     emit(state.copyWith(environment: environment));
   }
 
-  void changeTrainingType(WorkoutTrainingType trainingType) {
-    emit(state.copyWith(trainingType: trainingType));
+  void selectTargetZonePlan() {
+    emit(state.copyWith(plan: TargetZoneWorkoutPlan.initial));
+  }
+
+  void selectIntervalPlan() {
+    emit(state.copyWith(plan: IntervalWorkoutPlan.initial));
+  }
+
+  void selectFreePlan() {
+    emit(state.copyWith(plan: FreeWorkoutPlan.initial));
   }
 
   void toggleTreadmillConnection() {
@@ -30,18 +38,82 @@ final class WorkoutSetupCubit extends Cubit<WorkoutSetupState> {
   }
 
   void increaseTargetZoneDuration() {
-    emit(state.copyWith(targetZoneDurationGoal: state.targetZoneDurationGoal.increase()));
+    final plan = state.plan;
+
+    if (plan is! TargetZoneWorkoutPlan) {
+      return;
+    }
+
+    final nextDurationGoal = plan.durationGoal.increase();
+
+    if (nextDurationGoal == plan.durationGoal) {
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        plan: TargetZoneWorkoutPlan(durationGoal: nextDurationGoal, targetHeartRateZone: plan.targetHeartRateZone),
+      ),
+    );
   }
 
   void decreaseTargetZoneDuration() {
-    emit(state.copyWith(targetZoneDurationGoal: state.targetZoneDurationGoal.decrease()));
+    final plan = state.plan;
+
+    if (plan is! TargetZoneWorkoutPlan) {
+      return;
+    }
+
+    final nextDurationGoal = plan.durationGoal.decrease();
+
+    if (nextDurationGoal == plan.durationGoal) {
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        plan: TargetZoneWorkoutPlan(durationGoal: nextDurationGoal, targetHeartRateZone: plan.targetHeartRateZone),
+      ),
+    );
   }
 
   void increaseTargetHeartRateZone() {
-    emit(state.copyWith(targetHeartRateZone: state.targetHeartRateZone.increase()));
+    final plan = state.plan;
+
+    if (plan is! TargetZoneWorkoutPlan) {
+      return;
+    }
+
+    final nextHeartRateZone = plan.targetHeartRateZone.increase();
+
+    if (nextHeartRateZone == plan.targetHeartRateZone) {
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        plan: TargetZoneWorkoutPlan(durationGoal: plan.durationGoal, targetHeartRateZone: nextHeartRateZone),
+      ),
+    );
   }
 
   void decreaseTargetHeartRateZone() {
-    emit(state.copyWith(targetHeartRateZone: state.targetHeartRateZone.decrease()));
+    final plan = state.plan;
+
+    if (plan is! TargetZoneWorkoutPlan) {
+      return;
+    }
+
+    final nextHeartRateZone = plan.targetHeartRateZone.decrease();
+
+    if (nextHeartRateZone == plan.targetHeartRateZone) {
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        plan: TargetZoneWorkoutPlan(durationGoal: plan.durationGoal, targetHeartRateZone: nextHeartRateZone),
+      ),
+    );
   }
 }

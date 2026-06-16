@@ -11,25 +11,17 @@ void main() {
 
     expect(cubit.state, WorkoutSetupState.initial());
     expect(cubit.state.isHeartRateDeviceConnected, isTrue);
-    expect(cubit.state.targetZoneDurationGoal, WorkoutDurationGoal.initial());
-    expect(cubit.state.targetHeartRateZone, HeartRateZone.zone2);
+    expect(cubit.state.plan, TargetZoneWorkoutPlan.initial);
   });
 
   test('Given 실내 운동 환경과 러닝머신 미연결 상태 When 시작 가능 여부를 확인하면 Then 시작할 수 없다', () {
-    const state = WorkoutSetupState(
-      environment: WorkoutEnvironment.indoor,
-      trainingType: WorkoutTrainingType.targetZone,
-    );
+    const state = WorkoutSetupState(environment: WorkoutEnvironment.indoor);
 
     expect(state.canStart, isFalse);
   });
 
   test('Given 실내 운동 환경과 러닝머신 연결 상태 When 시작 가능 여부를 확인하면 Then 시작할 수 있다', () {
-    const state = WorkoutSetupState(
-      environment: WorkoutEnvironment.indoor,
-      trainingType: WorkoutTrainingType.targetZone,
-      isTreadmillConnected: true,
-    );
+    const state = WorkoutSetupState(environment: WorkoutEnvironment.indoor, isTreadmillConnected: true);
 
     expect(state.canStart, isTrue);
   });
@@ -37,7 +29,6 @@ void main() {
   test('Given 실내 운동 환경과 러닝머신 연결 상태지만 심박 기기가 미연결이면 When 시작 가능 여부를 확인하면 Then 시작할 수 없다', () {
     const state = WorkoutSetupState(
       environment: WorkoutEnvironment.indoor,
-      trainingType: WorkoutTrainingType.targetZone,
       isHeartRateDeviceConnected: false,
       isTreadmillConnected: true,
     );
@@ -46,20 +37,13 @@ void main() {
   });
 
   test('Given 야외 운동 환경 When 시작 가능 여부를 확인하면 Then 러닝머신 연결 없이 시작할 수 있다', () {
-    const state = WorkoutSetupState(
-      environment: WorkoutEnvironment.outdoor,
-      trainingType: WorkoutTrainingType.targetZone,
-    );
+    const state = WorkoutSetupState(environment: WorkoutEnvironment.outdoor);
 
     expect(state.canStart, isTrue);
   });
 
   test('Given 야외 운동 환경이지만 심박 기기가 미연결이면 When 시작 가능 여부를 확인하면 Then 시작할 수 없다', () {
-    const state = WorkoutSetupState(
-      environment: WorkoutEnvironment.outdoor,
-      trainingType: WorkoutTrainingType.targetZone,
-      isHeartRateDeviceConnected: false,
-    );
+    const state = WorkoutSetupState(environment: WorkoutEnvironment.outdoor, isHeartRateDeviceConnected: false);
 
     expect(state.canStart, isFalse);
   });
@@ -68,57 +52,35 @@ void main() {
     'Given cubit When 운동 환경을 변경하면 Then 선택한 운동 환경을 방출한다',
     build: WorkoutSetupCubit.new,
     act: (cubit) => cubit.changeEnvironment(WorkoutEnvironment.outdoor),
-    expect: () => [
-      const WorkoutSetupState(environment: WorkoutEnvironment.outdoor, trainingType: WorkoutTrainingType.targetZone),
-    ],
+    expect: () => [const WorkoutSetupState(environment: WorkoutEnvironment.outdoor)],
   );
 
   blocTest<WorkoutSetupCubit, WorkoutSetupState>(
-    'Given cubit When 훈련 종류를 변경하면 Then 선택한 훈련 종류를 방출한다',
+    'Given cubit When 인터벌 계획을 선택하면 Then 인터벌 계획을 방출한다',
     build: WorkoutSetupCubit.new,
-    act: (cubit) => cubit.changeTrainingType(WorkoutTrainingType.interval),
-    expect: () => [
-      const WorkoutSetupState(environment: WorkoutEnvironment.indoor, trainingType: WorkoutTrainingType.interval),
-    ],
+    act: (cubit) => cubit.selectIntervalPlan(),
+    expect: () => [const WorkoutSetupState(environment: WorkoutEnvironment.indoor, plan: IntervalWorkoutPlan.initial)],
   );
 
   blocTest<WorkoutSetupCubit, WorkoutSetupState>(
     'Given cubit When 러닝머신 연결 상태를 토글하면 Then 변경된 연결 상태를 방출한다',
     build: WorkoutSetupCubit.new,
     act: (cubit) => cubit.toggleTreadmillConnection(),
-    expect: () => [
-      const WorkoutSetupState(
-        environment: WorkoutEnvironment.indoor,
-        trainingType: WorkoutTrainingType.targetZone,
-        isTreadmillConnected: true,
-      ),
-    ],
+    expect: () => [const WorkoutSetupState(environment: WorkoutEnvironment.indoor, isTreadmillConnected: true)],
   );
 
   blocTest<WorkoutSetupCubit, WorkoutSetupState>(
     'Given cubit When 자동 페이스 조절 상태를 토글하면 Then 변경된 자동 페이스 조절 상태를 방출한다',
     build: WorkoutSetupCubit.new,
     act: (cubit) => cubit.toggleAutoPace(),
-    expect: () => [
-      const WorkoutSetupState(
-        environment: WorkoutEnvironment.indoor,
-        trainingType: WorkoutTrainingType.targetZone,
-        isAutoPaceEnabled: false,
-      ),
-    ],
+    expect: () => [const WorkoutSetupState(environment: WorkoutEnvironment.indoor, isAutoPaceEnabled: false)],
   );
 
   blocTest<WorkoutSetupCubit, WorkoutSetupState>(
     'Given cubit When 존 이탈 알림 상태를 토글하면 Then 변경된 존 이탈 알림 상태를 방출한다',
     build: WorkoutSetupCubit.new,
     act: (cubit) => cubit.toggleZoneAlert(),
-    expect: () => [
-      const WorkoutSetupState(
-        environment: WorkoutEnvironment.indoor,
-        trainingType: WorkoutTrainingType.targetZone,
-        isZoneAlertEnabled: false,
-      ),
-    ],
+    expect: () => [const WorkoutSetupState(environment: WorkoutEnvironment.indoor, isZoneAlertEnabled: false)],
   );
 
   blocTest<WorkoutSetupCubit, WorkoutSetupState>(
@@ -128,8 +90,10 @@ void main() {
     expect: () => [
       const WorkoutSetupState(
         environment: WorkoutEnvironment.indoor,
-        trainingType: WorkoutTrainingType.targetZone,
-        targetZoneDurationGoal: WorkoutDurationGoal(minutes: 45),
+        plan: TargetZoneWorkoutPlan(
+          durationGoal: WorkoutDurationGoal(minutes: 45),
+          targetHeartRateZone: HeartRateZone.zone2,
+        ),
       ),
     ],
   );
@@ -141,8 +105,10 @@ void main() {
     expect: () => [
       const WorkoutSetupState(
         environment: WorkoutEnvironment.indoor,
-        trainingType: WorkoutTrainingType.targetZone,
-        targetZoneDurationGoal: WorkoutDurationGoal(minutes: 35),
+        plan: TargetZoneWorkoutPlan(
+          durationGoal: WorkoutDurationGoal(minutes: 35),
+          targetHeartRateZone: HeartRateZone.zone2,
+        ),
       ),
     ],
   );
@@ -152,12 +118,18 @@ void main() {
     build: WorkoutSetupCubit.new,
     seed: () => const WorkoutSetupState(
       environment: WorkoutEnvironment.indoor,
-      trainingType: WorkoutTrainingType.targetZone,
-      targetZoneDurationGoal: WorkoutDurationGoal(minutes: 5),
+      plan: TargetZoneWorkoutPlan(
+        durationGoal: WorkoutDurationGoal(minutes: 5),
+        targetHeartRateZone: HeartRateZone.zone2,
+      ),
     ),
     act: (cubit) => cubit.decreaseTargetZoneDuration(),
     expect: () => <WorkoutSetupState>[],
-    verify: (cubit) => expect(cubit.state.targetZoneDurationGoal, const WorkoutDurationGoal(minutes: 5)),
+    verify: (cubit) {
+      final plan = cubit.state.plan;
+      expect(plan, isA<TargetZoneWorkoutPlan>());
+      expect((plan as TargetZoneWorkoutPlan).durationGoal, const WorkoutDurationGoal(minutes: 5));
+    },
   );
 
   blocTest<WorkoutSetupCubit, WorkoutSetupState>(
@@ -165,12 +137,18 @@ void main() {
     build: WorkoutSetupCubit.new,
     seed: () => const WorkoutSetupState(
       environment: WorkoutEnvironment.indoor,
-      trainingType: WorkoutTrainingType.targetZone,
-      targetZoneDurationGoal: WorkoutDurationGoal(minutes: 995),
+      plan: TargetZoneWorkoutPlan(
+        durationGoal: WorkoutDurationGoal(minutes: 995),
+        targetHeartRateZone: HeartRateZone.zone2,
+      ),
     ),
     act: (cubit) => cubit.increaseTargetZoneDuration(),
     expect: () => <WorkoutSetupState>[],
-    verify: (cubit) => expect(cubit.state.targetZoneDurationGoal, const WorkoutDurationGoal(minutes: 995)),
+    verify: (cubit) {
+      final plan = cubit.state.plan;
+      expect(plan, isA<TargetZoneWorkoutPlan>());
+      expect((plan as TargetZoneWorkoutPlan).durationGoal, const WorkoutDurationGoal(minutes: 995));
+    },
   );
 
   blocTest<WorkoutSetupCubit, WorkoutSetupState>(
@@ -180,8 +158,10 @@ void main() {
     expect: () => [
       const WorkoutSetupState(
         environment: WorkoutEnvironment.indoor,
-        trainingType: WorkoutTrainingType.targetZone,
-        targetHeartRateZone: HeartRateZone.zone3,
+        plan: TargetZoneWorkoutPlan(
+          durationGoal: WorkoutDurationGoal(minutes: WorkoutDurationGoal.initialMinutes),
+          targetHeartRateZone: HeartRateZone.zone3,
+        ),
       ),
     ],
   );
@@ -193,8 +173,10 @@ void main() {
     expect: () => [
       const WorkoutSetupState(
         environment: WorkoutEnvironment.indoor,
-        trainingType: WorkoutTrainingType.targetZone,
-        targetHeartRateZone: HeartRateZone.zone1,
+        plan: TargetZoneWorkoutPlan(
+          durationGoal: WorkoutDurationGoal(minutes: WorkoutDurationGoal.initialMinutes),
+          targetHeartRateZone: HeartRateZone.zone1,
+        ),
       ),
     ],
   );
@@ -204,12 +186,18 @@ void main() {
     build: WorkoutSetupCubit.new,
     seed: () => const WorkoutSetupState(
       environment: WorkoutEnvironment.indoor,
-      trainingType: WorkoutTrainingType.targetZone,
-      targetHeartRateZone: HeartRateZone.zone1,
+      plan: TargetZoneWorkoutPlan(
+        durationGoal: WorkoutDurationGoal(minutes: WorkoutDurationGoal.initialMinutes),
+        targetHeartRateZone: HeartRateZone.zone1,
+      ),
     ),
     act: (cubit) => cubit.decreaseTargetHeartRateZone(),
     expect: () => <WorkoutSetupState>[],
-    verify: (cubit) => expect(cubit.state.targetHeartRateZone, HeartRateZone.zone1),
+    verify: (cubit) {
+      final plan = cubit.state.plan;
+      expect(plan, isA<TargetZoneWorkoutPlan>());
+      expect((plan as TargetZoneWorkoutPlan).targetHeartRateZone, HeartRateZone.zone1);
+    },
   );
 
   blocTest<WorkoutSetupCubit, WorkoutSetupState>(
@@ -217,11 +205,17 @@ void main() {
     build: WorkoutSetupCubit.new,
     seed: () => const WorkoutSetupState(
       environment: WorkoutEnvironment.indoor,
-      trainingType: WorkoutTrainingType.targetZone,
-      targetHeartRateZone: HeartRateZone.zone5,
+      plan: TargetZoneWorkoutPlan(
+        durationGoal: WorkoutDurationGoal(minutes: WorkoutDurationGoal.initialMinutes),
+        targetHeartRateZone: HeartRateZone.zone5,
+      ),
     ),
     act: (cubit) => cubit.increaseTargetHeartRateZone(),
     expect: () => <WorkoutSetupState>[],
-    verify: (cubit) => expect(cubit.state.targetHeartRateZone, HeartRateZone.zone5),
+    verify: (cubit) {
+      final plan = cubit.state.plan;
+      expect(plan, isA<TargetZoneWorkoutPlan>());
+      expect((plan as TargetZoneWorkoutPlan).targetHeartRateZone, HeartRateZone.zone5);
+    },
   );
 }
