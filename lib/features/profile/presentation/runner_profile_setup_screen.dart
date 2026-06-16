@@ -6,10 +6,10 @@ import '../../../core/design_system/app_spacing.dart';
 import '../../../core/design_system/widgets/button/run_zone_primary_button.dart';
 import '../../../core/design_system/widgets/card/run_zone_card.dart';
 import '../../../core/design_system/widgets/chip/run_zone_choice_chip.dart';
-import '../../../core/design_system/widgets/field/run_zone_profile_field.dart';
 import '../../../core/design_system/widgets/label/run_zone_body_small_label.dart';
 import '../../../core/design_system/widgets/label/run_zone_headline_large_label.dart';
 import '../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
+import '../../../core/design_system/widgets/list/run_zone_list_item.dart';
 import '../../../core/design_system/widgets/progress/run_zone_progress_indicator.dart';
 import '../../../core/design_system/widgets/stepper/run_zone_stepper.dart';
 import '../domain/profile_repository.dart';
@@ -95,14 +95,14 @@ final class _BasicInfoSection extends StatelessWidget {
         RunZoneCard(
           child: Column(
             children: [
-              RunZoneProfileField(
-                label: '성별',
+              RunZoneListItem(
+                title: '성별',
                 trailing: _GenderSelector(state: state, cubit: cubit),
               ),
               const Divider(),
-              RunZoneProfileField(
-                label: '출생 연도',
-                subLabel: '만 ${state.age}세',
+              RunZoneListItem(
+                title: '출생 연도',
+                subtitle: '만 ${state.age}세',
                 trailing: RunZoneStepper(
                   label: '${state.birthYear.year}',
                   onDecrement: cubit.decrementBirthYear,
@@ -110,9 +110,9 @@ final class _BasicInfoSection extends StatelessWidget {
                 ),
               ),
               const Divider(),
-              RunZoneProfileField(
-                label: '키',
-                subLabel: 'cm',
+              RunZoneListItem(
+                title: '키',
+                subtitle: 'cm',
                 trailing: RunZoneStepper(
                   label: '${state.height.centimeters}',
                   onDecrement: cubit.decrementHeight,
@@ -120,9 +120,9 @@ final class _BasicInfoSection extends StatelessWidget {
                 ),
               ),
               const Divider(),
-              RunZoneProfileField(
-                label: '체중',
-                subLabel: 'kg',
+              RunZoneListItem(
+                title: '체중',
+                subtitle: 'kg',
                 trailing: RunZoneStepper(
                   label: '${state.weight.kilograms}',
                   onDecrement: cubit.decrementWeight,

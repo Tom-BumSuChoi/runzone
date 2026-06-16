@@ -12,6 +12,7 @@ import '../../../core/design_system/widgets/label/run_zone_body_small_label.dart
 import '../../../core/design_system/widgets/label/run_zone_headline_large_label.dart';
 import '../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
 import '../../../core/design_system/widgets/label/run_zone_title_medium_label.dart';
+import '../../../core/design_system/widgets/list/run_zone_list_item.dart';
 import '../domain/workout_plan.dart';
 import 'cubit/workout_setup_cubit.dart';
 import 'widgets/workout_plan_section.dart';
@@ -66,33 +67,20 @@ final class _WorkoutDeviceStatusCard extends StatelessWidget {
         return RunZoneCard(
           child: Column(
             children: [
-              const Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [RunZoneBodyMediumLabel('심박 기기'), RunZoneBodySmallLabel('Polar H10 · 정상 수신 중')],
-                  ),
-                  Spacer(),
-                  RunZoneBadge('정상', isHighlighted: true),
-                ],
+              const RunZoneListItem(
+                title: '심박 기기',
+                subtitle: 'Polar H10 · 정상 수신 중',
+                trailing: RunZoneBadge('정상', isHighlighted: true),
               ),
               if (state.environment == WorkoutEnvironment.indoor) ...[
                 const Divider(),
-                Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const RunZoneBodyMediumLabel('러닝머신'),
-                        RunZoneBodySmallLabel(state.isTreadmillConnected ? 'RUNZONE Treadmill · 연결됨' : '미연결'),
-                      ],
-                    ),
-                    const Spacer(),
-                    Switch(
-                      value: state.isTreadmillConnected,
-                      onChanged: (_) => context.read<WorkoutSetupCubit>().toggleTreadmillConnection(),
-                    ),
-                  ],
+                RunZoneListItem(
+                  title: '러닝머신',
+                  subtitle: state.isTreadmillConnected ? 'RUNZONE Treadmill · 연결됨' : '미연결',
+                  trailing: Switch(
+                    value: state.isTreadmillConnected,
+                    onChanged: (_) => context.read<WorkoutSetupCubit>().toggleTreadmillConnection(),
+                  ),
                 ),
                 if (state.isTreadmillConnected) ...[
                   const Divider(),
@@ -121,21 +109,13 @@ final class _WorkoutTreadmillPacePanel extends StatelessWidget {
     return Column(
       children: [
         if (canUseAutoPace) ...[
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const RunZoneBodyMediumLabel('자동 속도 조절'),
-                    RunZoneBodySmallLabel(
-                      isAutoPaceEnabled ? '심박이 목표 존을 벗어나면 페이스를 자동 조정해요' : '수동 모드 — 운동 중 ▲▼ 버튼으로 직접 조작',
-                    ),
-                  ],
-                ),
-              ),
-              Switch(value: isAutoPaceEnabled, onChanged: (_) => context.read<WorkoutSetupCubit>().toggleAutoPace()),
-            ],
+          RunZoneListItem(
+            title: '자동 속도 조절',
+            subtitle: isAutoPaceEnabled ? '심박이 목표 존을 벗어나면 페이스를 자동 조정해요' : '수동 모드 — 운동 중 ▲▼ 버튼으로 직접 조작',
+            trailing: Switch(
+              value: isAutoPaceEnabled,
+              onChanged: (_) => context.read<WorkoutSetupCubit>().toggleAutoPace(),
+            ),
           ),
           AppSpacing.controlGroupSpacer,
         ],
@@ -292,15 +272,13 @@ final class _WorkoutCoachingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RunZoneCard(
-      child: Row(
-        children: [
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [RunZoneBodyMediumLabel('존 이탈 알림'), RunZoneBodySmallLabel('목표 존 밖 20초 이상 유지 시')],
-          ),
-          const Spacer(),
-          Switch(value: isZoneAlertEnabled, onChanged: (_) => context.read<WorkoutSetupCubit>().toggleZoneAlert()),
-        ],
+      child: RunZoneListItem(
+        title: '존 이탈 알림',
+        subtitle: '목표 존 밖 20초 이상 유지 시',
+        trailing: Switch(
+          value: isZoneAlertEnabled,
+          onChanged: (_) => context.read<WorkoutSetupCubit>().toggleZoneAlert(),
+        ),
       ),
     );
   }
