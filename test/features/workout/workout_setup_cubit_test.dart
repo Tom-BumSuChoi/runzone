@@ -27,10 +27,31 @@ void main() {
     expect(state.canStart, isTrue);
   });
 
+  test('Given 실내 운동 환경과 러닝머신 연결 상태지만 심박 기기가 미연결이면 When 시작 가능 여부를 확인하면 Then 시작할 수 없다', () {
+    const state = WorkoutSetupState(
+      environment: WorkoutEnvironment.indoor,
+      trainingType: WorkoutTrainingType.zoneTwo,
+      isHeartRateDeviceConnected: false,
+      isTreadmillConnected: true,
+    );
+
+    expect(state.canStart, isFalse);
+  });
+
   test('Given 야외 운동 환경 When 시작 가능 여부를 확인하면 Then 러닝머신 연결 없이 시작할 수 있다', () {
     const state = WorkoutSetupState(environment: WorkoutEnvironment.outdoor, trainingType: WorkoutTrainingType.zoneTwo);
 
     expect(state.canStart, isTrue);
+  });
+
+  test('Given 야외 운동 환경이지만 심박 기기가 미연결이면 When 시작 가능 여부를 확인하면 Then 시작할 수 없다', () {
+    const state = WorkoutSetupState(
+      environment: WorkoutEnvironment.outdoor,
+      trainingType: WorkoutTrainingType.zoneTwo,
+      isHeartRateDeviceConnected: false,
+    );
+
+    expect(state.canStart, isFalse);
   });
 
   blocTest<WorkoutSetupCubit, WorkoutSetupState>(
