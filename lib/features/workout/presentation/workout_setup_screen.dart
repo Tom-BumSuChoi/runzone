@@ -44,6 +44,8 @@ final class WorkoutSetupScreen extends StatelessWidget {
               const _WorkoutGoalSummaryCard(),
               AppSpacing.sectionGap,
               const _WorkoutDeviceSectionLabel(),
+              AppSpacing.sectionLabelGap,
+              const _WorkoutDeviceStatusCard(),
             ],
           ),
         ),
@@ -226,6 +228,26 @@ final class _WorkoutDeviceSectionLabel extends StatelessWidget {
       builder: (context, state) {
         return RunZoneLabelSmallLabel(state.environment.deviceSectionLabel);
       },
+    );
+  }
+}
+
+final class _WorkoutDeviceStatusCard extends StatelessWidget {
+  const _WorkoutDeviceStatusCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return const RunZoneCard(
+      child: Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [RunZoneBodyMediumLabel('심박 기기'), RunZoneBodySmallLabel('Polar H10 · 정상 수신 중')],
+          ),
+          Spacer(),
+          RunZoneBadge('정상', isHighlighted: true),
+        ],
+      ),
     );
   }
 }
