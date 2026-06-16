@@ -46,9 +46,9 @@ final class WorkoutSetupScreen extends StatelessWidget {
                     AppSpacing.sectionGap,
                     const RunZoneLabelSmallLabel('훈련 종류'),
                     AppSpacing.sectionLabelGap,
-                    const _WorkoutTrainingTypeChips(),
+                    const _WorkoutPlanChips(),
                     AppSpacing.controlGroupSpacer,
-                    const _WorkoutTrainingTypeDescription(),
+                    const _WorkoutPlanDescription(),
                     const _WorkoutGoalSection(),
                     AppSpacing.sectionGap,
                     const _WorkoutDeviceSectionLabel(),
@@ -88,7 +88,7 @@ final class _WorkoutGoalSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
       builder: (context, state) {
-        if (state.trainingType == WorkoutTrainingType.free) {
+        if (state.plan is FreeWorkoutPlan) {
           return const SizedBox.shrink();
         }
 
@@ -113,7 +113,7 @@ final class _WorkoutGoalSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
       builder: (context, state) {
-        final goalFields = state.trainingType.spec.goalFields;
+        final goalFields = state.plan.spec.goalFields;
 
         return RunZoneCard(
           child: Column(
@@ -139,8 +139,8 @@ final class _WorkoutGoalField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final value = switch (field.control) {
-      _WorkoutGoalFieldControl.targetZoneDuration => '${state.targetZoneDurationGoal.minutes}분',
-      _WorkoutGoalFieldControl.targetHeartRateZone => state.targetHeartRateZone.label,
+      _WorkoutGoalFieldControl.targetZoneDuration => '${(state.plan as TargetZoneWorkoutPlan).durationGoal.minutes}분',
+      _WorkoutGoalFieldControl.targetHeartRateZone => (state.plan as TargetZoneWorkoutPlan).targetHeartRateZone.label,
       _WorkoutGoalFieldControl.none => field.value ?? (throw StateError('Workout goal field value is required.')),
     };
     final onDecrement = switch (field.control) {
@@ -195,14 +195,14 @@ final class _WorkoutGoalSectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
       builder: (context, state) {
-        return RunZoneLabelSmallLabel(state.trainingType.spec.goalSectionLabel);
+        return RunZoneLabelSmallLabel(state.plan.spec.goalSectionLabel);
       },
     );
   }
 }
 
-final class _WorkoutTrainingTypeChips extends StatelessWidget {
-  const _WorkoutTrainingTypeChips();
+final class _WorkoutPlanChips extends StatelessWidget {
+  const _WorkoutPlanChips();
 
   @override
   Widget build(BuildContext context) {
@@ -211,11 +211,11 @@ final class _WorkoutTrainingTypeChips extends StatelessWidget {
         return Row(
           spacing: AppSpacing.chipGap,
           children: [
-            for (final spec in _trainingTypeSpecs)
+            for (final spec in _workoutPlanSpecs)
               RunZoneChoiceChip(
                 label: spec.label,
-                isSelected: state.trainingType == spec.trainingType,
-                onTap: () => context.read<WorkoutSetupCubit>().changeTrainingType(spec.trainingType),
+                isSelected: spec.matches(state.plan),
+                onTap: () => spec.select(context.read<WorkoutSetupCubit>()),
               ),
           ],
         );
@@ -224,22 +224,22 @@ final class _WorkoutTrainingTypeChips extends StatelessWidget {
   }
 }
 
-final class _WorkoutTrainingTypeDescription extends StatelessWidget {
-  const _WorkoutTrainingTypeDescription();
+final class _WorkoutPlanDescription extends StatelessWidget {
+  const _WorkoutPlanDescription();
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
       builder: (context, state) {
-        return RunZoneBodyMediumLabel(state.trainingType.spec.description);
+        return RunZoneBodyMediumLabel(state.plan.spec.description);
       },
     );
   }
 }
 
-const _trainingTypeSpecs = [
-  _WorkoutTrainingTypeSpec(
-    trainingType: WorkoutTrainingType.targetZone,
+const _workoutPlanSpecs = [
+  _WorkoutPlanSpec(
+    plan: TargetZoneWorkoutPlan.initial,
     label: '목표존 지속주',
     description: '선택한 심박존을 유지하며 안정적으로 달려요.',
     goalSectionLabel: '목표',
@@ -258,8 +258,8 @@ const _trainingTypeSpecs = [
       ),
     ],
   ),
-  _WorkoutTrainingTypeSpec(
-    trainingType: WorkoutTrainingType.interval,
+  _WorkoutPlanSpec(
+    plan: IntervalWorkoutPlan.initial,
     label: '인터벌',
     description: '강도 구간과 회복 구간을 번갈아 달려요.',
     goalSectionLabel: '인터벌 구성',
@@ -270,8 +270,8 @@ const _trainingTypeSpecs = [
       _WorkoutGoalFieldData(label: '반복', description: '고강도와 회복 반복', value: '6회', isAdjustable: true),
     ],
   ),
-  _WorkoutTrainingTypeSpec(
-    trainingType: WorkoutTrainingType.free,
+  _WorkoutPlanSpec(
+    plan: FreeWorkoutPlan.initial,
     label: '자유 러닝',
     description: '정해진 목표 없이 바로 기록을 시작해요.',
     goalSectionLabel: '자유 러닝 설정',
@@ -282,25 +282,45 @@ const _trainingTypeSpecs = [
   ),
 ];
 
-final class _WorkoutTrainingTypeSpec {
-  const _WorkoutTrainingTypeSpec({
-    required this.trainingType,
+final class _WorkoutPlanSpec {
+  const _WorkoutPlanSpec({
+    required this.plan,
     required this.label,
     required this.description,
     required this.goalSectionLabel,
     required this.goalFields,
   });
 
-  final WorkoutTrainingType trainingType;
+  final WorkoutPlan plan;
   final String label;
   final String description;
   final String goalSectionLabel;
   final List<_WorkoutGoalFieldData> goalFields;
+
+  bool matches(WorkoutPlan selectedPlan) {
+    return switch ((plan, selectedPlan)) {
+      (TargetZoneWorkoutPlan(), TargetZoneWorkoutPlan()) => true,
+      (IntervalWorkoutPlan(), IntervalWorkoutPlan()) => true,
+      (FreeWorkoutPlan(), FreeWorkoutPlan()) => true,
+      _ => false,
+    };
+  }
+
+  void select(WorkoutSetupCubit cubit) {
+    switch (plan) {
+      case TargetZoneWorkoutPlan():
+        cubit.selectTargetZonePlan();
+      case IntervalWorkoutPlan():
+        cubit.selectIntervalPlan();
+      case FreeWorkoutPlan():
+        cubit.selectFreePlan();
+    }
+  }
 }
 
-extension on WorkoutTrainingType {
-  _WorkoutTrainingTypeSpec get spec {
-    return _trainingTypeSpecs.firstWhere((spec) => spec.trainingType == this);
+extension on WorkoutPlan {
+  _WorkoutPlanSpec get spec {
+    return _workoutPlanSpecs.firstWhere((spec) => spec.matches(this));
   }
 }
 
@@ -370,7 +390,7 @@ final class _WorkoutDeviceStatusCard extends StatelessWidget {
                 if (state.isTreadmillConnected) ...[
                   const Divider(),
                   _WorkoutTreadmillPacePanel(
-                    canUseAutoPace: state.trainingType != WorkoutTrainingType.free,
+                    canUseAutoPace: state.plan is! FreeWorkoutPlan,
                     isAutoPaceEnabled: state.isAutoPaceEnabled,
                   ),
                 ],
@@ -524,7 +544,7 @@ final class _WorkoutCoachingSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
       builder: (context, state) {
-        if (state.trainingType == WorkoutTrainingType.free) {
+        if (state.plan is FreeWorkoutPlan) {
           return const SizedBox.shrink();
         }
 
