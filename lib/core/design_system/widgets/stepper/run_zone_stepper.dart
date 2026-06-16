@@ -6,9 +6,9 @@ import '../../app_spacing.dart';
 import '../label/run_zone_title_large_label.dart';
 
 final class RunZoneStepper extends StatelessWidget {
-  const RunZoneStepper({required this.value, required this.onDecrement, required this.onIncrement, super.key});
+  const RunZoneStepper({required this.label, required this.onDecrement, required this.onIncrement, super.key});
 
-  final int value;
+  final String label;
   final VoidCallback onDecrement;
   final VoidCallback onIncrement;
 
@@ -21,7 +21,7 @@ final class RunZoneStepper extends StatelessWidget {
         _button(context, Icons.remove, onDecrement),
         SizedBox(
           width: AppSizing.stepperValueWidth,
-          child: RunZoneTitleLargeLabel('$value', textAlign: TextAlign.center),
+          child: RunZoneTitleLargeLabel(label, textAlign: TextAlign.center),
         ),
         _button(context, Icons.add, onIncrement),
       ],

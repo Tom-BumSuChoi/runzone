@@ -15,7 +15,7 @@ Widget buildProfileFieldWithStepperUseCase(BuildContext context) {
         label: '키',
         subLabel: 'cm',
         trailing: RunZoneStepper(
-          value: value,
+          label: '$value',
           onDecrement: () => setState(() => value--),
           onIncrement: () => setState(() => value++),
         ),

@@ -9,7 +9,7 @@ Widget buildStepperUseCase(BuildContext context) {
   return StatefulBuilder(
     builder: (context, setState) {
       return RunZoneStepper(
-        value: value,
+        label: '$value',
         onDecrement: () => setState(() => value--),
         onIncrement: () => setState(() => value++),
       );
