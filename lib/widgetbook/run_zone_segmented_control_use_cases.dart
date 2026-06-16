@@ -5,7 +5,7 @@ import '../core/design_system/widgets/control/run_zone_segmented_control.dart';
 
 enum _SegmentedControlSampleValue { indoor, outdoor }
 
-@widgetbook.UseCase(name: 'Default', type: RunZoneSegmentedControl, path: '[Design System]')
+@widgetbook.UseCase(name: 'Default', type: RunZoneSegmentedControl, path: '[Design System]/Control')
 Widget buildSegmentedControlUseCase(BuildContext context) {
   var selectedValue = _SegmentedControlSampleValue.indoor;
 
