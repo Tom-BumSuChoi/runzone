@@ -12,7 +12,7 @@ final class WorkoutSetupState extends Equatable {
     this.isTreadmillConnected = false,
     this.isAutoPaceEnabled = true,
     this.isZoneAlertEnabled = true,
-    this.zoneTwoDurationMinutes = 40,
+    this.zoneTwoDurationGoal = const WorkoutDurationGoal(minutes: WorkoutDurationGoal.initialMinutes),
   });
 
   factory WorkoutSetupState.initial() {
@@ -25,7 +25,7 @@ final class WorkoutSetupState extends Equatable {
   final bool isTreadmillConnected;
   final bool isAutoPaceEnabled;
   final bool isZoneAlertEnabled;
-  final int zoneTwoDurationMinutes;
+  final WorkoutDurationGoal zoneTwoDurationGoal;
 
   bool get canStart {
     return isHeartRateDeviceConnected && (environment == WorkoutEnvironment.outdoor || isTreadmillConnected);
@@ -38,7 +38,7 @@ final class WorkoutSetupState extends Equatable {
     bool? isTreadmillConnected,
     bool? isAutoPaceEnabled,
     bool? isZoneAlertEnabled,
-    int? zoneTwoDurationMinutes,
+    WorkoutDurationGoal? zoneTwoDurationGoal,
   }) {
     return WorkoutSetupState(
       environment: environment ?? this.environment,
@@ -47,7 +47,7 @@ final class WorkoutSetupState extends Equatable {
       isTreadmillConnected: isTreadmillConnected ?? this.isTreadmillConnected,
       isAutoPaceEnabled: isAutoPaceEnabled ?? this.isAutoPaceEnabled,
       isZoneAlertEnabled: isZoneAlertEnabled ?? this.isZoneAlertEnabled,
-      zoneTwoDurationMinutes: zoneTwoDurationMinutes ?? this.zoneTwoDurationMinutes,
+      zoneTwoDurationGoal: zoneTwoDurationGoal ?? this.zoneTwoDurationGoal,
     );
   }
 
@@ -59,6 +59,6 @@ final class WorkoutSetupState extends Equatable {
     isTreadmillConnected,
     isAutoPaceEnabled,
     isZoneAlertEnabled,
-    zoneTwoDurationMinutes,
+    zoneTwoDurationGoal,
   ];
 }

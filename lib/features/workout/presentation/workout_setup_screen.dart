@@ -138,7 +138,7 @@ final class _WorkoutGoalField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final value = switch (field.control) {
-      _WorkoutGoalFieldControl.zoneTwoDuration => '${state.zoneTwoDurationMinutes}분',
+      _WorkoutGoalFieldControl.zoneTwoDuration => '${state.zoneTwoDurationGoal.minutes}분',
       _WorkoutGoalFieldControl.none => field.value ?? (throw StateError('Workout goal field value is required.')),
     };
     final onDecrement = switch (field.control) {

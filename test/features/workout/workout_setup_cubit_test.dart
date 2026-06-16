@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:runzone/features/workout/domain/workout_duration_goal.dart';
 import 'package:runzone/features/workout/presentation/cubit/workout_setup_cubit.dart';
 
 void main() {
@@ -9,7 +10,7 @@ void main() {
 
     expect(cubit.state, WorkoutSetupState.initial());
     expect(cubit.state.isHeartRateDeviceConnected, isTrue);
-    expect(cubit.state.zoneTwoDurationMinutes, 40);
+    expect(cubit.state.zoneTwoDurationGoal, WorkoutDurationGoal.initial());
   });
 
   test('Given 실내 운동 환경과 러닝머신 미연결 상태 When 시작 가능 여부를 확인하면 Then 시작할 수 없다', () {
@@ -120,7 +121,7 @@ void main() {
       const WorkoutSetupState(
         environment: WorkoutEnvironment.indoor,
         trainingType: WorkoutTrainingType.zoneTwo,
-        zoneTwoDurationMinutes: 45,
+        zoneTwoDurationGoal: WorkoutDurationGoal(minutes: 45),
       ),
     ],
   );
@@ -133,8 +134,34 @@ void main() {
       const WorkoutSetupState(
         environment: WorkoutEnvironment.indoor,
         trainingType: WorkoutTrainingType.zoneTwo,
-        zoneTwoDurationMinutes: 35,
+        zoneTwoDurationGoal: WorkoutDurationGoal(minutes: 35),
       ),
     ],
+  );
+
+  blocTest<WorkoutSetupCubit, WorkoutSetupState>(
+    'Given 존2 목표 시간이 5분인 cubit When 존2 목표 시간을 감소하면 Then 변경된 상태를 방출하지 않고 5분을 유지한다',
+    build: WorkoutSetupCubit.new,
+    seed: () => const WorkoutSetupState(
+      environment: WorkoutEnvironment.indoor,
+      trainingType: WorkoutTrainingType.zoneTwo,
+      zoneTwoDurationGoal: WorkoutDurationGoal(minutes: 5),
+    ),
+    act: (cubit) => cubit.decreaseZoneTwoDuration(),
+    expect: () => <WorkoutSetupState>[],
+    verify: (cubit) => expect(cubit.state.zoneTwoDurationGoal, const WorkoutDurationGoal(minutes: 5)),
+  );
+
+  blocTest<WorkoutSetupCubit, WorkoutSetupState>(
+    'Given 존2 목표 시간이 995분인 cubit When 존2 목표 시간을 증가하면 Then 변경된 상태를 방출하지 않고 995분을 유지한다',
+    build: WorkoutSetupCubit.new,
+    seed: () => const WorkoutSetupState(
+      environment: WorkoutEnvironment.indoor,
+      trainingType: WorkoutTrainingType.zoneTwo,
+      zoneTwoDurationGoal: WorkoutDurationGoal(minutes: 995),
+    ),
+    act: (cubit) => cubit.increaseZoneTwoDuration(),
+    expect: () => <WorkoutSetupState>[],
+    verify: (cubit) => expect(cubit.state.zoneTwoDurationGoal, const WorkoutDurationGoal(minutes: 995)),
   );
 }
