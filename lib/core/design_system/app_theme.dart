@@ -41,6 +41,12 @@ abstract final class AppTheme {
     filledButtonTheme: FilledButtonThemeData(
       style: _filledButtonStyle(backgroundColor: AppColors.lime300, foregroundColor: AppColors.gray950),
     ),
+    chipTheme: _choiceChipTheme(
+      backgroundColor: AppColors.gray850,
+      selectedColor: AppColors.lime300,
+      foregroundColor: AppColors.gray400,
+      selectedForegroundColor: AppColors.gray950,
+    ),
     bottomSheetTheme: const BottomSheetThemeData(
       backgroundColor: AppColors.gray900,
       modalBackgroundColor: AppColors.gray900,
@@ -79,6 +85,12 @@ abstract final class AppTheme {
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: _filledButtonStyle(backgroundColor: AppColors.lime400, foregroundColor: AppColors.gray950),
+    ),
+    chipTheme: _choiceChipTheme(
+      backgroundColor: AppColors.gray100,
+      selectedColor: AppColors.lime400,
+      foregroundColor: AppColors.gray500,
+      selectedForegroundColor: AppColors.gray950,
     ),
     bottomSheetTheme: const BottomSheetThemeData(
       backgroundColor: AppColors.white,
@@ -206,6 +218,36 @@ abstract final class AppTheme {
       padding: const WidgetStatePropertyAll(AppSpacing.buttonInsets),
       shape: const WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: AppRadius.smallBorder)),
       splashFactory: NoSplash.splashFactory,
+    );
+  }
+
+  static ChipThemeData _choiceChipTheme({
+    required Color backgroundColor,
+    required Color selectedColor,
+    required Color foregroundColor,
+    required Color selectedForegroundColor,
+  }) {
+    return ChipThemeData(
+      backgroundColor: backgroundColor,
+      selectedColor: selectedColor,
+      showCheckmark: false,
+      padding: AppSpacing.chipInsets,
+      labelPadding: EdgeInsets.zero,
+      shape: const RoundedRectangleBorder(borderRadius: AppRadius.chipBorder),
+      labelStyle: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 12,
+        fontWeight: FontWeight.w400,
+        height: 1.5,
+        color: foregroundColor,
+      ),
+      secondaryLabelStyle: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        height: 1.5,
+        color: selectedForegroundColor,
+      ),
     );
   }
 }
