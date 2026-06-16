@@ -21,7 +21,7 @@ final class _FakeProfileRepository implements ProfileRepository {
 }
 
 void main() {
-  const HeartRateZone customHeartRateZone = HeartRateZone(
+  const HeartRateZoneTable customHeartRateZone = HeartRateZoneTable(
     zone1: HeartRateZoneRange(lower: 90, upper: 120),
     zone2: HeartRateZoneRange(lower: 121, upper: 140),
     zone3: HeartRateZoneRange(lower: 141, upper: 160),

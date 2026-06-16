@@ -59,7 +59,7 @@ final class SharedPreferencesProfileRepository implements ProfileRepository {
     yield* _profileController.stream;
   }
 
-  Map<String, Object> _heartRateZoneToJson(HeartRateZone zone) {
+  Map<String, Object> _heartRateZoneToJson(HeartRateZoneTable zone) {
     return <String, Object>{
       'zone1': _heartRateZoneRangeToJson(zone.zone1),
       'zone2': _heartRateZoneRangeToJson(zone.zone2),
@@ -73,10 +73,10 @@ final class SharedPreferencesProfileRepository implements ProfileRepository {
     return <String, Object>{'lower': range.lower, 'upper': range.upper};
   }
 
-  HeartRateZone _heartRateZoneFromJson(Object? value) {
+  HeartRateZoneTable _heartRateZoneFromJson(Object? value) {
     final Map<String, Object?> map = value as Map<String, Object?>;
 
-    return HeartRateZone(
+    return HeartRateZoneTable(
       zone1: _heartRateZoneRangeFromJson(map['zone1']),
       zone2: _heartRateZoneRangeFromJson(map['zone2']),
       zone3: _heartRateZoneRangeFromJson(map['zone3']),

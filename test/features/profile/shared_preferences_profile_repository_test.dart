@@ -14,7 +14,7 @@ final class _FailingSharedPreferencesStore extends InMemorySharedPreferencesStor
   Future<bool> setValue(String valueType, String key, Object value) async => false;
 }
 
-const HeartRateZone _heartRateZone = HeartRateZone(
+const HeartRateZoneTable _heartRateZone = HeartRateZoneTable(
   zone1: HeartRateZoneRange(lower: 95, upper: 130),
   zone2: HeartRateZoneRange(lower: 131, upper: 147),
   zone3: HeartRateZoneRange(lower: 148, upper: 164),

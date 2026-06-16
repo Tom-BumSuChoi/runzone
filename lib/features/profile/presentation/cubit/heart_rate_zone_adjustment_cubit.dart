@@ -94,7 +94,7 @@ final class HeartRateZoneAdjustmentCubit extends Cubit<HeartRateZoneAdjustmentSt
     }
 
     final int age = DateTime.now().year - profile.birthYear.year;
-    final HeartRateZone profileZone = _calculator.getHeartRateZone(age: age);
+    final HeartRateZoneTable profileZone = _calculator.getHeartRateZone(age: age);
     if (profileZone == editingState.zone) {
       return;
     }
@@ -109,7 +109,7 @@ final class HeartRateZoneAdjustmentCubit extends Cubit<HeartRateZoneAdjustmentSt
     return currentState is HeartRateZoneAdjustmentEditing ? currentState : null;
   }
 
-  HeartRateZone _zoneWith(
+  HeartRateZoneTable _zoneWith(
     HeartRateZoneAdjustmentEditing editingState, {
     int? zoneOneUpperBound,
     int? zoneTwoUpperBound,
@@ -121,7 +121,7 @@ final class HeartRateZoneAdjustmentCubit extends Cubit<HeartRateZoneAdjustmentSt
     final int nextZoneThreeUpperBound = zoneThreeUpperBound ?? editingState.zoneThreeUpperBound;
     final int nextZoneFourUpperBound = zoneFourUpperBound ?? editingState.zoneFourUpperBound;
 
-    return HeartRateZone(
+    return HeartRateZoneTable(
       zone1: HeartRateZoneRange(lower: editingState.minimumHeartRate, upper: nextZoneOneUpperBound),
       zone2: HeartRateZoneRange(lower: nextZoneOneUpperBound + 1, upper: nextZoneTwoUpperBound),
       zone3: HeartRateZoneRange(lower: nextZoneTwoUpperBound + 1, upper: nextZoneThreeUpperBound),
@@ -130,7 +130,7 @@ final class HeartRateZoneAdjustmentCubit extends Cubit<HeartRateZoneAdjustmentSt
     );
   }
 
-  Future<void> _emitAndSave(HeartRateZoneAdjustmentEditing editingState, HeartRateZone zone) async {
+  Future<void> _emitAndSave(HeartRateZoneAdjustmentEditing editingState, HeartRateZoneTable zone) async {
     final HeartRateZoneAdjustmentEditing nextState = editingState.copyWith(zone: zone);
     emit(nextState);
 
