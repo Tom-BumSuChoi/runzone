@@ -19,7 +19,7 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
     Stream<void> Function()? createTicker,
   }) : _now = now ?? DateTime.now,
        _createTicker = createTicker ?? (() => Stream<void>.periodic(const Duration(seconds: 1), (_) {})),
-       super(WorkoutSessionState.initial(heartRateZoneTable: heartRateZoneTable)) {
+       super(WorkoutSessionReadyState(heartRateZoneTable: heartRateZoneTable)) {
     on<WorkoutSessionStarted>(_onStarted);
     on<WorkoutSessionPaused>(_onPaused);
     on<WorkoutSessionResumed>(_onResumed);
@@ -31,107 +31,98 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
   final Stream<void> Function() _createTicker;
   final HeartRateMonitor heartRateMonitor;
   StreamSubscription<void>? _tickerSubscription;
-  Duration _accumulatedElapsed = Duration.zero;
-  DateTime? _activeStartedAt;
 
   void _onStarted(WorkoutSessionStarted event, Emitter<WorkoutSessionState> emit) {
-    if (state.status != WorkoutSessionStatus.ready) {
+    final WorkoutSessionState currentState = state;
+    if (currentState is! WorkoutSessionReadyState) {
       return;
     }
 
     final DateTime now = _now();
-    _accumulatedElapsed = Duration.zero;
-    _activeStartedAt = now;
     emit(
-      state.copyWith(
-        status: WorkoutSessionStatus.running,
-        session: WorkoutSession(startedAt: now, elapsed: Duration.zero, heartRateZoneTable: state.heartRateZoneTable),
+      WorkoutSessionRunningState(
+        heartRateZoneTable: currentState.heartRateZoneTable,
+        session: WorkoutSession(
+          startedAt: now,
+          elapsed: Duration.zero,
+          heartRateZoneTable: currentState.heartRateZoneTable,
+        ),
+        activeStartedAt: now,
       ),
     );
     _startTicker();
   }
 
   void _onPaused(WorkoutSessionPaused event, Emitter<WorkoutSessionState> emit) {
-    final WorkoutSession? session = state.session;
-    if (state.status != WorkoutSessionStatus.running || session == null) {
+    final WorkoutSessionState currentState = state;
+    if (currentState is! WorkoutSessionRunningState) {
       return;
     }
 
     final DateTime now = _now();
     _stopTicker();
-    _accumulatedElapsed = _elapsedAt(now);
-    _activeStartedAt = null;
     emit(
-      state.copyWith(
-        status: WorkoutSessionStatus.paused,
-        session: session.copyWith(elapsed: _accumulatedElapsed),
+      WorkoutSessionPausedState(
+        heartRateZoneTable: currentState.heartRateZoneTable,
+        session: currentState.session.copyWith(elapsed: currentState.elapsedAt(now)),
+        pausedAt: now,
       ),
     );
   }
 
   void _onResumed(WorkoutSessionResumed event, Emitter<WorkoutSessionState> emit) {
-    final WorkoutSession? session = state.session;
-    if (state.status != WorkoutSessionStatus.paused || session == null) {
-      return;
-    }
-
-    _activeStartedAt = _now();
-    emit(state.copyWith(status: WorkoutSessionStatus.running, session: session));
-    _startTicker();
-  }
-
-  void _onEnded(WorkoutSessionEnded event, Emitter<WorkoutSessionState> emit) {
-    final WorkoutSession? session = state.session;
-    if (session == null) {
+    final WorkoutSessionState currentState = state;
+    if (currentState is! WorkoutSessionPausedState) {
       return;
     }
 
     final DateTime now = _now();
-    switch (state.status) {
-      case WorkoutSessionStatus.running:
+    emit(
+      WorkoutSessionRunningState(
+        heartRateZoneTable: currentState.heartRateZoneTable,
+        session: currentState.session,
+        activeStartedAt: now,
+      ),
+    );
+    _startTicker();
+  }
+
+  void _onEnded(WorkoutSessionEnded event, Emitter<WorkoutSessionState> emit) {
+    final WorkoutSessionState currentState = state;
+    final DateTime now = _now();
+    switch (currentState) {
+      case WorkoutSessionRunningState():
         _stopTicker();
-        _accumulatedElapsed = _elapsedAt(now);
-        _activeStartedAt = null;
         emit(
-          state.copyWith(
-            status: WorkoutSessionStatus.ended,
-            session: session.finish(endedAt: now, elapsed: _accumulatedElapsed),
+          WorkoutSessionEndedState(
+            heartRateZoneTable: currentState.heartRateZoneTable,
+            session: currentState.session.finish(endedAt: now, elapsed: currentState.elapsedAt(now)),
           ),
         );
-      case WorkoutSessionStatus.paused:
-        _activeStartedAt = null;
-        _accumulatedElapsed = session.elapsed;
+      case WorkoutSessionPausedState():
         emit(
-          state.copyWith(
-            status: WorkoutSessionStatus.ended,
-            session: session.finish(endedAt: now, elapsed: _accumulatedElapsed),
+          WorkoutSessionEndedState(
+            heartRateZoneTable: currentState.heartRateZoneTable,
+            session: currentState.session.finish(endedAt: currentState.pausedAt, elapsed: currentState.session.elapsed),
           ),
         );
-      case WorkoutSessionStatus.ready || WorkoutSessionStatus.ended:
+      case WorkoutSessionReadyState() || WorkoutSessionEndedState():
         return;
     }
   }
 
   void _onTicked(_WorkoutSessionTicked event, Emitter<WorkoutSessionState> emit) {
-    final WorkoutSession? session = state.session;
-    if (state.status != WorkoutSessionStatus.running || session == null) {
+    final WorkoutSessionState currentState = state;
+    if (currentState is! WorkoutSessionRunningState) {
       return;
     }
 
     final DateTime now = _now();
     final HeartRateMeasurement heartRateMeasurement = heartRateMonitor.measure();
-    final WorkoutSession updatedSession = session
-        .copyWith(elapsed: _elapsedAt(now))
+    final WorkoutSession updatedSession = currentState.session
+        .copyWith(elapsed: currentState.elapsedAt(now))
         .recordHeartRate(heartRateMeasurement);
-    emit(state.copyWith(session: updatedSession));
-  }
-
-  Duration _elapsedAt(DateTime now) {
-    final DateTime? activeStartedAt = _activeStartedAt;
-    if (activeStartedAt == null) {
-      return _accumulatedElapsed;
-    }
-    return _accumulatedElapsed + now.difference(activeStartedAt);
+    emit(currentState.copyWith(session: updatedSession, activeStartedAt: now));
   }
 
   void _startTicker() {

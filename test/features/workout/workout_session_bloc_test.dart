@@ -92,7 +92,7 @@ void main() {
   }
 
   test('Given 새로 생성한 bloc When 초기 상태를 확인하면 Then 준비 상태와 0초 경과다', () {
-    expect(buildBloc().state, const WorkoutSessionState.initial(heartRateZoneTable: heartRateZoneTable));
+    expect(buildBloc().state, const WorkoutSessionReadyState(heartRateZoneTable: heartRateZoneTable));
   });
 
   blocTest<WorkoutSessionBloc, WorkoutSessionState>(
@@ -100,10 +100,10 @@ void main() {
     build: buildBloc,
     act: (WorkoutSessionBloc bloc) => bloc.add(const WorkoutSessionStarted()),
     expect: () => [
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.running,
+      WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(elapsed: Duration.zero),
+        activeStartedAt: startedAt,
       ),
     ],
   );
@@ -119,18 +119,18 @@ void main() {
       await pumpEventQueue();
     },
     expect: () => [
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.running,
+      WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(elapsed: Duration.zero),
+        activeStartedAt: startedAt,
       ),
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.running,
+      WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 2),
           heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)],
         ),
+        activeStartedAt: startedAt.add(const Duration(seconds: 2)),
       ),
     ],
   );
@@ -155,13 +155,12 @@ void main() {
       await pumpEventQueue();
     },
     expect: () => [
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.running,
+      WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(elapsed: Duration.zero),
+        activeStartedAt: startedAt,
       ),
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.running,
+      WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 1),
@@ -169,9 +168,9 @@ void main() {
             HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt.add(const Duration(seconds: 1))),
           ],
         ),
+        activeStartedAt: startedAt.add(const Duration(seconds: 1)),
       ),
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.running,
+      WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 2),
@@ -180,6 +179,7 @@ void main() {
             HeartRateMeasurement(beatsPerMinute: 151, measuredAt: startedAt.add(const Duration(seconds: 2))),
           ],
         ),
+        activeStartedAt: startedAt.add(const Duration(seconds: 2)),
       ),
     ],
   );
@@ -200,26 +200,26 @@ void main() {
       await pumpEventQueue();
     },
     expect: () => [
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.running,
+      WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(elapsed: Duration.zero),
+        activeStartedAt: startedAt,
       ),
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.running,
+      WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 3),
           heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)],
         ),
+        activeStartedAt: startedAt.add(const Duration(seconds: 3)),
       ),
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.paused,
+      WorkoutSessionPausedState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 3),
           heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)],
         ),
+        pausedAt: startedAt.add(const Duration(seconds: 3)),
       ),
     ],
   );
@@ -243,37 +243,36 @@ void main() {
       await pumpEventQueue();
     },
     expect: () => [
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.running,
+      WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(elapsed: Duration.zero),
+        activeStartedAt: startedAt,
       ),
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.running,
+      WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 3),
           heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)],
         ),
+        activeStartedAt: startedAt.add(const Duration(seconds: 3)),
       ),
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.paused,
+      WorkoutSessionPausedState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 3),
           heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)],
         ),
+        pausedAt: startedAt.add(const Duration(seconds: 3)),
       ),
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.running,
+      WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 3),
           heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)],
         ),
+        activeStartedAt: startedAt.add(const Duration(seconds: 10)),
       ),
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.running,
+      WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 5),
@@ -282,6 +281,7 @@ void main() {
             HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt),
           ],
         ),
+        activeStartedAt: startedAt.add(const Duration(seconds: 12)),
       ),
     ],
   );
@@ -302,27 +302,57 @@ void main() {
       await pumpEventQueue();
     },
     expect: () => [
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.running,
+      WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(elapsed: Duration.zero),
+        activeStartedAt: startedAt,
       ),
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.running,
+      WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 30),
           heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)],
         ),
+        activeStartedAt: startedAt.add(const Duration(seconds: 30)),
       ),
-      WorkoutSessionState(
-        status: WorkoutSessionStatus.ended,
+      WorkoutSessionEndedState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 30),
           endedAt: startedAt.add(const Duration(seconds: 30)),
           heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)],
         ),
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSessionBloc, WorkoutSessionState>(
+    'Given 일시정지 상태 When 종료하면 Then 일시정지 시각을 종료 시각으로 기록한다',
+    build: buildBloc,
+    act: (WorkoutSessionBloc bloc) async {
+      bloc.add(const WorkoutSessionStarted());
+      await pumpEventQueue();
+      clock.advance(const Duration(seconds: 3));
+      bloc.add(const WorkoutSessionPaused());
+      await pumpEventQueue();
+      clock.advance(const Duration(seconds: 7));
+      bloc.add(const WorkoutSessionEnded());
+      await pumpEventQueue();
+    },
+    expect: () => [
+      WorkoutSessionRunningState(
+        heartRateZoneTable: heartRateZoneTable,
+        session: session(elapsed: Duration.zero),
+        activeStartedAt: startedAt,
+      ),
+      WorkoutSessionPausedState(
+        heartRateZoneTable: heartRateZoneTable,
+        session: session(elapsed: const Duration(seconds: 3)),
+        pausedAt: startedAt.add(const Duration(seconds: 3)),
+      ),
+      WorkoutSessionEndedState(
+        heartRateZoneTable: heartRateZoneTable,
+        session: session(elapsed: const Duration(seconds: 3), endedAt: startedAt.add(const Duration(seconds: 3))),
       ),
     ],
   );
