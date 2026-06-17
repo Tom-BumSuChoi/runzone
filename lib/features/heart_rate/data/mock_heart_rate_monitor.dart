@@ -5,7 +5,7 @@ final class MockHeartRateMonitor implements HeartRateMonitor {
   MockHeartRateMonitor({
     List<int> scenario = const [112, 118, 126, 131, 139, 150, 139, 126, 118],
     DateTime Function()? now,
-  }) : _scenario = scenario,
+  }) : _scenario = List<int>.unmodifiable(scenario),
        _now = now ?? DateTime.now {
     if (_scenario.isEmpty) {
       throw ArgumentError.value(scenario, 'scenario', 'must not be empty');
