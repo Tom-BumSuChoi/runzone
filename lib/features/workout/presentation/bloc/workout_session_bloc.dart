@@ -17,6 +17,7 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
   WorkoutSessionBloc({
     required this.heartRateMonitor,
     required HeartRateZoneTable heartRateZoneTable,
+    required this.targetHeartRateZone,
     DateTime Function()? now,
     Stream<void> Function()? createTicker,
   }) : _now = now ?? DateTime.now,
@@ -32,6 +33,7 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
   final DateTime Function() _now;
   final Stream<void> Function() _createTicker;
   final HeartRateMonitor heartRateMonitor;
+  final HeartRateZone targetHeartRateZone;
   StreamSubscription<void>? _tickerSubscription;
 
   void _onStarted(WorkoutSessionStarted event, Emitter<WorkoutSessionState> emit) {
@@ -56,6 +58,7 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
       WorkoutSessionPausedState(
         heartRateZoneTable: currentState.heartRateZoneTable,
         session: currentState.session.copyWith(elapsed: currentState.elapsedAt(now)),
+        targetHeartRateZone: currentState.targetHeartRateZone,
         pausedAt: now,
       ),
     );
@@ -87,6 +90,7 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
           WorkoutSessionEndedState(
             heartRateZoneTable: currentState.heartRateZoneTable,
             session: currentState.session.finish(endedAt: now, elapsed: currentState.elapsedAt(now)),
+            targetHeartRateZone: currentState.targetHeartRateZone,
           ),
         );
       case WorkoutSessionPausedState():
@@ -94,6 +98,7 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
           WorkoutSessionEndedState(
             heartRateZoneTable: currentState.heartRateZoneTable,
             session: currentState.session.finish(endedAt: currentState.pausedAt, elapsed: currentState.session.elapsed),
+            targetHeartRateZone: currentState.targetHeartRateZone,
           ),
         );
       case WorkoutSessionReadyState() || WorkoutSessionCountdownState() || WorkoutSessionEndedState():
@@ -151,6 +156,7 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
                   elapsed: Duration.zero,
                   heartRateZoneTable: currentState.heartRateZoneTable,
                 ),
+            targetHeartRateZone: targetHeartRateZone,
             activeStartedAt: now,
           ),
         );
