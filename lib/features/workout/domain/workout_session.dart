@@ -1,76 +1,58 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
-sealed class WorkoutSession extends Equatable {
-  const WorkoutSession();
+import '../../heart_rate/domain/heart_rate_measurement.dart';
+import '../../heart_rate/domain/heart_rate_zone.dart';
 
-  Duration elapsedAt(DateTime now);
-}
+@immutable
+final class WorkoutSession extends Equatable {
+  const WorkoutSession({
+    required this.startedAt,
+    required this.elapsed,
+    required this.heartRateZoneTable,
+    this.endedAt,
+    this.heartRateMeasurements = const [],
+  });
 
-final class ReadyWorkoutSession extends WorkoutSession {
-  const ReadyWorkoutSession();
+  final DateTime startedAt;
+  final DateTime? endedAt;
+  final Duration elapsed;
+  final HeartRateZoneTable heartRateZoneTable;
+  final List<HeartRateMeasurement> heartRateMeasurements;
 
-  @override
-  List<Object?> get props => [];
+  HeartRateMeasurement? get latestHeartRateMeasurement {
+    if (heartRateMeasurements.isEmpty) {
+      return null;
+    }
+    return heartRateMeasurements.last;
+  }
 
-  RunningWorkoutSession start(DateTime now) {
-    return RunningWorkoutSession._(accumulatedElapsed: .zero, activeStartedAt: now);
+  HeartRateZone? get latestHeartRateZone {
+    final HeartRateMeasurement? measurement = latestHeartRateMeasurement;
+    if (measurement == null) {
+      return null;
+    }
+    return heartRateZoneTable.getZoneType(measurement.beatsPerMinute);
+  }
+
+  WorkoutSession copyWith({DateTime? endedAt, Duration? elapsed, List<HeartRateMeasurement>? heartRateMeasurements}) {
+    return WorkoutSession(
+      startedAt: startedAt,
+      endedAt: endedAt ?? this.endedAt,
+      elapsed: elapsed ?? this.elapsed,
+      heartRateZoneTable: heartRateZoneTable,
+      heartRateMeasurements: heartRateMeasurements ?? this.heartRateMeasurements,
+    );
+  }
+
+  WorkoutSession recordHeartRate(HeartRateMeasurement measurement) {
+    return copyWith(heartRateMeasurements: [...heartRateMeasurements, measurement]);
+  }
+
+  WorkoutSession finish({required DateTime endedAt, required Duration elapsed}) {
+    return copyWith(endedAt: endedAt, elapsed: elapsed);
   }
 
   @override
-  Duration elapsedAt(DateTime now) => Duration.zero;
-}
-
-final class RunningWorkoutSession extends WorkoutSession {
-  const RunningWorkoutSession._({required this._accumulatedElapsed, required this._activeStartedAt});
-
-  final Duration _accumulatedElapsed;
-  final DateTime _activeStartedAt;
-
-  @override
-  List<Object?> get props => [_accumulatedElapsed, _activeStartedAt];
-
-  PausedWorkoutSession pause(DateTime now) {
-    return PausedWorkoutSession._(accumulatedElapsed: elapsedAt(now));
-  }
-
-  EndedWorkoutSession end(DateTime now) {
-    return EndedWorkoutSession._(elapsed: elapsedAt(now));
-  }
-
-  @override
-  Duration elapsedAt(DateTime now) {
-    return _accumulatedElapsed + now.difference(_activeStartedAt);
-  }
-}
-
-final class PausedWorkoutSession extends WorkoutSession {
-  const PausedWorkoutSession._({required this._accumulatedElapsed});
-
-  final Duration _accumulatedElapsed;
-
-  @override
-  List<Object?> get props => [_accumulatedElapsed];
-
-  RunningWorkoutSession resume(DateTime now) {
-    return RunningWorkoutSession._(accumulatedElapsed: _accumulatedElapsed, activeStartedAt: now);
-  }
-
-  EndedWorkoutSession end(DateTime now) {
-    return EndedWorkoutSession._(elapsed: _accumulatedElapsed);
-  }
-
-  @override
-  Duration elapsedAt(DateTime now) => _accumulatedElapsed;
-}
-
-final class EndedWorkoutSession extends WorkoutSession {
-  const EndedWorkoutSession._({required this._elapsed});
-
-  final Duration _elapsed;
-
-  @override
-  List<Object?> get props => [_elapsed];
-
-  @override
-  Duration elapsedAt(DateTime now) => _elapsed;
+  List<Object?> get props => [startedAt, endedAt, elapsed, heartRateZoneTable, heartRateMeasurements];
 }

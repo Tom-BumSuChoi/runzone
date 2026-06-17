@@ -1,19 +1,29 @@
 part of 'workout_session_bloc.dart';
 
+enum WorkoutSessionStatus { ready, running, paused, ended }
+
 final class WorkoutSessionState extends Equatable {
-  const WorkoutSessionState({required this.session, required this.elapsed});
+  const WorkoutSessionState({required this.status, required this.heartRateZoneTable, this.session});
 
-  factory WorkoutSessionState.initial() {
-    return const WorkoutSessionState(session: ReadyWorkoutSession(), elapsed: Duration.zero);
-  }
+  const WorkoutSessionState.initial({required HeartRateZoneTable heartRateZoneTable})
+    : this(status: WorkoutSessionStatus.ready, heartRateZoneTable: heartRateZoneTable);
 
-  final WorkoutSession session;
-  final Duration elapsed;
+  final WorkoutSessionStatus status;
+  final HeartRateZoneTable heartRateZoneTable;
+  final WorkoutSession? session;
 
-  WorkoutSessionState copyWith({WorkoutSession? session, Duration? elapsed}) {
-    return WorkoutSessionState(session: session ?? this.session, elapsed: elapsed ?? this.elapsed);
+  Duration get elapsed => session?.elapsed ?? Duration.zero;
+  HeartRateMeasurement? get latestHeartRateMeasurement => session?.latestHeartRateMeasurement;
+  HeartRateZone? get latestHeartRateZone => session?.latestHeartRateZone;
+
+  WorkoutSessionState copyWith({WorkoutSessionStatus? status, WorkoutSession? session}) {
+    return WorkoutSessionState(
+      status: status ?? this.status,
+      heartRateZoneTable: heartRateZoneTable,
+      session: session ?? this.session,
+    );
   }
 
   @override
-  List<Object?> get props => [session, elapsed];
+  List<Object?> get props => [status, heartRateZoneTable, session];
 }
