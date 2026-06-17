@@ -8,6 +8,7 @@ sealed class WorkoutSessionState extends Equatable {
   Duration get elapsed => Duration.zero;
   HeartRateMeasurement? get latestHeartRateMeasurement => null;
   HeartRateZone? get latestHeartRateZone => null;
+  bool? get isInTargetHeartRateZone => null;
 
   @override
   List<Object?> get props => [heartRateZoneTable];
@@ -20,11 +21,7 @@ final class WorkoutSessionReadyState extends WorkoutSessionState {
 enum WorkoutSessionCountdownStep { three, two, one, go }
 
 final class WorkoutSessionCountdownState extends WorkoutSessionState {
-  const WorkoutSessionCountdownState({
-    required super.heartRateZoneTable,
-    required this.step,
-    this.session,
-  });
+  const WorkoutSessionCountdownState({required super.heartRateZoneTable, required this.step, this.session});
 
   final WorkoutSessionCountdownStep step;
   final WorkoutSession? session;
@@ -42,10 +39,15 @@ final class WorkoutSessionCountdownState extends WorkoutSessionState {
   List<Object?> get props => [heartRateZoneTable, step, session];
 }
 
-sealed class StartedWorkoutSessionState extends WorkoutSessionState {
-  const StartedWorkoutSessionState({required super.heartRateZoneTable, required this.session});
+sealed class SessionBackedWorkoutSessionState extends WorkoutSessionState {
+  const SessionBackedWorkoutSessionState({
+    required super.heartRateZoneTable,
+    required this.session,
+    required this.targetHeartRateZone,
+  });
 
   final WorkoutSession session;
+  final HeartRateZone targetHeartRateZone;
 
   @override
   Duration get elapsed => session.elapsed;
@@ -57,13 +59,23 @@ sealed class StartedWorkoutSessionState extends WorkoutSessionState {
   HeartRateZone? get latestHeartRateZone => session.latestHeartRateZone;
 
   @override
-  List<Object?> get props => [heartRateZoneTable, session];
+  bool? get isInTargetHeartRateZone {
+    final HeartRateZone? heartRateZone = latestHeartRateZone;
+    if (heartRateZone == null) {
+      return null;
+    }
+    return heartRateZone == targetHeartRateZone;
+  }
+
+  @override
+  List<Object?> get props => [heartRateZoneTable, session, targetHeartRateZone];
 }
 
-final class WorkoutSessionRunningState extends StartedWorkoutSessionState {
+final class WorkoutSessionRunningState extends SessionBackedWorkoutSessionState {
   const WorkoutSessionRunningState({
     required super.heartRateZoneTable,
     required super.session,
+    required super.targetHeartRateZone,
     required this.activeStartedAt,
   });
 
@@ -77,23 +89,33 @@ final class WorkoutSessionRunningState extends StartedWorkoutSessionState {
     return WorkoutSessionRunningState(
       heartRateZoneTable: heartRateZoneTable,
       session: session ?? this.session,
+      targetHeartRateZone: targetHeartRateZone,
       activeStartedAt: activeStartedAt ?? this.activeStartedAt,
     );
   }
 
   @override
-  List<Object?> get props => [heartRateZoneTable, session, activeStartedAt];
+  List<Object?> get props => [heartRateZoneTable, session, targetHeartRateZone, activeStartedAt];
 }
 
-final class WorkoutSessionPausedState extends StartedWorkoutSessionState {
-  const WorkoutSessionPausedState({required super.heartRateZoneTable, required super.session, required this.pausedAt});
+final class WorkoutSessionPausedState extends SessionBackedWorkoutSessionState {
+  const WorkoutSessionPausedState({
+    required super.heartRateZoneTable,
+    required super.session,
+    required super.targetHeartRateZone,
+    required this.pausedAt,
+  });
 
   final DateTime pausedAt;
 
   @override
-  List<Object?> get props => [heartRateZoneTable, session, pausedAt];
+  List<Object?> get props => [heartRateZoneTable, session, targetHeartRateZone, pausedAt];
 }
 
-final class WorkoutSessionEndedState extends StartedWorkoutSessionState {
-  const WorkoutSessionEndedState({required super.heartRateZoneTable, required super.session});
+final class WorkoutSessionEndedState extends SessionBackedWorkoutSessionState {
+  const WorkoutSessionEndedState({
+    required super.heartRateZoneTable,
+    required super.session,
+    required super.targetHeartRateZone,
+  });
 }

@@ -62,6 +62,7 @@ void main() {
     zone4: HeartRateZoneRange(lower: 150, upper: 167),
     zone5: HeartRateZoneRange(lower: 168, upper: 187),
   );
+  const HeartRateZone targetHeartRateZone = HeartRateZone.zone2;
 
   setUp(() {
     clock = _FakeClock(startedAt);
@@ -75,6 +76,7 @@ void main() {
       createTicker: ticker.create,
       heartRateMonitor: heartRateMonitor,
       heartRateZoneTable: heartRateZoneTable,
+      targetHeartRateZone: targetHeartRateZone,
     );
   }
 
@@ -133,6 +135,7 @@ void main() {
       WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(elapsed: Duration.zero),
+        targetHeartRateZone: targetHeartRateZone,
         activeStartedAt: runningStartedAt,
       ),
     ];
@@ -140,6 +143,30 @@ void main() {
 
   test('Given 새로 생성한 bloc When 초기 상태를 확인하면 Then 준비 상태와 0초 경과다', () {
     expect(buildBloc().state, const WorkoutSessionReadyState(heartRateZoneTable: heartRateZoneTable));
+  });
+
+  test('Given 현재 심박존 When 목표 존 상태를 확인하면 Then 안과 밖을 구분한다', () {
+    final WorkoutSessionRunningState inTargetState = WorkoutSessionRunningState(
+      heartRateZoneTable: heartRateZoneTable,
+      session: session(
+        elapsed: Duration.zero,
+        heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
+      ),
+      targetHeartRateZone: targetHeartRateZone,
+      activeStartedAt: runningStartedAt,
+    );
+    final WorkoutSessionRunningState outOfTargetState = WorkoutSessionRunningState(
+      heartRateZoneTable: heartRateZoneTable,
+      session: session(
+        elapsed: Duration.zero,
+        heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 151, measuredAt: runningStartedAt)],
+      ),
+      targetHeartRateZone: targetHeartRateZone,
+      activeStartedAt: runningStartedAt,
+    );
+
+    expect(inTargetState.isInTargetHeartRateZone, isTrue);
+    expect(outOfTargetState.isInTargetHeartRateZone, isFalse);
   });
 
   blocTest<WorkoutSessionBloc, WorkoutSessionState>(
@@ -178,6 +205,7 @@ void main() {
           elapsed: const Duration(seconds: 2),
           heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
         ),
+        targetHeartRateZone: targetHeartRateZone,
         activeStartedAt: runningStartedAt.add(const Duration(seconds: 2)),
       ),
     ],
@@ -211,6 +239,7 @@ void main() {
             HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt.add(const Duration(seconds: 1))),
           ],
         ),
+        targetHeartRateZone: targetHeartRateZone,
         activeStartedAt: runningStartedAt.add(const Duration(seconds: 1)),
       ),
       WorkoutSessionRunningState(
@@ -222,6 +251,7 @@ void main() {
             HeartRateMeasurement(beatsPerMinute: 151, measuredAt: runningStartedAt.add(const Duration(seconds: 2))),
           ],
         ),
+        targetHeartRateZone: targetHeartRateZone,
         activeStartedAt: runningStartedAt.add(const Duration(seconds: 2)),
       ),
     ],
@@ -249,6 +279,7 @@ void main() {
           elapsed: const Duration(seconds: 3),
           heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
         ),
+        targetHeartRateZone: targetHeartRateZone,
         activeStartedAt: runningStartedAt.add(const Duration(seconds: 3)),
       ),
       WorkoutSessionPausedState(
@@ -257,6 +288,7 @@ void main() {
           elapsed: const Duration(seconds: 3),
           heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
         ),
+        targetHeartRateZone: targetHeartRateZone,
         pausedAt: runningStartedAt.add(const Duration(seconds: 3)),
       ),
     ],
@@ -292,6 +324,7 @@ void main() {
           elapsed: const Duration(seconds: 3),
           heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
         ),
+        targetHeartRateZone: targetHeartRateZone,
         activeStartedAt: runningStartedAt.add(const Duration(seconds: 3)),
       ),
       WorkoutSessionPausedState(
@@ -300,6 +333,7 @@ void main() {
           elapsed: const Duration(seconds: 3),
           heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
         ),
+        targetHeartRateZone: targetHeartRateZone,
         pausedAt: runningStartedAt.add(const Duration(seconds: 3)),
       ),
       ...countdownStates(
@@ -314,6 +348,7 @@ void main() {
           elapsed: const Duration(seconds: 3),
           heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
         ),
+        targetHeartRateZone: targetHeartRateZone,
         activeStartedAt: runningStartedAt.add(const Duration(seconds: 14)),
       ),
       WorkoutSessionRunningState(
@@ -325,6 +360,7 @@ void main() {
             HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt),
           ],
         ),
+        targetHeartRateZone: targetHeartRateZone,
         activeStartedAt: runningStartedAt.add(const Duration(seconds: 16)),
       ),
     ],
@@ -352,6 +388,7 @@ void main() {
           elapsed: const Duration(seconds: 30),
           heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
         ),
+        targetHeartRateZone: targetHeartRateZone,
         activeStartedAt: runningStartedAt.add(const Duration(seconds: 30)),
       ),
       WorkoutSessionEndedState(
@@ -361,6 +398,7 @@ void main() {
           endedAt: runningStartedAt.add(const Duration(seconds: 30)),
           heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
         ),
+        targetHeartRateZone: targetHeartRateZone,
       ),
     ],
   );
@@ -382,6 +420,7 @@ void main() {
       WorkoutSessionPausedState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(elapsed: const Duration(seconds: 3)),
+        targetHeartRateZone: targetHeartRateZone,
         pausedAt: runningStartedAt.add(const Duration(seconds: 3)),
       ),
       WorkoutSessionEndedState(
@@ -390,6 +429,7 @@ void main() {
           elapsed: const Duration(seconds: 3),
           endedAt: runningStartedAt.add(const Duration(seconds: 3)),
         ),
+        targetHeartRateZone: targetHeartRateZone,
       ),
     ],
   );
