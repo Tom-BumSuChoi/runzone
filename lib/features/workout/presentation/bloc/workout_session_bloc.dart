@@ -12,6 +12,8 @@ part 'workout_session_event.dart';
 part 'workout_session_state.dart';
 
 final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionState> {
+  static const WorkoutSessionCountdownStep _countdownStartStep = WorkoutSessionCountdownStep.three;
+
   WorkoutSessionBloc({
     required this.heartRateMonitor,
     required HeartRateZoneTable heartRateZoneTable,
@@ -38,18 +40,7 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
       return;
     }
 
-    final DateTime now = _now();
-    emit(
-      WorkoutSessionRunningState(
-        heartRateZoneTable: currentState.heartRateZoneTable,
-        session: WorkoutSession(
-          startedAt: now,
-          elapsed: Duration.zero,
-          heartRateZoneTable: currentState.heartRateZoneTable,
-        ),
-        activeStartedAt: now,
-      ),
-    );
+    emit(WorkoutSessionCountdownState(heartRateZoneTable: currentState.heartRateZoneTable, step: _countdownStartStep));
     _startTicker();
   }
 
@@ -76,12 +67,11 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
       return;
     }
 
-    final DateTime now = _now();
     emit(
-      WorkoutSessionRunningState(
+      WorkoutSessionCountdownState(
         heartRateZoneTable: currentState.heartRateZoneTable,
         session: currentState.session,
-        activeStartedAt: now,
+        step: _countdownStartStep,
       ),
     );
     _startTicker();
@@ -106,17 +96,68 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
             session: currentState.session.finish(endedAt: currentState.pausedAt, elapsed: currentState.session.elapsed),
           ),
         );
-      case WorkoutSessionReadyState() || WorkoutSessionEndedState():
+      case WorkoutSessionReadyState() || WorkoutSessionCountdownState() || WorkoutSessionEndedState():
         return;
     }
   }
 
   void _onTicked(_WorkoutSessionTicked event, Emitter<WorkoutSessionState> emit) {
     final WorkoutSessionState currentState = state;
-    if (currentState is! WorkoutSessionRunningState) {
-      return;
+    switch (currentState) {
+      case WorkoutSessionCountdownState():
+        _tickCountdown(currentState, emit);
+      case WorkoutSessionRunningState():
+        _tickRunning(currentState, emit);
+      case WorkoutSessionReadyState() || WorkoutSessionPausedState() || WorkoutSessionEndedState():
+        return;
     }
+  }
 
+  void _tickCountdown(WorkoutSessionCountdownState currentState, Emitter<WorkoutSessionState> emit) {
+    switch (currentState.step) {
+      case WorkoutSessionCountdownStep.three:
+        emit(
+          WorkoutSessionCountdownState(
+            heartRateZoneTable: currentState.heartRateZoneTable,
+            session: currentState.session,
+            step: WorkoutSessionCountdownStep.two,
+          ),
+        );
+      case WorkoutSessionCountdownStep.two:
+        emit(
+          WorkoutSessionCountdownState(
+            heartRateZoneTable: currentState.heartRateZoneTable,
+            session: currentState.session,
+            step: WorkoutSessionCountdownStep.one,
+          ),
+        );
+      case WorkoutSessionCountdownStep.one:
+        emit(
+          WorkoutSessionCountdownState(
+            heartRateZoneTable: currentState.heartRateZoneTable,
+            session: currentState.session,
+            step: WorkoutSessionCountdownStep.go,
+          ),
+        );
+      case WorkoutSessionCountdownStep.go:
+        final DateTime now = _now();
+        emit(
+          WorkoutSessionRunningState(
+            heartRateZoneTable: currentState.heartRateZoneTable,
+            session:
+                currentState.session ??
+                WorkoutSession(
+                  startedAt: now,
+                  elapsed: Duration.zero,
+                  heartRateZoneTable: currentState.heartRateZoneTable,
+                ),
+            activeStartedAt: now,
+          ),
+        );
+    }
+  }
+
+  void _tickRunning(WorkoutSessionRunningState currentState, Emitter<WorkoutSessionState> emit) {
     final DateTime now = _now();
     final HeartRateMeasurement heartRateMeasurement = heartRateMonitor.measure();
     final WorkoutSession updatedSession = currentState.session

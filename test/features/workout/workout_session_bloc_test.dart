@@ -54,6 +54,7 @@ void main() {
   late _FakeTicker ticker;
   late _FakeHeartRateMonitor heartRateMonitor;
   final DateTime startedAt = DateTime(2026, 6, 15, 7);
+  final DateTime runningStartedAt = startedAt.add(const Duration(seconds: 4));
   const HeartRateZoneTable heartRateZoneTable = HeartRateZoneTable(
     zone1: HeartRateZoneRange(lower: 90, upper: 111),
     zone2: HeartRateZoneRange(lower: 112, upper: 130),
@@ -65,7 +66,7 @@ void main() {
   setUp(() {
     clock = _FakeClock(startedAt);
     ticker = _FakeTicker();
-    heartRateMonitor = _FakeHeartRateMonitor([HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)]);
+    heartRateMonitor = _FakeHeartRateMonitor([HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)]);
   });
 
   WorkoutSessionBloc buildBloc() {
@@ -83,7 +84,7 @@ void main() {
     List<HeartRateMeasurement> heartRateMeasurements = const [],
   }) {
     return WorkoutSession(
-      startedAt: startedAt,
+      startedAt: runningStartedAt,
       endedAt: endedAt,
       elapsed: elapsed,
       heartRateZoneTable: heartRateZoneTable,
@@ -91,46 +92,93 @@ void main() {
     );
   }
 
+  Future<void> startWorkout(WorkoutSessionBloc bloc) async {
+    bloc.add(const WorkoutSessionStarted());
+    await pumpEventQueue();
+    for (int i = 0; i < 4; i += 1) {
+      clock.advance(const Duration(seconds: 1));
+      ticker.tick();
+      await pumpEventQueue();
+    }
+  }
+
+  List<WorkoutSessionState> countdownStates({WorkoutSession? workoutSession}) {
+    return [
+      WorkoutSessionCountdownState(
+        heartRateZoneTable: heartRateZoneTable,
+        step: WorkoutSessionCountdownStep.three,
+        session: workoutSession,
+      ),
+      WorkoutSessionCountdownState(
+        heartRateZoneTable: heartRateZoneTable,
+        step: WorkoutSessionCountdownStep.two,
+        session: workoutSession,
+      ),
+      WorkoutSessionCountdownState(
+        heartRateZoneTable: heartRateZoneTable,
+        step: WorkoutSessionCountdownStep.one,
+        session: workoutSession,
+      ),
+      WorkoutSessionCountdownState(
+        heartRateZoneTable: heartRateZoneTable,
+        step: WorkoutSessionCountdownStep.go,
+        session: workoutSession,
+      ),
+    ];
+  }
+
+  List<WorkoutSessionState> countdownToRunningStates() {
+    return [
+      ...countdownStates(),
+      WorkoutSessionRunningState(
+        heartRateZoneTable: heartRateZoneTable,
+        session: session(elapsed: Duration.zero),
+        activeStartedAt: runningStartedAt,
+      ),
+    ];
+  }
+
   test('Given 새로 생성한 bloc When 초기 상태를 확인하면 Then 준비 상태와 0초 경과다', () {
     expect(buildBloc().state, const WorkoutSessionReadyState(heartRateZoneTable: heartRateZoneTable));
   });
 
   blocTest<WorkoutSessionBloc, WorkoutSessionState>(
-    'Given 준비 상태 When 시작 이벤트를 보내면 Then 진행 상태와 운동 세션을 방출한다',
+    'Given 준비 상태 When 시작 이벤트를 보내면 Then 카운트다운 상태를 방출한다',
     build: buildBloc,
     act: (WorkoutSessionBloc bloc) => bloc.add(const WorkoutSessionStarted()),
     expect: () => [
-      WorkoutSessionRunningState(
+      const WorkoutSessionCountdownState(
         heartRateZoneTable: heartRateZoneTable,
-        session: session(elapsed: Duration.zero),
-        activeStartedAt: startedAt,
+        step: WorkoutSessionCountdownStep.three,
       ),
     ],
+  );
+
+  blocTest<WorkoutSessionBloc, WorkoutSessionState>(
+    'Given 카운트다운 상태 When 네 번 tick하면 Then 운동 세션을 시작한다',
+    build: buildBloc,
+    act: startWorkout,
+    expect: countdownToRunningStates,
   );
 
   blocTest<WorkoutSessionBloc, WorkoutSessionState>(
     'Given 진행 상태 When tick하면 Then 경과 시간과 심박 기록을 방출한다',
     build: buildBloc,
     act: (WorkoutSessionBloc bloc) async {
-      bloc.add(const WorkoutSessionStarted());
-      await pumpEventQueue();
+      await startWorkout(bloc);
       clock.advance(const Duration(seconds: 2));
       ticker.tick();
       await pumpEventQueue();
     },
     expect: () => [
-      WorkoutSessionRunningState(
-        heartRateZoneTable: heartRateZoneTable,
-        session: session(elapsed: Duration.zero),
-        activeStartedAt: startedAt,
-      ),
+      ...countdownToRunningStates(),
       WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 2),
-          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)],
+          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
         ),
-        activeStartedAt: startedAt.add(const Duration(seconds: 2)),
+        activeStartedAt: runningStartedAt.add(const Duration(seconds: 2)),
       ),
     ],
   );
@@ -139,14 +187,13 @@ void main() {
     'Given 진행 상태 When tick마다 측정하면 Then 다음 심박 측정값을 누적한다',
     build: () {
       heartRateMonitor = _FakeHeartRateMonitor([
-        HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt.add(const Duration(seconds: 1))),
-        HeartRateMeasurement(beatsPerMinute: 151, measuredAt: startedAt.add(const Duration(seconds: 2))),
+        HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt.add(const Duration(seconds: 1))),
+        HeartRateMeasurement(beatsPerMinute: 151, measuredAt: runningStartedAt.add(const Duration(seconds: 2))),
       ]);
       return buildBloc();
     },
     act: (WorkoutSessionBloc bloc) async {
-      bloc.add(const WorkoutSessionStarted());
-      await pumpEventQueue();
+      await startWorkout(bloc);
       clock.advance(const Duration(seconds: 1));
       ticker.tick();
       await pumpEventQueue();
@@ -155,31 +202,27 @@ void main() {
       await pumpEventQueue();
     },
     expect: () => [
-      WorkoutSessionRunningState(
-        heartRateZoneTable: heartRateZoneTable,
-        session: session(elapsed: Duration.zero),
-        activeStartedAt: startedAt,
-      ),
+      ...countdownToRunningStates(),
       WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 1),
           heartRateMeasurements: [
-            HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt.add(const Duration(seconds: 1))),
+            HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt.add(const Duration(seconds: 1))),
           ],
         ),
-        activeStartedAt: startedAt.add(const Duration(seconds: 1)),
+        activeStartedAt: runningStartedAt.add(const Duration(seconds: 1)),
       ),
       WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 2),
           heartRateMeasurements: [
-            HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt.add(const Duration(seconds: 1))),
-            HeartRateMeasurement(beatsPerMinute: 151, measuredAt: startedAt.add(const Duration(seconds: 2))),
+            HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt.add(const Duration(seconds: 1))),
+            HeartRateMeasurement(beatsPerMinute: 151, measuredAt: runningStartedAt.add(const Duration(seconds: 2))),
           ],
         ),
-        activeStartedAt: startedAt.add(const Duration(seconds: 2)),
+        activeStartedAt: runningStartedAt.add(const Duration(seconds: 2)),
       ),
     ],
   );
@@ -188,8 +231,7 @@ void main() {
     'Given 진행 상태 When 일시정지하면 Then 경과가 멈추고 이후 tick에도 변하지 않는다',
     build: buildBloc,
     act: (WorkoutSessionBloc bloc) async {
-      bloc.add(const WorkoutSessionStarted());
-      await pumpEventQueue();
+      await startWorkout(bloc);
       clock.advance(const Duration(seconds: 3));
       ticker.tick();
       await pumpEventQueue();
@@ -200,26 +242,22 @@ void main() {
       await pumpEventQueue();
     },
     expect: () => [
-      WorkoutSessionRunningState(
-        heartRateZoneTable: heartRateZoneTable,
-        session: session(elapsed: Duration.zero),
-        activeStartedAt: startedAt,
-      ),
+      ...countdownToRunningStates(),
       WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 3),
-          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)],
+          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
         ),
-        activeStartedAt: startedAt.add(const Duration(seconds: 3)),
+        activeStartedAt: runningStartedAt.add(const Duration(seconds: 3)),
       ),
       WorkoutSessionPausedState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 3),
-          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)],
+          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
         ),
-        pausedAt: startedAt.add(const Duration(seconds: 3)),
+        pausedAt: runningStartedAt.add(const Duration(seconds: 3)),
       ),
     ],
   );
@@ -228,8 +266,7 @@ void main() {
     'Given 일시정지 상태 When 재개하면 Then 멈췄던 지점부터 경과 시간이 다시 증가한다',
     build: buildBloc,
     act: (WorkoutSessionBloc bloc) async {
-      bloc.add(const WorkoutSessionStarted());
-      await pumpEventQueue();
+      await startWorkout(bloc);
       clock.advance(const Duration(seconds: 3));
       ticker.tick();
       await pumpEventQueue();
@@ -238,50 +275,57 @@ void main() {
       clock.advance(const Duration(seconds: 7));
       bloc.add(const WorkoutSessionResumed());
       await pumpEventQueue();
+      for (int i = 0; i < 4; i += 1) {
+        clock.advance(const Duration(seconds: 1));
+        ticker.tick();
+        await pumpEventQueue();
+      }
       clock.advance(const Duration(seconds: 2));
       ticker.tick();
       await pumpEventQueue();
     },
     expect: () => [
-      WorkoutSessionRunningState(
-        heartRateZoneTable: heartRateZoneTable,
-        session: session(elapsed: Duration.zero),
-        activeStartedAt: startedAt,
-      ),
+      ...countdownToRunningStates(),
       WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 3),
-          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)],
+          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
         ),
-        activeStartedAt: startedAt.add(const Duration(seconds: 3)),
+        activeStartedAt: runningStartedAt.add(const Duration(seconds: 3)),
       ),
       WorkoutSessionPausedState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 3),
-          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)],
+          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
         ),
-        pausedAt: startedAt.add(const Duration(seconds: 3)),
+        pausedAt: runningStartedAt.add(const Duration(seconds: 3)),
+      ),
+      ...countdownStates(
+        workoutSession: session(
+          elapsed: const Duration(seconds: 3),
+          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
+        ),
       ),
       WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 3),
-          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)],
+          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
         ),
-        activeStartedAt: startedAt.add(const Duration(seconds: 10)),
+        activeStartedAt: runningStartedAt.add(const Duration(seconds: 14)),
       ),
       WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 5),
           heartRateMeasurements: [
-            HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt),
-            HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt),
+            HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt),
+            HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt),
           ],
         ),
-        activeStartedAt: startedAt.add(const Duration(seconds: 12)),
+        activeStartedAt: runningStartedAt.add(const Duration(seconds: 16)),
       ),
     ],
   );
@@ -290,8 +334,7 @@ void main() {
     'Given 진행 상태 When 종료하면 Then 종료 상태와 종료된 운동 세션을 방출한다',
     build: buildBloc,
     act: (WorkoutSessionBloc bloc) async {
-      bloc.add(const WorkoutSessionStarted());
-      await pumpEventQueue();
+      await startWorkout(bloc);
       clock.advance(const Duration(seconds: 30));
       ticker.tick();
       await pumpEventQueue();
@@ -302,25 +345,21 @@ void main() {
       await pumpEventQueue();
     },
     expect: () => [
-      WorkoutSessionRunningState(
-        heartRateZoneTable: heartRateZoneTable,
-        session: session(elapsed: Duration.zero),
-        activeStartedAt: startedAt,
-      ),
+      ...countdownToRunningStates(),
       WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 30),
-          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)],
+          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
         ),
-        activeStartedAt: startedAt.add(const Duration(seconds: 30)),
+        activeStartedAt: runningStartedAt.add(const Duration(seconds: 30)),
       ),
       WorkoutSessionEndedState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(
           elapsed: const Duration(seconds: 30),
-          endedAt: startedAt.add(const Duration(seconds: 30)),
-          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: startedAt)],
+          endedAt: runningStartedAt.add(const Duration(seconds: 30)),
+          heartRateMeasurements: [HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)],
         ),
       ),
     ],
@@ -330,8 +369,7 @@ void main() {
     'Given 일시정지 상태 When 종료하면 Then 일시정지 시각을 종료 시각으로 기록한다',
     build: buildBloc,
     act: (WorkoutSessionBloc bloc) async {
-      bloc.add(const WorkoutSessionStarted());
-      await pumpEventQueue();
+      await startWorkout(bloc);
       clock.advance(const Duration(seconds: 3));
       bloc.add(const WorkoutSessionPaused());
       await pumpEventQueue();
@@ -340,19 +378,18 @@ void main() {
       await pumpEventQueue();
     },
     expect: () => [
-      WorkoutSessionRunningState(
-        heartRateZoneTable: heartRateZoneTable,
-        session: session(elapsed: Duration.zero),
-        activeStartedAt: startedAt,
-      ),
+      ...countdownToRunningStates(),
       WorkoutSessionPausedState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(elapsed: const Duration(seconds: 3)),
-        pausedAt: startedAt.add(const Duration(seconds: 3)),
+        pausedAt: runningStartedAt.add(const Duration(seconds: 3)),
       ),
       WorkoutSessionEndedState(
         heartRateZoneTable: heartRateZoneTable,
-        session: session(elapsed: const Duration(seconds: 3), endedAt: startedAt.add(const Duration(seconds: 3))),
+        session: session(
+          elapsed: const Duration(seconds: 3),
+          endedAt: runningStartedAt.add(const Duration(seconds: 3)),
+        ),
       ),
     ],
   );
