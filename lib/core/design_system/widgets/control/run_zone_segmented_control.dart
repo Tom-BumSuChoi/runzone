@@ -65,6 +65,7 @@ final class _RunZoneSegmentedControlButton<T> extends StatelessWidget {
           onPressed: () => onChanged(option.value),
           style: ButtonStyle(
             backgroundColor: WidgetStatePropertyAll(isSelected ? colorScheme.primary : Colors.transparent),
+            padding: const WidgetStatePropertyAll(AppSpacing.segmentedControlButtonInsets),
             shape: const WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: AppRadius.badgeBorder)),
           ),
           child: RunZoneLabelMediumLabel(
