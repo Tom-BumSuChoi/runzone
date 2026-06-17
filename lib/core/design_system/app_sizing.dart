@@ -1,5 +1,6 @@
 abstract final class AppSizing {
   static const colorSwatch = 8.0;
+  static const connectionIndicatorSize = 6.0;
   static const indicatorSize = 8.0;
   static const inlineIconSize = 14.0;
   static const heartRateZoneBarHeight = 100.0;
