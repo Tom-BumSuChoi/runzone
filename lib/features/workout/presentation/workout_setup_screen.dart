@@ -239,8 +239,11 @@ final class _WorkoutStartButtonArea extends StatelessWidget {
   }
 
   void _startWorkout(BuildContext context) {
-    Navigator.of(context).pop();
-    context.go(AppRoutes.workoutCountdown);
+    final router = GoRouter.of(context);
+    final navigator = Navigator.of(context);
+
+    navigator.pop();
+    router.go(AppRoutes.workoutCountdown);
   }
 }
 
