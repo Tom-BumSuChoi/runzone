@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:runzone/features/profile/domain/profile_repository.dart';
 import 'package:runzone/features/profile/domain/runner_profile.dart';
 import 'package:runzone/features/profile/presentation/cubit/runner_profile_setup_cubit.dart';
-import 'package:runzone/features/workout/domain/heart_rate_zone_calculator.dart';
+import 'package:runzone/features/heart_rate/domain/heart_rate_zone_calculator.dart';
 
 class _FakeProfileRepository implements ProfileRepository {
   @override

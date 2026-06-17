@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../workout/domain/heart_rate_zone_calculator.dart';
+import '../../../heart_rate/domain/heart_rate_zone_calculator.dart';
 import '../../domain/profile_repository.dart';
 import '../../domain/runner_profile.dart';
 

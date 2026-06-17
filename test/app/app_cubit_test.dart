@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:runzone/app/cubit/app_cubit.dart';
 import 'package:runzone/features/profile/domain/profile_repository.dart';
 import 'package:runzone/features/profile/domain/runner_profile.dart';
-import 'package:runzone/features/workout/domain/heart_rate_zone_calculator.dart';
+import 'package:runzone/features/heart_rate/domain/heart_rate_zone_calculator.dart';
 
 final class _FakeProfileRepository implements ProfileRepository {
   _FakeProfileRepository(this._profile);
