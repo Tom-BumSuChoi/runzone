@@ -17,6 +17,31 @@ final class WorkoutSessionReadyState extends WorkoutSessionState {
   const WorkoutSessionReadyState({required super.heartRateZoneTable});
 }
 
+enum WorkoutSessionCountdownStep { three, two, one, go }
+
+final class WorkoutSessionCountdownState extends WorkoutSessionState {
+  const WorkoutSessionCountdownState({
+    required super.heartRateZoneTable,
+    required this.step,
+    this.session,
+  });
+
+  final WorkoutSessionCountdownStep step;
+  final WorkoutSession? session;
+
+  @override
+  Duration get elapsed => session?.elapsed ?? Duration.zero;
+
+  @override
+  HeartRateMeasurement? get latestHeartRateMeasurement => session?.latestHeartRateMeasurement;
+
+  @override
+  HeartRateZone? get latestHeartRateZone => session?.latestHeartRateZone;
+
+  @override
+  List<Object?> get props => [heartRateZoneTable, step, session];
+}
+
 sealed class StartedWorkoutSessionState extends WorkoutSessionState {
   const StartedWorkoutSessionState({required super.heartRateZoneTable, required this.session});
 
@@ -61,11 +86,7 @@ final class WorkoutSessionRunningState extends StartedWorkoutSessionState {
 }
 
 final class WorkoutSessionPausedState extends StartedWorkoutSessionState {
-  const WorkoutSessionPausedState({
-    required super.heartRateZoneTable,
-    required super.session,
-    required this.pausedAt,
-  });
+  const WorkoutSessionPausedState({required super.heartRateZoneTable, required super.session, required this.pausedAt});
 
   final DateTime pausedAt;
 
