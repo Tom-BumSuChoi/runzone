@@ -5,6 +5,7 @@ import 'package:runzone/app/main_shell.dart';
 import 'package:runzone/core/design_system/app_theme.dart';
 import 'package:runzone/features/profile/domain/profile_repository.dart';
 import 'package:runzone/features/profile/domain/runner_profile.dart';
+import '../helpers/test_device_size.dart';
 
 final class _FakeProfileRepository implements ProfileRepository {
   const _FakeProfileRepository(this._profile);
@@ -49,7 +50,7 @@ void main() {
   });
 
   testWidgets('Given 저장된 프로필이 있는 메인 쉘 When 마이페이지를 누르면 Then 심박존 경계값이 보인다', (tester) async {
-    tester.view.physicalSize = const Size(390, 844);
+    tester.view.physicalSize = testDeviceSize;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);

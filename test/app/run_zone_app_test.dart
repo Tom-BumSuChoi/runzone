@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:runzone/app/di.dart';
@@ -8,6 +7,7 @@ import 'package:runzone/app/main_shell.dart';
 import 'package:runzone/app/run_zone_app.dart';
 import 'package:runzone/features/profile/domain/profile_repository.dart';
 import 'package:runzone/features/profile/domain/runner_profile.dart';
+import '../helpers/test_device_size.dart';
 
 final class _FakeProfileRepository implements ProfileRepository {
   RunnerProfile? saved;
@@ -45,7 +45,7 @@ void main() {
   });
 
   testWidgets('Given 프로필이 없을 때 When 프로필 입력에서 시작하기를 누르면 Then 저장 후 홈으로 간다', (tester) async {
-    tester.view.physicalSize = const Size(375, 667);
+    tester.view.physicalSize = testDeviceSize;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
