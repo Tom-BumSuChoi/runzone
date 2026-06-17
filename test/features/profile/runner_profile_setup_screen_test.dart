@@ -9,6 +9,7 @@ import 'package:runzone/features/profile/domain/profile_repository.dart';
 import 'package:runzone/features/profile/domain/runner_profile.dart';
 import 'package:runzone/features/profile/presentation/runner_profile_setup_screen.dart';
 import 'package:runzone/features/workout/domain/heart_rate_zone_calculator.dart';
+import '../../helpers/test_device_size.dart';
 
 final class _SpyProfileRepository implements ProfileRepository {
   RunnerProfile? saved;
@@ -48,7 +49,7 @@ void main() {
   });
 
   testWidgets('Given 기본 정보 화면 When 처음 열면 Then 초기 프로필 값이 보인다', (tester) async {
-    tester.view.physicalSize = const Size(375, 667);
+    tester.view.physicalSize = testDeviceSize;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -64,7 +65,7 @@ void main() {
   });
 
   testWidgets('Given 기본 정보 화면 When 값을 변경하고 시작하면 Then 변경된 RunnerProfile을 저장한다', (tester) async {
-    tester.view.physicalSize = const Size(375, 667);
+    tester.view.physicalSize = testDeviceSize;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -97,7 +98,7 @@ void main() {
   testWidgets('Given 저장 중인 기본 정보 화면 When 시작하기를 다시 눌러도 Then 중복 저장하지 않는다', (tester) async {
     final completer = Completer<void>();
     repository.completer = completer;
-    tester.view.physicalSize = const Size(375, 667);
+    tester.view.physicalSize = testDeviceSize;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
