@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:runzone/features/workout/domain/heart_rate_zone.dart';
+import 'package:runzone/features/heart_rate/domain/heart_rate_zone.dart';
 
 void main() {
   test('Given 심박존 When 증가하면 Then 다음 존으로 변경된다', () {

@@ -8,7 +8,7 @@ import 'package:runzone/core/design_system/app_theme.dart';
 import 'package:runzone/features/profile/domain/profile_repository.dart';
 import 'package:runzone/features/profile/domain/runner_profile.dart';
 import 'package:runzone/features/profile/presentation/runner_profile_setup_screen.dart';
-import 'package:runzone/features/workout/domain/heart_rate_zone_calculator.dart';
+import 'package:runzone/features/heart_rate/domain/heart_rate_zone_calculator.dart';
 import '../../helpers/test_device_size.dart';
 
 final class _SpyProfileRepository implements ProfileRepository {

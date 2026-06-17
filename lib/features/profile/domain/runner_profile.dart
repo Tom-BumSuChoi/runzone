@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../workout/domain/heart_rate_zone.dart';
+import '../../heart_rate/domain/heart_rate_zone.dart';
 import 'birth_year.dart';
 import 'gender.dart';
 import 'height.dart';
@@ -8,8 +8,8 @@ import 'running_career.dart';
 import 'weekly_frequency.dart';
 import 'weight.dart';
 
-export '../../workout/domain/heart_rate_zone.dart';
-export '../../workout/domain/heart_rate_zone_range.dart';
+export '../../heart_rate/domain/heart_rate_zone.dart';
+export '../../heart_rate/domain/heart_rate_zone_range.dart';
 export 'birth_year.dart';
 export 'gender.dart';
 export 'height.dart';

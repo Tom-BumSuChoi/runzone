@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'heart_rate_zone.dart';
+import '../../heart_rate/domain/heart_rate_zone.dart';
 import 'workout_duration_goal.dart';
 
 sealed class WorkoutPlan extends Equatable {
