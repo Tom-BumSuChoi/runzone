@@ -6,7 +6,9 @@ import 'package:equatable/equatable.dart';
 import '../../../heart_rate/domain/heart_rate_measurement.dart';
 import '../../../heart_rate/domain/heart_rate_monitor.dart';
 import '../../../heart_rate/domain/heart_rate_zone.dart';
+import '../../domain/workout_plan.dart';
 import '../../domain/workout_session.dart';
+import '../cubit/workout_setup_cubit.dart';
 
 part 'workout_session_event.dart';
 part 'workout_session_state.dart';

@@ -15,7 +15,37 @@ sealed class WorkoutSessionState extends Equatable {
 }
 
 final class WorkoutSessionReadyState extends WorkoutSessionState {
-  const WorkoutSessionReadyState({required super.heartRateZoneTable});
+  const WorkoutSessionReadyState({
+    required super.heartRateZoneTable,
+    this.environment = WorkoutEnvironment.indoor,
+    this.plan = TargetZoneWorkoutPlan.initial,
+    this.isHeartRateDeviceConnected = true,
+    this.isTreadmillConnected = false,
+    this.isAutoPaceEnabled = true,
+    this.isZoneAlertEnabled = true,
+  });
+
+  final WorkoutEnvironment environment;
+  final WorkoutPlan plan;
+  final bool isHeartRateDeviceConnected;
+  final bool isTreadmillConnected;
+  final bool isAutoPaceEnabled;
+  final bool isZoneAlertEnabled;
+
+  bool get canStart {
+    return isHeartRateDeviceConnected && (environment == WorkoutEnvironment.outdoor || isTreadmillConnected);
+  }
+
+  @override
+  List<Object?> get props => [
+    heartRateZoneTable,
+    environment,
+    plan,
+    isHeartRateDeviceConnected,
+    isTreadmillConnected,
+    isAutoPaceEnabled,
+    isZoneAlertEnabled,
+  ];
 }
 
 enum WorkoutSessionCountdownStep { three, two, one, go }
