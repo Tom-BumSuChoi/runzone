@@ -36,8 +36,6 @@ import 'package:runzone/widgetbook/run_zone_primary_button_use_cases.dart'
     as _runzone_widgetbook_run_zone_primary_button_use_cases;
 import 'package:runzone/widgetbook/run_zone_progress_indicator_use_cases.dart'
     as _runzone_widgetbook_run_zone_progress_indicator_use_cases;
-import 'package:runzone/widgetbook/run_zone_heart_rate_trend_chart_use_cases.dart'
-    as _runzone_widgetbook_run_zone_heart_rate_trend_chart_use_cases;
 import 'package:runzone/widgetbook/run_zone_segmented_control_use_cases.dart'
     as _runzone_widgetbook_run_zone_segmented_control_use_cases;
 import 'package:runzone/widgetbook/run_zone_stepper_use_cases.dart'
@@ -128,22 +126,6 @@ final directories = <_widgetbook.WidgetbookNode>[
                 name: 'Default',
                 builder: _runzone_widgetbook_run_zone_card_use_cases
                     .buildCardUseCase,
-              ),
-            ],
-          ),
-        ],
-      ),
-      _widgetbook.WidgetbookFolder(
-        name: 'Chart',
-        children: [
-          _widgetbook.WidgetbookComponent(
-            name: 'RunZoneHeartRateTrendChart',
-            useCases: [
-              _widgetbook.WidgetbookUseCase(
-                name: 'Default',
-                builder:
-                    _runzone_widgetbook_run_zone_heart_rate_trend_chart_use_cases
-                        .buildHeartRateTrendChartUseCase,
               ),
             ],
           ),
@@ -473,9 +455,8 @@ final directories = <_widgetbook.WidgetbookNode>[
             useCases: [
               _widgetbook.WidgetbookUseCase(
                 name: 'Default',
-                builder:
-                    _runzone_widgetbook_workout_treadmill_panel_use_cases
-                        .buildWorkoutTreadmillPanelUseCase,
+                builder: _runzone_widgetbook_workout_treadmill_panel_use_cases
+                    .buildWorkoutTreadmillPanelUseCase,
               ),
             ],
           ),
