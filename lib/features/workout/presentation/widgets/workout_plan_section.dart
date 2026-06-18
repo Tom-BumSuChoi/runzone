@@ -19,15 +19,19 @@ final class WorkoutPlanSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RunZoneLabelSmallLabel('훈련 종류'),
+        const RunZoneLabelSmallLabel('훈련 종류'),
         AppSpacing.sectionLabelGap,
-        _WorkoutPlanChips(),
+        const _WorkoutPlanChips(),
         AppSpacing.controlGroupSpacer,
-        _WorkoutPlanDescription(),
-        _WorkoutGoalSection(),
+        BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
+          builder: (context, state) {
+            return RunZoneBodyMediumLabel(state.readyState.plan.spec.description);
+          },
+        ),
+        const _WorkoutGoalSection(),
       ],
     );
   }
@@ -46,13 +50,13 @@ final class _WorkoutGoalSection extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        return const Column(
+        return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AppSpacing.sectionGap,
-            _WorkoutGoalSectionLabel(),
+            RunZoneLabelSmallLabel(readyState.plan.spec.goalSectionLabel),
             AppSpacing.sectionLabelGap,
-            _WorkoutGoalSummaryCard(),
+            const _WorkoutGoalSummaryCard(),
           ],
         );
       },
@@ -193,19 +197,6 @@ final class _WorkoutGoalRow extends StatelessWidget {
   }
 }
 
-final class _WorkoutGoalSectionLabel extends StatelessWidget {
-  const _WorkoutGoalSectionLabel();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
-      builder: (context, state) {
-        return RunZoneLabelSmallLabel(state.readyState.plan.spec.goalSectionLabel);
-      },
-    );
-  }
-}
-
 final class _WorkoutPlanChips extends StatelessWidget {
   const _WorkoutPlanChips();
 
@@ -226,19 +217,6 @@ final class _WorkoutPlanChips extends StatelessWidget {
               ),
           ],
         );
-      },
-    );
-  }
-}
-
-final class _WorkoutPlanDescription extends StatelessWidget {
-  const _WorkoutPlanDescription();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
-      builder: (context, state) {
-        return RunZoneBodyMediumLabel(state.readyState.plan.spec.description);
       },
     );
   }
