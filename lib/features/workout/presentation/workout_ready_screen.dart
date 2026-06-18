@@ -20,6 +20,7 @@ import '../../../core/design_system/widgets/list/run_zone_list_item.dart';
 import '../domain/workout_environment.dart';
 import '../domain/workout_plan.dart';
 import 'bloc/workout_session_bloc.dart';
+import 'bloc/workout_session_ready_state_extension.dart';
 import 'widgets/workout_plan_section.dart';
 
 final class WorkoutReadyScreen extends StatelessWidget {
@@ -332,16 +333,5 @@ final class _WorkoutEnvironmentControl extends StatelessWidget {
         );
       },
     );
-  }
-}
-
-extension on WorkoutSessionState {
-  WorkoutSessionReadyState get readyState {
-    final state = this;
-    if (state is WorkoutSessionReadyState) {
-      return state;
-    }
-
-    return WorkoutSessionReadyState(heartRateZoneTable: heartRateZoneTable);
   }
 }

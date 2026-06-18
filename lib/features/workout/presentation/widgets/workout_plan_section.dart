@@ -12,6 +12,7 @@ import '../../../heart_rate/domain/heart_rate_zone.dart';
 import '../../domain/workout_duration_goal.dart';
 import '../../domain/workout_plan.dart';
 import '../bloc/workout_session_bloc.dart';
+import '../bloc/workout_session_ready_state_extension.dart';
 
 final class WorkoutPlanSection extends StatelessWidget {
   const WorkoutPlanSection({super.key});
@@ -324,15 +325,4 @@ extension on Duration {
   String get minutesLabel => '$inMinutes분';
 
   String get secondsLabel => '$inSeconds초';
-}
-
-extension on WorkoutSessionState {
-  WorkoutSessionReadyState get readyState {
-    final state = this;
-    if (state is WorkoutSessionReadyState) {
-      return state;
-    }
-
-    return WorkoutSessionReadyState(heartRateZoneTable: heartRateZoneTable);
-  }
 }
