@@ -6,6 +6,9 @@ import 'package:runzone/features/heart_rate/domain/heart_rate_measurement.dart';
 import 'package:runzone/features/heart_rate/domain/heart_rate_monitor.dart';
 import 'package:runzone/features/heart_rate/domain/heart_rate_zone.dart';
 import 'package:runzone/features/heart_rate/domain/heart_rate_zone_range.dart';
+import 'package:runzone/features/workout/domain/workout_duration_goal.dart';
+import 'package:runzone/features/workout/domain/workout_environment.dart';
+import 'package:runzone/features/workout/domain/workout_plan.dart';
 import 'package:runzone/features/workout/domain/workout_session.dart';
 import 'package:runzone/features/workout/presentation/bloc/workout_session_bloc.dart';
 
@@ -144,6 +147,171 @@ void main() {
   test('Given 새로 생성한 bloc When 초기 상태를 확인하면 Then 준비 상태와 0초 경과다', () {
     expect(buildBloc().state, const WorkoutSessionReadyState(heartRateZoneTable: heartRateZoneTable));
   });
+
+  test('Given 실내 운동 환경과 러닝머신 미연결 상태 When 시작 가능 여부를 확인하면 Then 시작할 수 없다', () {
+    const state = WorkoutSessionReadyState(heartRateZoneTable: heartRateZoneTable);
+
+    expect(state.canStart, isFalse);
+  });
+
+  test('Given 실내 운동 환경과 러닝머신 연결 상태 When 시작 가능 여부를 확인하면 Then 시작할 수 있다', () {
+    const state = WorkoutSessionReadyState(heartRateZoneTable: heartRateZoneTable, isTreadmillConnected: true);
+
+    expect(state.canStart, isTrue);
+  });
+
+  test('Given 야외 운동 환경 When 시작 가능 여부를 확인하면 Then 러닝머신 연결 없이 시작할 수 있다', () {
+    const state = WorkoutSessionReadyState(
+      heartRateZoneTable: heartRateZoneTable,
+      environment: WorkoutEnvironment.outdoor,
+    );
+
+    expect(state.canStart, isTrue);
+  });
+
+  blocTest<WorkoutSessionBloc, WorkoutSessionState>(
+    'Given 준비 상태 When 운동 환경을 변경하면 Then 선택한 운동 환경을 방출한다',
+    build: buildBloc,
+    act: (WorkoutSessionBloc bloc) => bloc.add(const WorkoutSessionEnvironmentChanged(WorkoutEnvironment.outdoor)),
+    expect: () => [
+      const WorkoutSessionReadyState(
+        heartRateZoneTable: heartRateZoneTable,
+        environment: WorkoutEnvironment.outdoor,
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSessionBloc, WorkoutSessionState>(
+    'Given 준비 상태 When 인터벌 계획을 선택하면 Then 인터벌 계획을 방출한다',
+    build: buildBloc,
+    act: (WorkoutSessionBloc bloc) => bloc.add(const WorkoutSessionIntervalPlanSelected()),
+    expect: () => [
+      const WorkoutSessionReadyState(
+        heartRateZoneTable: heartRateZoneTable,
+        plan: IntervalWorkoutPlan.initial,
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSessionBloc, WorkoutSessionState>(
+    'Given 준비 상태 When 자유 러닝 계획을 선택하면 Then 자유 러닝 계획을 방출한다',
+    build: buildBloc,
+    act: (WorkoutSessionBloc bloc) => bloc.add(const WorkoutSessionFreePlanSelected()),
+    expect: () => [
+      const WorkoutSessionReadyState(
+        heartRateZoneTable: heartRateZoneTable,
+        plan: FreeWorkoutPlan.initial,
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSessionBloc, WorkoutSessionState>(
+    'Given 준비 상태 When 러닝머신 연결 상태를 토글하면 Then 변경된 연결 상태를 방출한다',
+    build: buildBloc,
+    act: (WorkoutSessionBloc bloc) => bloc.add(const WorkoutSessionTreadmillConnectionToggled()),
+    expect: () => [
+      const WorkoutSessionReadyState(
+        heartRateZoneTable: heartRateZoneTable,
+        isTreadmillConnected: true,
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSessionBloc, WorkoutSessionState>(
+    'Given 준비 상태 When 자동 페이스 조절 상태를 토글하면 Then 변경된 자동 페이스 조절 상태를 방출한다',
+    build: buildBloc,
+    act: (WorkoutSessionBloc bloc) => bloc.add(const WorkoutSessionAutoPaceToggled()),
+    expect: () => [
+      const WorkoutSessionReadyState(
+        heartRateZoneTable: heartRateZoneTable,
+        isAutoPaceEnabled: false,
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSessionBloc, WorkoutSessionState>(
+    'Given 준비 상태 When 존 이탈 알림 상태를 토글하면 Then 변경된 존 이탈 알림 상태를 방출한다',
+    build: buildBloc,
+    act: (WorkoutSessionBloc bloc) => bloc.add(const WorkoutSessionZoneAlertToggled()),
+    expect: () => [
+      const WorkoutSessionReadyState(
+        heartRateZoneTable: heartRateZoneTable,
+        isZoneAlertEnabled: false,
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSessionBloc, WorkoutSessionState>(
+    'Given 목표존 계획 When 목표 시간을 증가하면 Then 5분 증가한 목표 시간을 방출한다',
+    build: buildBloc,
+    act: (WorkoutSessionBloc bloc) => bloc.add(const WorkoutSessionTargetZoneDurationIncreased()),
+    expect: () => [
+      const WorkoutSessionReadyState(
+        heartRateZoneTable: heartRateZoneTable,
+        plan: TargetZoneWorkoutPlan(
+          durationGoal: WorkoutDurationGoal(minutes: 45),
+          targetHeartRateZone: HeartRateZone.zone2,
+        ),
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSessionBloc, WorkoutSessionState>(
+    'Given 목표존 계획 When 목표 심박존을 증가하면 Then 다음 목표 심박존을 방출한다',
+    build: buildBloc,
+    act: (WorkoutSessionBloc bloc) => bloc.add(const WorkoutSessionTargetHeartRateZoneIncreased()),
+    expect: () => [
+      const WorkoutSessionReadyState(
+        heartRateZoneTable: heartRateZoneTable,
+        plan: TargetZoneWorkoutPlan(
+          durationGoal: WorkoutDurationGoal(minutes: WorkoutDurationGoal.initialMinutes),
+          targetHeartRateZone: HeartRateZone.zone3,
+        ),
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSessionBloc, WorkoutSessionState>(
+    'Given 인터벌 계획 When 워밍업 시간을 증가하면 Then 1분 증가한 인터벌 계획을 방출한다',
+    build: buildBloc,
+    seed: () => const WorkoutSessionReadyState(
+      heartRateZoneTable: heartRateZoneTable,
+      plan: IntervalWorkoutPlan.initial,
+    ),
+    act: (WorkoutSessionBloc bloc) => bloc.add(const WorkoutSessionIntervalWarmUpDurationIncreased()),
+    expect: () => [
+      const WorkoutSessionReadyState(
+        heartRateZoneTable: heartRateZoneTable,
+        plan: IntervalWorkoutPlan(
+          warmUpDuration: Duration(minutes: 6),
+          highIntensityDistanceMeters: 400,
+          recoveryDuration: Duration(seconds: 90),
+          repeatCount: 6,
+        ),
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSessionBloc, WorkoutSessionState>(
+    'Given 인터벌 계획 When 고강도 거리를 증가하면 Then 100m 증가한 인터벌 계획을 방출한다',
+    build: buildBloc,
+    seed: () => const WorkoutSessionReadyState(
+      heartRateZoneTable: heartRateZoneTable,
+      plan: IntervalWorkoutPlan.initial,
+    ),
+    act: (WorkoutSessionBloc bloc) => bloc.add(const WorkoutSessionIntervalHighIntensityDistanceIncreased()),
+    expect: () => [
+      const WorkoutSessionReadyState(
+        heartRateZoneTable: heartRateZoneTable,
+        plan: IntervalWorkoutPlan(
+          warmUpDuration: Duration(minutes: 5),
+          highIntensityDistanceMeters: 500,
+          recoveryDuration: Duration(seconds: 90),
+          repeatCount: 6,
+        ),
+      ),
+    ],
+  );
 
   test('Given 현재 심박존 When 목표 존 상태를 확인하면 Then 안과 밖을 구분한다', () {
     final WorkoutSessionRunningState inTargetState = WorkoutSessionRunningState(

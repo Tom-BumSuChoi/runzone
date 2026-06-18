@@ -20,7 +20,6 @@ import '../../../core/design_system/widgets/list/run_zone_list_item.dart';
 import '../domain/workout_environment.dart';
 import '../domain/workout_plan.dart';
 import 'bloc/workout_session_bloc.dart';
-import 'cubit/workout_setup_cubit.dart';
 import 'widgets/workout_plan_section.dart';
 
 final class WorkoutReadyScreen extends StatelessWidget {
@@ -28,47 +27,44 @@ final class WorkoutReadyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => WorkoutSetupCubit(),
-      child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        body: Column(
-          children: [
-            Expanded(
-              child: SafeArea(
-                bottom: false,
-                child: SingleChildScrollView(
-                  padding: AppSpacing.screenInsets,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Expanded(child: RunZoneHeadlineLargeLabel('운동 전 설정')),
-                          RunZoneIconOutlineButton(icon: RunZoneIconAsset.close, onPressed: () => _close(context)),
-                        ],
-                      ),
-                      AppSpacing.titleDescriptionGap,
-                      const RunZoneBodyLargeLabel('오늘 운동에 사용할 목표와 기기 상태를 확인해요.'),
-                      AppSpacing.controlGroupSpacer,
-                      const _WorkoutEnvironmentControl(),
-                      AppSpacing.sectionGap,
-                      const WorkoutPlanSection(),
-                      AppSpacing.sectionGap,
-                      const RunZoneLabelSmallLabel('기기 상태'),
-                      AppSpacing.sectionLabelGap,
-                      const _WorkoutDeviceStatusCard(),
-                      AppSpacing.sectionGap,
-                      const _WorkoutCoachingSection(),
-                      const _WorkoutStartRequirementSection(),
-                    ],
-                  ),
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: Column(
+        children: [
+          Expanded(
+            child: SafeArea(
+              bottom: false,
+              child: SingleChildScrollView(
+                padding: AppSpacing.screenInsets,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Expanded(child: RunZoneHeadlineLargeLabel('운동 전 설정')),
+                        RunZoneIconOutlineButton(icon: RunZoneIconAsset.close, onPressed: () => _close(context)),
+                      ],
+                    ),
+                    AppSpacing.titleDescriptionGap,
+                    const RunZoneBodyLargeLabel('오늘 운동에 사용할 목표와 기기 상태를 확인해요.'),
+                    AppSpacing.controlGroupSpacer,
+                    const _WorkoutEnvironmentControl(),
+                    AppSpacing.sectionGap,
+                    const WorkoutPlanSection(),
+                    AppSpacing.sectionGap,
+                    const RunZoneLabelSmallLabel('기기 상태'),
+                    AppSpacing.sectionLabelGap,
+                    const _WorkoutDeviceStatusCard(),
+                    AppSpacing.sectionGap,
+                    const _WorkoutCoachingSection(),
+                    const _WorkoutStartRequirementSection(),
+                  ],
                 ),
               ),
             ),
-            const _WorkoutStartButtonArea(),
-          ],
-        ),
+          ),
+          const _WorkoutStartButtonArea(),
+        ],
       ),
     );
   }
@@ -89,8 +85,10 @@ final class _WorkoutDeviceStatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
+    return BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
       builder: (context, state) {
+        final readyState = state.readyState;
+
         return RunZoneCard(
           child: Column(
             children: [
@@ -99,21 +97,23 @@ final class _WorkoutDeviceStatusCard extends StatelessWidget {
                 subtitle: 'Polar H10 · 정상 수신 중',
                 trailing: RunZoneBadge('정상', isHighlighted: true),
               ),
-              if (state.environment == WorkoutEnvironment.indoor) ...[
+              if (readyState.environment == WorkoutEnvironment.indoor) ...[
                 const Divider(),
                 RunZoneListItem(
                   title: '러닝머신',
-                  subtitle: state.isTreadmillConnected ? 'RUNZONE Treadmill · 연결됨' : '미연결',
+                  subtitle: readyState.isTreadmillConnected ? 'RUNZONE Treadmill · 연결됨' : '미연결',
                   trailing: Switch(
-                    value: state.isTreadmillConnected,
-                    onChanged: (_) => context.read<WorkoutSetupCubit>().toggleTreadmillConnection(),
+                    value: readyState.isTreadmillConnected,
+                    onChanged: (_) {
+                      context.read<WorkoutSessionBloc>().add(const WorkoutSessionTreadmillConnectionToggled());
+                    },
                   ),
                 ),
-                if (state.isTreadmillConnected) ...[
+                if (readyState.isTreadmillConnected) ...[
                   const Divider(),
                   _WorkoutTreadmillPacePanel(
-                    canUseAutoPace: state.plan is! FreeWorkoutPlan,
-                    isAutoPaceEnabled: state.isAutoPaceEnabled,
+                    canUseAutoPace: readyState.plan is! FreeWorkoutPlan,
+                    isAutoPaceEnabled: readyState.isAutoPaceEnabled,
                   ),
                 ],
               ],
@@ -141,7 +141,9 @@ final class _WorkoutTreadmillPacePanel extends StatelessWidget {
             subtitle: isAutoPaceEnabled ? '심박이 목표 존을 벗어나면 페이스를 자동 조정해요' : '수동 모드 — 운동 중 ▲▼ 버튼으로 직접 조작',
             trailing: Switch(
               value: isAutoPaceEnabled,
-              onChanged: (_) => context.read<WorkoutSetupCubit>().toggleAutoPace(),
+              onChanged: (_) {
+                context.read<WorkoutSessionBloc>().add(const WorkoutSessionAutoPaceToggled());
+              },
             ),
           ),
           AppSpacing.controlGroupSpacer,
@@ -197,9 +199,10 @@ final class _WorkoutStartRequirementSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
+    return BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
       builder: (context, state) {
-        final message = switch ((state.isHeartRateDeviceConnected, state.canStart)) {
+        final readyState = state.readyState;
+        final message = switch ((readyState.isHeartRateDeviceConnected, readyState.canStart)) {
           (false, _) => '심박 기기 연결이 필요해요.',
           (true, false) => '러닝머신 연결이 필요해요.',
           (true, true) => null,
@@ -251,11 +254,13 @@ final class _WorkoutStartButtonArea extends StatelessWidget {
       ),
       child: Padding(
         padding: AppSpacing.screenInsets,
-        child: BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
+        child: BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
           builder: (context, state) {
+            final readyState = state.readyState;
+
             return RunZonePrimaryButton(
               label: '운동 시작',
-              onPressed: state.canStart ? () => _startWorkout(context) : null,
+              onPressed: readyState.canStart ? () => _startWorkout(context) : null,
             );
           },
         ),
@@ -274,9 +279,11 @@ final class _WorkoutCoachingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
+    return BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
       builder: (context, state) {
-        if (state.plan is FreeWorkoutPlan) {
+        final readyState = state.readyState;
+
+        if (readyState.plan is FreeWorkoutPlan) {
           return const SizedBox.shrink();
         }
 
@@ -290,8 +297,10 @@ final class _WorkoutCoachingSection extends StatelessWidget {
                 title: '존 이탈 알림',
                 subtitle: '목표 존 밖 20초 이상 유지 시',
                 trailing: Switch(
-                  value: state.isZoneAlertEnabled,
-                  onChanged: (_) => context.read<WorkoutSetupCubit>().toggleZoneAlert(),
+                  value: readyState.isZoneAlertEnabled,
+                  onChanged: (_) {
+                    context.read<WorkoutSessionBloc>().add(const WorkoutSessionZoneAlertToggled());
+                  },
                 ),
               ),
             ),
@@ -307,11 +316,15 @@ final class _WorkoutEnvironmentControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutSetupCubit, WorkoutSetupState>(
+    return BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
       builder: (context, state) {
+        final readyState = state.readyState;
+
         return RunZoneSegmentedControl<WorkoutEnvironment>(
-          selectedValue: state.environment,
-          onChanged: context.read<WorkoutSetupCubit>().changeEnvironment,
+          selectedValue: readyState.environment,
+          onChanged: (environment) {
+            context.read<WorkoutSessionBloc>().add(WorkoutSessionEnvironmentChanged(environment));
+          },
           options: const [
             RunZoneSegmentedControlOption(value: WorkoutEnvironment.indoor, label: '실내 · 러닝머신'),
             RunZoneSegmentedControlOption(value: WorkoutEnvironment.outdoor, label: '야외 · GPS'),
@@ -319,5 +332,16 @@ final class _WorkoutEnvironmentControl extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+extension on WorkoutSessionState {
+  WorkoutSessionReadyState get readyState {
+    final state = this;
+    if (state is WorkoutSessionReadyState) {
+      return state;
+    }
+
+    return WorkoutSessionReadyState(heartRateZoneTable: heartRateZoneTable);
   }
 }
