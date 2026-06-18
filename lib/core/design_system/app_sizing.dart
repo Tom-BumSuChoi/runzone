@@ -4,6 +4,7 @@ abstract final class AppSizing {
   static const indicatorSize = 8.0;
   static const inlineIconSize = 14.0;
   static const heartRateZoneBarHeight = 100.0;
+  static const heartRateTrendChartHeight = 100.0;
   static const progressSegmentHeight = 4.0;
   static const stepperButton = 32.0;
   static const stepperValueWidth = 56.0;
