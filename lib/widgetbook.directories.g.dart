@@ -369,6 +369,17 @@ final directories = <_widgetbook.WidgetbookNode>[
               ),
             ],
           ),
+          _widgetbook.WidgetbookComponent(
+            name: 'RunZoneRingProgress',
+            useCases: [
+              _widgetbook.WidgetbookUseCase(
+                name: 'Ring',
+                builder:
+                    _runzone_widgetbook_run_zone_progress_indicator_use_cases
+                        .buildRingProgressUseCase,
+              ),
+            ],
+          ),
         ],
       ),
       _widgetbook.WidgetbookFolder(
