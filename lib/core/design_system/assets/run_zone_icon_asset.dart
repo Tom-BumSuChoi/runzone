@@ -3,6 +3,7 @@ enum RunZoneIconAsset {
   calendar('assets/icons/calendar.svg'),
   close('assets/icons/close.svg'),
   home('assets/icons/home.svg'),
+  info('assets/icons/info.svg'),
   lap('assets/icons/lap.svg'),
   minus('assets/icons/minus.svg'),
   pause('assets/icons/pause.svg'),

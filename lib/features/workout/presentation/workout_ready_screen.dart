@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/app_routes.dart';
 import '../../../core/design_system/app_spacing.dart';
+import '../../../core/design_system/app_sizing.dart';
 import '../../../core/design_system/assets/run_zone_icon_asset.dart';
 import '../../../core/design_system/widgets/badge/run_zone_badge.dart';
 import '../../../core/design_system/widgets/button/run_zone_icon_outline_button.dart';
@@ -234,7 +236,12 @@ final class _WorkoutStartRequirementCard extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(Icons.info_outline, color: colorScheme.primary),
+        SvgPicture.asset(
+          RunZoneIconAsset.info.path,
+          width: AppSizing.inlineIconSize,
+          height: AppSizing.inlineIconSize,
+          colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
+        ),
         AppSpacing.inlineLabelGap,
         Expanded(child: RunZoneBodyMediumLabel(message)),
       ],
