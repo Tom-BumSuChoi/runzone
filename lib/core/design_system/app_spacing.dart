@@ -11,6 +11,7 @@ abstract final class AppSpacing {
   static const badgePaddingHorizontal = 10.0;
   static const segmentedControlPadding = 4.0;
   static const segmentedControlButtonPaddingVertical = 10.0;
+  static const controlBarPadding = 10.0;
   static const navigationPaddingTop = 12.0;
   static const navigationPaddingHorizontal = 14.0;
   static const navigationStartButtonLift = 6.0;
