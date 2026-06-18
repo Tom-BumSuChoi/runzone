@@ -1,6 +1,7 @@
 enum RunZoneIconAsset {
   activity('assets/icons/activity.svg'),
   calendar('assets/icons/calendar.svg'),
+  close('assets/icons/close.svg'),
   home('assets/icons/home.svg'),
   lap('assets/icons/lap.svg'),
   minus('assets/icons/minus.svg'),
