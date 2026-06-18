@@ -24,6 +24,8 @@ import 'package:runzone/widgetbook/run_zone_card_use_cases.dart'
     as _runzone_widgetbook_run_zone_card_use_cases;
 import 'package:runzone/widgetbook/run_zone_choice_chip_use_cases.dart'
     as _runzone_widgetbook_run_zone_choice_chip_use_cases;
+import 'package:runzone/widgetbook/run_zone_icon_outline_button_use_cases.dart'
+    as _runzone_widgetbook_run_zone_icon_outline_button_use_cases;
 import 'package:runzone/widgetbook/run_zone_inline_action_button_use_cases.dart'
     as _runzone_widgetbook_run_zone_inline_action_button_use_cases;
 import 'package:runzone/widgetbook/run_zone_labels_use_cases.dart'
@@ -34,10 +36,14 @@ import 'package:runzone/widgetbook/run_zone_primary_button_use_cases.dart'
     as _runzone_widgetbook_run_zone_primary_button_use_cases;
 import 'package:runzone/widgetbook/run_zone_progress_indicator_use_cases.dart'
     as _runzone_widgetbook_run_zone_progress_indicator_use_cases;
+import 'package:runzone/widgetbook/run_zone_heart_rate_trend_chart_use_cases.dart'
+    as _runzone_widgetbook_run_zone_heart_rate_trend_chart_use_cases;
 import 'package:runzone/widgetbook/run_zone_segmented_control_use_cases.dart'
     as _runzone_widgetbook_run_zone_segmented_control_use_cases;
 import 'package:runzone/widgetbook/run_zone_stepper_use_cases.dart'
     as _runzone_widgetbook_run_zone_stepper_use_cases;
+import 'package:runzone/widgetbook/workout_treadmill_panel_use_cases.dart'
+    as _runzone_widgetbook_workout_treadmill_panel_use_cases;
 import 'package:widgetbook/widgetbook.dart' as _widgetbook;
 
 final directories = <_widgetbook.WidgetbookNode>[
@@ -79,6 +85,17 @@ final directories = <_widgetbook.WidgetbookNode>[
         name: 'Button',
         children: [
           _widgetbook.WidgetbookComponent(
+            name: 'RunZoneIconOutlineButton',
+            useCases: [
+              _widgetbook.WidgetbookUseCase(
+                name: 'Default',
+                builder:
+                    _runzone_widgetbook_run_zone_icon_outline_button_use_cases
+                        .buildIconOutlineButtonUseCase,
+              ),
+            ],
+          ),
+          _widgetbook.WidgetbookComponent(
             name: 'RunZoneInlineActionButton',
             useCases: [
               _widgetbook.WidgetbookUseCase(
@@ -111,6 +128,22 @@ final directories = <_widgetbook.WidgetbookNode>[
                 name: 'Default',
                 builder: _runzone_widgetbook_run_zone_card_use_cases
                     .buildCardUseCase,
+              ),
+            ],
+          ),
+        ],
+      ),
+      _widgetbook.WidgetbookFolder(
+        name: 'Chart',
+        children: [
+          _widgetbook.WidgetbookComponent(
+            name: 'RunZoneHeartRateTrendChart',
+            useCases: [
+              _widgetbook.WidgetbookUseCase(
+                name: 'Default',
+                builder:
+                    _runzone_widgetbook_run_zone_heart_rate_trend_chart_use_cases
+                        .buildHeartRateTrendChartUseCase,
               ),
             ],
           ),
@@ -422,6 +455,27 @@ final directories = <_widgetbook.WidgetbookNode>[
                 name: 'Default',
                 builder: _runzone_widgetbook_color_swatch_use_cases
                     .buildColorSwatchUseCase,
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
+  ),
+  _widgetbook.WidgetbookCategory(
+    name: 'Workout',
+    children: [
+      _widgetbook.WidgetbookFolder(
+        name: 'Panel',
+        children: [
+          _widgetbook.WidgetbookComponent(
+            name: 'WorkoutTreadmillPanel',
+            useCases: [
+              _widgetbook.WidgetbookUseCase(
+                name: 'Default',
+                builder:
+                    _runzone_widgetbook_workout_treadmill_panel_use_cases
+                        .buildWorkoutTreadmillPanelUseCase,
               ),
             ],
           ),
