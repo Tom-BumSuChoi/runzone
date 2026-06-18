@@ -1,24 +1,83 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/design_system/app_color_scheme.dart';
-import '../../../core/design_system/app_radius.dart';
+import '../../../core/design_system/app_sizing.dart';
 import '../../../core/design_system/app_spacing.dart';
-import '../../../core/design_system/assets/run_zone_icon_asset.dart';
 import '../../../core/design_system/widgets/badge/run_zone_blinking_badge.dart';
 import '../../../core/design_system/widgets/badge/run_zone_indicator_pill.dart';
-import '../../../core/design_system/widgets/button/run_zone_icon_outline_button.dart';
-import '../../../core/design_system/widgets/card/run_zone_card.dart';
-import '../../../core/design_system/widgets/chart/run_zone_sparkline.dart';
-import '../../../core/design_system/widgets/label/run_zone_body_small_label.dart';
-import '../../../core/design_system/widgets/label/run_zone_display_small_label.dart';
+import '../../../core/design_system/widgets/label/run_zone_display_large_label.dart';
 import '../../../core/design_system/widgets/label/run_zone_label_medium_label.dart';
 import '../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
-import '../../../core/design_system/widgets/label/run_zone_title_large_label.dart';
 import '../../../core/design_system/widgets/progress/run_zone_ring_progress.dart';
+import '../../heart_rate/domain/heart_rate_zone.dart';
+import '../../heart_rate/domain/heart_rate_zone_range.dart';
+import 'widgets/workout_heart_rate_trend_panel.dart';
 import 'widgets/workout_live_controls.dart';
+import 'widgets/workout_metric_row.dart';
+import 'widgets/workout_treadmill_panel.dart';
 
 final class WorkoutLiveScreen extends StatelessWidget {
   const WorkoutLiveScreen({super.key});
+
+  static const _heartRates = <int>[
+    132,
+    133,
+    134,
+    136,
+    137,
+    139,
+    140,
+    142,
+    143,
+    144,
+    144,
+    143,
+    142,
+    141,
+    140,
+    141,
+    142,
+    143,
+    145,
+    146,
+    145,
+    144,
+    143,
+    142,
+    141,
+    140,
+    139,
+    138,
+    139,
+    140,
+    142,
+    143,
+    144,
+    145,
+    146,
+    145,
+    144,
+    143,
+    144,
+    145,
+  ];
+  static const _heartRateTrendTrailingLabel = '최근 40초';
+  static const _beatsPerMinute = 144;
+  static const _minimumHeartRate = 90;
+  static const _maximumHeartRate = 186;
+  static const _heartRateZoneLabel = 'Z2 · 지구력';
+  static const _targetHeartRateLabel = '목표 132–148';
+  static const _treadmillSpeedKilometersPerHour = 9.8;
+  static const _isTreadmillManualMode = false;
+  static const _treadmillStatusLabel = 'AUTO · 속도 유지';
+  static const _heartRateZoneTable = HeartRateZoneTable(
+    zone1: HeartRateZoneRange(lower: 96, upper: 120),
+    zone2: HeartRateZoneRange(lower: 121, upper: 148),
+    zone3: HeartRateZoneRange(lower: 149, upper: 160),
+    zone4: HeartRateZoneRange(lower: 161, upper: 172),
+    zone5: HeartRateZoneRange(lower: 173, upper: 182),
+  );
+  static const _targetHeartRateZone = HeartRateZone.zone2;
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +96,31 @@ final class WorkoutLiveScreen extends StatelessWidget {
                   children: [
                     const _WorkoutLiveHeader(),
                     AppSpacing.headerTitleGap,
-                    _WorkoutHeartRatePanel(colorScheme: colorScheme),
+                    const _WorkoutHeartRatePanel(
+                      beatsPerMinute: _beatsPerMinute,
+                      minimumHeartRate: _minimumHeartRate,
+                      maximumHeartRate: _maximumHeartRate,
+                      zoneLabel: _heartRateZoneLabel,
+                      targetLabel: _targetHeartRateLabel,
+                    ),
                     AppSpacing.sectionGap,
-                    const _WorkoutTreadmillPanel(),
+                    WorkoutTreadmillPanel(
+                      speed: _treadmillSpeedKilometersPerHour,
+                      isManualMode: _isTreadmillManualMode,
+                      statusLabel: _treadmillStatusLabel,
+                      onDecrease: () {},
+                      onIncrease: () {},
+                      onResetAutomaticMode: () {},
+                    ),
                     AppSpacing.sectionGap,
-                    const _WorkoutHeartRateTrendPanel(),
+                    WorkoutHeartRateTrendPanel(
+                      heartRates: _heartRates,
+                      heartRateZoneTable: _heartRateZoneTable,
+                      targetHeartRateZone: _targetHeartRateZone,
+                      trailingLabel: _heartRateTrendTrailingLabel,
+                    ),
                     AppSpacing.sectionGap,
-                    const _WorkoutMetricRow(),
+                    const WorkoutMetricRow(elapsedTime: '0:00', remainingTime: '40:00', distance: '0.00'),
                   ],
                 ),
               ),
@@ -75,231 +152,40 @@ final class _WorkoutLiveHeader extends StatelessWidget {
 }
 
 final class _WorkoutHeartRatePanel extends StatelessWidget {
-  const _WorkoutHeartRatePanel({required this.colorScheme});
+  const _WorkoutHeartRatePanel({
+    required this.beatsPerMinute,
+    required this.minimumHeartRate,
+    required this.maximumHeartRate,
+    required this.zoneLabel,
+    required this.targetLabel,
+  });
 
-  static const _beatsPerMinute = 144;
-  static const _heartRateMinimum = 90;
-  static const _heartRateMaximum = 186;
-  static const _readoutFontSizeFactor = 0.34;
-  static const _ringSize = 214.0;
-
-  final ColorScheme colorScheme;
+  final int beatsPerMinute;
+  final int minimumHeartRate;
+  final int maximumHeartRate;
+  final String zoneLabel;
+  final String targetLabel;
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final zoneColor = colorScheme.zoneTwo;
-    const progress = (_beatsPerMinute - _heartRateMinimum) / (_heartRateMaximum - _heartRateMinimum);
+    final progress = (beatsPerMinute - minimumHeartRate) / (maximumHeartRate - minimumHeartRate);
 
     return RunZoneRingProgress(
       value: progress,
       color: zoneColor,
-      size: _ringSize,
-      child: _WorkoutHeartRateReadout(
-        color: zoneColor,
-        beatsPerMinute: _beatsPerMinute,
-        valueFontSize: _ringSize * _readoutFontSizeFactor,
-      ),
-    );
-  }
-}
-
-final class _WorkoutHeartRateReadout extends StatelessWidget {
-  const _WorkoutHeartRateReadout({required this.color, required this.beatsPerMinute, required this.valueFontSize});
-
-  final Color color;
-  final int beatsPerMinute;
-  final double valueFontSize;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        RunZoneLabelSmallLabel('Z2 · 지구력', color: color),
-        Text(
-          '$beatsPerMinute',
-          style: textTheme.displayLarge?.copyWith(color: color, fontSize: valueFontSize),
-        ),
-        RunZoneLabelMediumLabel('bpm', color: colorScheme.onSurfaceVariant),
-        const SizedBox(height: AppSpacing.controlLabelGap),
-        RunZoneLabelSmallLabel('목표 132–148', color: colorScheme.onSurfaceVariant),
-      ],
-    );
-  }
-}
-
-final class _WorkoutTreadmillPanel extends StatefulWidget {
-  const _WorkoutTreadmillPanel();
-
-  @override
-  State<_WorkoutTreadmillPanel> createState() => _WorkoutTreadmillPanelState();
-}
-
-final class _WorkoutTreadmillPanelState extends State<_WorkoutTreadmillPanel> {
-  static const _automaticSpeed = 9.8;
-  static const _speedStep = 0.1;
-  static const _minimumSpeed = 0.0;
-  static const _maximumSpeed = 25.0;
-
-  bool _isManualMode = false;
-  double? _manualSpeed;
-
-  double get _displaySpeed => _manualSpeed ?? _automaticSpeed;
-
-  void _adjustSpeed(double delta) {
-    setState(() {
-      final nextSpeed = (_displaySpeed + delta).clamp(_minimumSpeed, _maximumSpeed);
-      _manualSpeed = (nextSpeed * 10).round() / 10;
-      _isManualMode = true;
-    });
-  }
-
-  void _resetAutomaticMode() {
-    setState(() {
-      _isManualMode = false;
-      _manualSpeed = null;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return RunZoneCard(
+      size: AppSizing.workoutHeartRateRingSize,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const RunZoneLabelSmallLabel('러닝머신'),
-              if (_isManualMode)
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: colorScheme.outline),
-                    borderRadius: AppRadius.pillBorder,
-                  ),
-                  child: Padding(
-                    padding: AppSpacing.badgeInsets,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        RunZoneLabelSmallLabel('MANUAL · 사용자 조작', color: colorScheme.onSurfaceVariant),
-                        AppSpacing.inlineLabelGap,
-                        GestureDetector(
-                          onTap: _resetAutomaticMode,
-                          child: RunZoneLabelSmallLabel('다시 자동', color: colorScheme.primary),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              else
-                RunZoneLabelSmallLabel('AUTO · 속도 유지', color: colorScheme.primary),
-            ],
-          ),
-          AppSpacing.controlGroupSpacer,
-          Center(
-            child: Column(
-              children: [
-                const RunZoneBodySmallLabel('속도 km/h', textAlign: TextAlign.center),
-                const SizedBox(height: AppSpacing.controlLabelGap),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    RunZoneIconOutlineButton(
-                      icon: RunZoneIconAsset.minus,
-                      onPressed: () => _adjustSpeed(-_speedStep),
-                    ),
-                    const SizedBox(width: AppSpacing.controlGroupGap),
-                    RunZoneTitleLargeLabel(_displaySpeed.toStringAsFixed(1)),
-                    const SizedBox(width: AppSpacing.controlGroupGap),
-                    RunZoneIconOutlineButton(
-                      icon: RunZoneIconAsset.plus,
-                      onPressed: () => _adjustSpeed(_speedStep),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          RunZoneLabelSmallLabel(zoneLabel, color: zoneColor),
+          RunZoneDisplayLargeLabel('$beatsPerMinute', color: zoneColor),
+          RunZoneLabelMediumLabel('bpm', color: colorScheme.onSurfaceVariant),
+          const SizedBox(height: AppSpacing.controlLabelGap),
+          RunZoneLabelSmallLabel(targetLabel, color: colorScheme.onSurfaceVariant),
         ],
       ),
-    );
-  }
-}
-
-final class _WorkoutHeartRateTrendPanel extends StatelessWidget {
-  const _WorkoutHeartRateTrendPanel();
-
-  static const _heartRateValues = <double>[132, 136, 139, 142, 144, 143, 145, 144];
-  static const _heartRateMinimum = 96.0;
-  static const _heartRateMaximum = 182.0;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return RunZoneCard(
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [const RunZoneLabelSmallLabel('심박 추이'), const RunZoneLabelSmallLabel('최근 40초')],
-          ),
-          AppSpacing.controlGroupSpacer,
-          RunZoneSparkline(
-            values: _heartRateValues,
-            minimum: _heartRateMinimum,
-            maximum: _heartRateMaximum,
-            color: colorScheme.zoneTwo,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-final class _WorkoutMetricRow extends StatelessWidget {
-  const _WorkoutMetricRow();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Row(
-      children: [
-        Expanded(
-          child: _WorkoutMetric(value: '0:00', label: '경과'),
-        ),
-        SizedBox(width: AppSpacing.chipGap),
-        Expanded(
-          child: _WorkoutMetric(value: '40:00', label: '남음'),
-        ),
-        SizedBox(width: AppSpacing.chipGap),
-        Expanded(
-          child: _WorkoutMetric(value: '0.00', label: 'km'),
-        ),
-      ],
-    );
-  }
-}
-
-final class _WorkoutMetric extends StatelessWidget {
-  const _WorkoutMetric({required this.value, required this.label});
-
-  final String value;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        RunZoneDisplaySmallLabel(value, textAlign: TextAlign.center),
-        const SizedBox(height: AppSpacing.controlLabelGap),
-        RunZoneLabelSmallLabel(label, textAlign: TextAlign.center),
-      ],
     );
   }
 }
