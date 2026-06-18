@@ -16,44 +16,51 @@ import '../../../core/design_system/widgets/label/run_zone_label_small_label.dar
 import '../../../core/design_system/widgets/label/run_zone_title_medium_label.dart';
 import '../../../core/design_system/widgets/list/run_zone_list_item.dart';
 import '../domain/workout_plan.dart';
+import 'bloc/workout_session_bloc.dart';
 import 'cubit/workout_setup_cubit.dart';
 import 'widgets/workout_plan_section.dart';
 
-final class WorkoutSetupScreen extends StatelessWidget {
-  const WorkoutSetupScreen({super.key});
+final class WorkoutReadyScreen extends StatelessWidget {
+  const WorkoutReadyScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => WorkoutSetupCubit(),
-      child: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: AppSpacing.screenInsets,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const RunZoneHeadlineLargeLabel('운동 전 설정'),
-                  AppSpacing.titleDescriptionGap,
-                  const RunZoneBodyLargeLabel('오늘 운동에 사용할 목표와 기기 상태를 확인해요.'),
-                  AppSpacing.controlGroupSpacer,
-                  const _WorkoutEnvironmentControl(),
-                  AppSpacing.sectionGap,
-                  const WorkoutPlanSection(),
-                  AppSpacing.sectionGap,
-                  const RunZoneLabelSmallLabel('기기 상태'),
-                  AppSpacing.sectionLabelGap,
-                  const _WorkoutDeviceStatusCard(),
-                  AppSpacing.sectionGap,
-                  const _WorkoutCoachingSection(),
-                  const _WorkoutStartRequirementSection(),
-                ],
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        body: Column(
+          children: [
+            Expanded(
+              child: SafeArea(
+                bottom: false,
+                child: SingleChildScrollView(
+                  padding: AppSpacing.screenInsets,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const RunZoneHeadlineLargeLabel('운동 전 설정'),
+                      AppSpacing.titleDescriptionGap,
+                      const RunZoneBodyLargeLabel('오늘 운동에 사용할 목표와 기기 상태를 확인해요.'),
+                      AppSpacing.controlGroupSpacer,
+                      const _WorkoutEnvironmentControl(),
+                      AppSpacing.sectionGap,
+                      const WorkoutPlanSection(),
+                      AppSpacing.sectionGap,
+                      const RunZoneLabelSmallLabel('기기 상태'),
+                      AppSpacing.sectionLabelGap,
+                      const _WorkoutDeviceStatusCard(),
+                      AppSpacing.sectionGap,
+                      const _WorkoutCoachingSection(),
+                      const _WorkoutStartRequirementSection(),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
-          const _WorkoutStartButtonArea(),
-        ],
+            const _WorkoutStartButtonArea(),
+          ],
+        ),
       ),
     );
   }
@@ -239,11 +246,8 @@ final class _WorkoutStartButtonArea extends StatelessWidget {
   }
 
   void _startWorkout(BuildContext context) {
-    final router = GoRouter.of(context);
-    final navigator = Navigator.of(context);
-
-    navigator.pop();
-    router.go(AppRoutes.workoutCountdown);
+    context.read<WorkoutSessionBloc>().add(const WorkoutSessionStarted());
+    GoRouter.of(context).go(AppRoutes.workoutCountdown);
   }
 }
 
