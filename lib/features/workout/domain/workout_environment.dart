@@ -1,0 +1,1 @@
+enum WorkoutEnvironment { indoor, outdoor }

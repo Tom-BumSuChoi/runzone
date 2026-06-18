@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../domain/workout_environment.dart';
 import '../../domain/workout_plan.dart';
 
 part 'workout_setup_state.dart';

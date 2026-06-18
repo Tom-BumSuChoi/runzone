@@ -1,7 +1,5 @@
 part of 'workout_setup_cubit.dart';
 
-enum WorkoutEnvironment { indoor, outdoor }
-
 final class WorkoutSetupState extends Equatable {
   const WorkoutSetupState({
     required this.environment,

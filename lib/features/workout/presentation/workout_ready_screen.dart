@@ -17,6 +17,7 @@ import '../../../core/design_system/widgets/label/run_zone_headline_large_label.
 import '../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
 import '../../../core/design_system/widgets/label/run_zone_title_medium_label.dart';
 import '../../../core/design_system/widgets/list/run_zone_list_item.dart';
+import '../domain/workout_environment.dart';
 import '../domain/workout_plan.dart';
 import 'bloc/workout_session_bloc.dart';
 import 'cubit/workout_setup_cubit.dart';
