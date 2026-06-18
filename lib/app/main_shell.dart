@@ -55,7 +55,7 @@ final class _MainShellView extends StatelessWidget {
                 isSelected: state.selectedTab == MainShellTab.plan,
                 onTap: () => cubit.selectTab(MainShellTab.plan),
               ),
-              RunZoneBottomNavigationStartButton(onTap: () => GoRouter.of(context).go(AppRoutes.workoutReady)),
+              RunZoneBottomNavigationStartButton(onTap: () => GoRouter.of(context).push(AppRoutes.workoutReady)),
               RunZoneBottomNavigationItem(
                 label: MainShellTab.stats.label,
                 icon: RunZoneIconAsset.activity,

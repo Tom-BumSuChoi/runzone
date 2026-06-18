@@ -26,19 +26,29 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
       GoRoute(path: AppRoutes.profileSetup, builder: (_, _) => const RunnerProfileSetupScreen()),
       GoRoute(path: AppRoutes.home, builder: (_, _) => const MainShell()),
       ShellRoute(
-        builder: (_, _, child) => BlocProvider(
-          create: (_) => WorkoutSessionBloc(
-            heartRateMonitor: MockHeartRateMonitor(),
-            heartRateZoneTable: const HeartRateZoneTable(
-              zone1: HeartRateZoneRange(lower: 96, upper: 120),
-              zone2: HeartRateZoneRange(lower: 121, upper: 148),
-              zone3: HeartRateZoneRange(lower: 149, upper: 160),
-              zone4: HeartRateZoneRange(lower: 161, upper: 172),
-              zone5: HeartRateZoneRange(lower: 173, upper: 182),
+        pageBuilder: (_, _, child) => CustomTransitionPage(
+          child: BlocProvider(
+            create: (_) => WorkoutSessionBloc(
+              heartRateMonitor: MockHeartRateMonitor(),
+              heartRateZoneTable: const HeartRateZoneTable(
+                zone1: HeartRateZoneRange(lower: 96, upper: 120),
+                zone2: HeartRateZoneRange(lower: 121, upper: 148),
+                zone3: HeartRateZoneRange(lower: 149, upper: 160),
+                zone4: HeartRateZoneRange(lower: 161, upper: 172),
+                zone5: HeartRateZoneRange(lower: 173, upper: 182),
+              ),
+              targetHeartRateZone: HeartRateZone.zone2,
             ),
-            targetHeartRateZone: HeartRateZone.zone2,
+            child: child,
           ),
-          child: child,
+          transitionsBuilder: (_, animation, _, child) {
+            final position = Tween<Offset>(
+              begin: const Offset(0, 1),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
+
+            return SlideTransition(position: position, child: child);
+          },
         ),
         routes: [
           GoRoute(

@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/app_routes.dart';
 import '../../../core/design_system/app_spacing.dart';
+import '../../../core/design_system/assets/run_zone_icon_asset.dart';
 import '../../../core/design_system/widgets/badge/run_zone_badge.dart';
+import '../../../core/design_system/widgets/button/run_zone_icon_outline_button.dart';
 import '../../../core/design_system/widgets/button/run_zone_primary_button.dart';
 import '../../../core/design_system/widgets/card/run_zone_card.dart';
 import '../../../core/design_system/widgets/control/run_zone_segmented_control.dart';
@@ -39,7 +41,12 @@ final class WorkoutReadyScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const RunZoneHeadlineLargeLabel('운동 전 설정'),
+                      Row(
+                        children: [
+                          const Expanded(child: RunZoneHeadlineLargeLabel('운동 전 설정')),
+                          RunZoneIconOutlineButton(icon: RunZoneIconAsset.close, onPressed: () => _close(context)),
+                        ],
+                      ),
                       AppSpacing.titleDescriptionGap,
                       const RunZoneBodyLargeLabel('오늘 운동에 사용할 목표와 기기 상태를 확인해요.'),
                       AppSpacing.controlGroupSpacer,
@@ -63,6 +70,16 @@ final class WorkoutReadyScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _close(BuildContext context) {
+    final router = GoRouter.of(context);
+    if (router.canPop()) {
+      router.pop();
+      return;
+    }
+
+    router.go(AppRoutes.home);
   }
 }
 
