@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../core/design_system/assets/run_zone_icon_asset.dart';
 import '../core/design_system/widgets/label/run_zone_body_medium_label.dart';
 import '../core/design_system/widgets/navigation/run_zone_bottom_navigation.dart';
 import '../features/profile/presentation/heart_rate_zone_adjustment_screen.dart';
@@ -52,26 +53,26 @@ final class _MainShellView extends StatelessWidget {
             items: [
               RunZoneBottomNavigationItem(
                 label: MainShellTab.home.label,
-                iconAsset: 'assets/icons/home.svg',
+                icon: RunZoneIconAsset.home,
                 isSelected: state.selectedTab == MainShellTab.home,
                 onTap: () => cubit.selectTab(MainShellTab.home),
               ),
               RunZoneBottomNavigationItem(
                 label: MainShellTab.plan.label,
-                iconAsset: 'assets/icons/calendar.svg',
+                icon: RunZoneIconAsset.calendar,
                 isSelected: state.selectedTab == MainShellTab.plan,
                 onTap: () => cubit.selectTab(MainShellTab.plan),
               ),
               RunZoneBottomNavigationStartButton(onTap: () => _showWorkoutSetup(context)),
               RunZoneBottomNavigationItem(
                 label: MainShellTab.stats.label,
-                iconAsset: 'assets/icons/activity.svg',
+                icon: RunZoneIconAsset.activity,
                 isSelected: state.selectedTab == MainShellTab.stats,
                 onTap: () => cubit.selectTab(MainShellTab.stats),
               ),
               RunZoneBottomNavigationItem(
                 label: MainShellTab.myPage.label,
-                iconAsset: 'assets/icons/user.svg',
+                icon: RunZoneIconAsset.user,
                 isSelected: state.selectedTab == MainShellTab.myPage,
                 onTap: () => cubit.selectTab(MainShellTab.myPage),
               ),

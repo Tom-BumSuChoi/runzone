@@ -4,13 +4,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/design_system/app_radius.dart';
 import '../../../../core/design_system/app_sizing.dart';
 import '../../../../core/design_system/app_spacing.dart';
+import '../../../../core/design_system/assets/run_zone_icon_asset.dart';
 
 final class WorkoutLiveControls extends StatelessWidget {
   const WorkoutLiveControls({required this.onLap, required this.onPause, required this.onStop, super.key});
-
-  static const _lapIconAsset = 'assets/icons/lap.svg';
-  static const _pauseIconAsset = 'assets/icons/pause.svg';
-  static const _stopIconAsset = 'assets/icons/stop.svg';
 
   final VoidCallback onLap;
   final VoidCallback onPause;
@@ -31,7 +28,7 @@ final class WorkoutLiveControls extends StatelessWidget {
           children: [
             Expanded(
               child: _WorkoutLiveControlButton(
-                iconAsset: _lapIconAsset,
+                icon: RunZoneIconAsset.lap,
                 semanticLabel: '랩',
                 foregroundColor: colorScheme.onSurface,
                 borderColor: colorScheme.outline,
@@ -51,7 +48,7 @@ final class WorkoutLiveControls extends StatelessWidget {
                     decoration: BoxDecoration(color: colorScheme.primary, shape: BoxShape.circle),
                     child: Center(
                       child: SvgPicture.asset(
-                        _pauseIconAsset,
+                        RunZoneIconAsset.pause.path,
                         width: AppSizing.workoutLivePrimaryIconSize,
                         height: AppSizing.workoutLivePrimaryIconSize,
                         colorFilter: ColorFilter.mode(colorScheme.onPrimary, BlendMode.srcIn),
@@ -63,7 +60,7 @@ final class WorkoutLiveControls extends StatelessWidget {
             ),
             Expanded(
               child: _WorkoutLiveControlButton(
-                iconAsset: _stopIconAsset,
+                icon: RunZoneIconAsset.stop,
                 semanticLabel: '종료',
                 foregroundColor: colorScheme.error,
                 borderColor: colorScheme.error,
@@ -79,14 +76,14 @@ final class WorkoutLiveControls extends StatelessWidget {
 
 final class _WorkoutLiveControlButton extends StatelessWidget {
   const _WorkoutLiveControlButton({
-    required this.iconAsset,
+    required this.icon,
     required this.semanticLabel,
     required this.foregroundColor,
     required this.borderColor,
     required this.onPressed,
   });
 
-  final String iconAsset;
+  final RunZoneIconAsset icon;
   final String semanticLabel;
   final Color foregroundColor;
   final Color borderColor;
@@ -110,7 +107,7 @@ final class _WorkoutLiveControlButton extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.controlBarPadding),
             child: Center(
               child: SvgPicture.asset(
-                iconAsset,
+                icon.path,
                 width: AppSizing.navigationIconSize,
                 height: AppSizing.navigationIconSize,
                 colorFilter: ColorFilter.mode(foregroundColor, BlendMode.srcIn),

@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../core/design_system/app_color_scheme.dart';
 import '../../../core/design_system/app_radius.dart';
 import '../../../core/design_system/app_spacing.dart';
+import '../../../core/design_system/assets/run_zone_icon_asset.dart';
 import '../../../core/design_system/widgets/badge/run_zone_blinking_badge.dart';
 import '../../../core/design_system/widgets/badge/run_zone_indicator_pill.dart';
+import '../../../core/design_system/widgets/button/run_zone_icon_outline_button.dart';
 import '../../../core/design_system/widgets/card/run_zone_card.dart';
 import '../../../core/design_system/widgets/chart/run_zone_sparkline.dart';
 import '../../../core/design_system/widgets/label/run_zone_body_small_label.dart';
@@ -208,45 +210,23 @@ final class _WorkoutTreadmillPanelState extends State<_WorkoutTreadmillPanel> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _WorkoutTreadmillSpeedButton(icon: Icons.remove, onPressed: () => _adjustSpeed(-_speedStep)),
+                    RunZoneIconOutlineButton(
+                      icon: RunZoneIconAsset.minus,
+                      onPressed: () => _adjustSpeed(-_speedStep),
+                    ),
                     const SizedBox(width: AppSpacing.controlGroupGap),
                     RunZoneTitleLargeLabel(_displaySpeed.toStringAsFixed(1)),
                     const SizedBox(width: AppSpacing.controlGroupGap),
-                    _WorkoutTreadmillSpeedButton(icon: Icons.add, onPressed: () => _adjustSpeed(_speedStep)),
+                    RunZoneIconOutlineButton(
+                      icon: RunZoneIconAsset.plus,
+                      onPressed: () => _adjustSpeed(_speedStep),
+                    ),
                   ],
                 ),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-final class _WorkoutTreadmillSpeedButton extends StatelessWidget {
-  const _WorkoutTreadmillSpeedButton({required this.icon, required this.onPressed});
-
-  final IconData icon;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return SizedBox.square(
-      dimension: 42,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(color: colorScheme.outline),
-          borderRadius: AppRadius.mediumBorder,
-        ),
-        child: IconButton(
-          onPressed: onPressed,
-          icon: Icon(icon, size: 20),
-          color: colorScheme.onSurface,
-          padding: EdgeInsets.zero,
-        ),
       ),
     );
   }
