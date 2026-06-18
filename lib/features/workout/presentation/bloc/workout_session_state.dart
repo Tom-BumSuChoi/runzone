@@ -36,6 +36,25 @@ final class WorkoutSessionReadyState extends WorkoutSessionState {
     return isHeartRateDeviceConnected && (environment == WorkoutEnvironment.outdoor || isTreadmillConnected);
   }
 
+  WorkoutSessionReadyState copyWith({
+    WorkoutEnvironment? environment,
+    WorkoutPlan? plan,
+    bool? isHeartRateDeviceConnected,
+    bool? isTreadmillConnected,
+    bool? isAutoPaceEnabled,
+    bool? isZoneAlertEnabled,
+  }) {
+    return WorkoutSessionReadyState(
+      heartRateZoneTable: heartRateZoneTable,
+      environment: environment ?? this.environment,
+      plan: plan ?? this.plan,
+      isHeartRateDeviceConnected: isHeartRateDeviceConnected ?? this.isHeartRateDeviceConnected,
+      isTreadmillConnected: isTreadmillConnected ?? this.isTreadmillConnected,
+      isAutoPaceEnabled: isAutoPaceEnabled ?? this.isAutoPaceEnabled,
+      isZoneAlertEnabled: isZoneAlertEnabled ?? this.isZoneAlertEnabled,
+    );
+  }
+
   @override
   List<Object?> get props => [
     heartRateZoneTable,

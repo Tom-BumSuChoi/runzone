@@ -26,6 +26,25 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
        _createTicker = createTicker ?? (() => Stream<void>.periodic(const Duration(seconds: 1), (_) {})),
        super(WorkoutSessionReadyState(heartRateZoneTable: heartRateZoneTable)) {
     on<WorkoutSessionStarted>(_onStarted);
+    on<WorkoutSessionEnvironmentChanged>(_onEnvironmentChanged);
+    on<WorkoutSessionTargetZonePlanSelected>(_onTargetZonePlanSelected);
+    on<WorkoutSessionIntervalPlanSelected>(_onIntervalPlanSelected);
+    on<WorkoutSessionFreePlanSelected>(_onFreePlanSelected);
+    on<WorkoutSessionTreadmillConnectionToggled>(_onTreadmillConnectionToggled);
+    on<WorkoutSessionAutoPaceToggled>(_onAutoPaceToggled);
+    on<WorkoutSessionZoneAlertToggled>(_onZoneAlertToggled);
+    on<WorkoutSessionTargetZoneDurationIncreased>(_onTargetZoneDurationIncreased);
+    on<WorkoutSessionTargetZoneDurationDecreased>(_onTargetZoneDurationDecreased);
+    on<WorkoutSessionTargetHeartRateZoneIncreased>(_onTargetHeartRateZoneIncreased);
+    on<WorkoutSessionTargetHeartRateZoneDecreased>(_onTargetHeartRateZoneDecreased);
+    on<WorkoutSessionIntervalWarmUpDurationIncreased>(_onIntervalWarmUpDurationIncreased);
+    on<WorkoutSessionIntervalWarmUpDurationDecreased>(_onIntervalWarmUpDurationDecreased);
+    on<WorkoutSessionIntervalHighIntensityDistanceIncreased>(_onIntervalHighIntensityDistanceIncreased);
+    on<WorkoutSessionIntervalHighIntensityDistanceDecreased>(_onIntervalHighIntensityDistanceDecreased);
+    on<WorkoutSessionIntervalRecoveryDurationIncreased>(_onIntervalRecoveryDurationIncreased);
+    on<WorkoutSessionIntervalRecoveryDurationDecreased>(_onIntervalRecoveryDurationDecreased);
+    on<WorkoutSessionIntervalRepeatCountIncreased>(_onIntervalRepeatCountIncreased);
+    on<WorkoutSessionIntervalRepeatCountDecreased>(_onIntervalRepeatCountDecreased);
     on<WorkoutSessionPaused>(_onPaused);
     on<WorkoutSessionResumed>(_onResumed);
     on<WorkoutSessionEnded>(_onEnded);
@@ -46,6 +65,141 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
 
     emit(WorkoutSessionCountdownState(heartRateZoneTable: currentState.heartRateZoneTable, step: _countdownStartStep));
     _startTicker();
+  }
+
+  void _onEnvironmentChanged(WorkoutSessionEnvironmentChanged event, Emitter<WorkoutSessionState> emit) {
+    _updateReadyState(emit, (state) => state.copyWith(environment: event.environment));
+  }
+
+  void _onTargetZonePlanSelected(WorkoutSessionTargetZonePlanSelected event, Emitter<WorkoutSessionState> emit) {
+    _updateReadyState(emit, (state) => state.copyWith(plan: TargetZoneWorkoutPlan.initial));
+  }
+
+  void _onIntervalPlanSelected(WorkoutSessionIntervalPlanSelected event, Emitter<WorkoutSessionState> emit) {
+    _updateReadyState(emit, (state) => state.copyWith(plan: IntervalWorkoutPlan.initial));
+  }
+
+  void _onFreePlanSelected(WorkoutSessionFreePlanSelected event, Emitter<WorkoutSessionState> emit) {
+    _updateReadyState(emit, (state) => state.copyWith(plan: FreeWorkoutPlan.initial));
+  }
+
+  void _onTreadmillConnectionToggled(
+    WorkoutSessionTreadmillConnectionToggled event,
+    Emitter<WorkoutSessionState> emit,
+  ) {
+    _updateReadyState(emit, (state) => state.copyWith(isTreadmillConnected: !state.isTreadmillConnected));
+  }
+
+  void _onAutoPaceToggled(WorkoutSessionAutoPaceToggled event, Emitter<WorkoutSessionState> emit) {
+    _updateReadyState(emit, (state) => state.copyWith(isAutoPaceEnabled: !state.isAutoPaceEnabled));
+  }
+
+  void _onZoneAlertToggled(WorkoutSessionZoneAlertToggled event, Emitter<WorkoutSessionState> emit) {
+    _updateReadyState(emit, (state) => state.copyWith(isZoneAlertEnabled: !state.isZoneAlertEnabled));
+  }
+
+  void _onTargetZoneDurationIncreased(
+    WorkoutSessionTargetZoneDurationIncreased event,
+    Emitter<WorkoutSessionState> emit,
+  ) {
+    _updateReadyTargetZonePlan(emit, (plan) {
+      return TargetZoneWorkoutPlan(
+        durationGoal: plan.durationGoal.increase(),
+        targetHeartRateZone: plan.targetHeartRateZone,
+      );
+    });
+  }
+
+  void _onTargetZoneDurationDecreased(
+    WorkoutSessionTargetZoneDurationDecreased event,
+    Emitter<WorkoutSessionState> emit,
+  ) {
+    _updateReadyTargetZonePlan(emit, (plan) {
+      return TargetZoneWorkoutPlan(
+        durationGoal: plan.durationGoal.decrease(),
+        targetHeartRateZone: plan.targetHeartRateZone,
+      );
+    });
+  }
+
+  void _onTargetHeartRateZoneIncreased(
+    WorkoutSessionTargetHeartRateZoneIncreased event,
+    Emitter<WorkoutSessionState> emit,
+  ) {
+    _updateReadyTargetZonePlan(emit, (plan) {
+      return TargetZoneWorkoutPlan(
+        durationGoal: plan.durationGoal,
+        targetHeartRateZone: plan.targetHeartRateZone.increase(),
+      );
+    });
+  }
+
+  void _onTargetHeartRateZoneDecreased(
+    WorkoutSessionTargetHeartRateZoneDecreased event,
+    Emitter<WorkoutSessionState> emit,
+  ) {
+    _updateReadyTargetZonePlan(emit, (plan) {
+      return TargetZoneWorkoutPlan(
+        durationGoal: plan.durationGoal,
+        targetHeartRateZone: plan.targetHeartRateZone.decrease(),
+      );
+    });
+  }
+
+  void _onIntervalWarmUpDurationIncreased(
+    WorkoutSessionIntervalWarmUpDurationIncreased event,
+    Emitter<WorkoutSessionState> emit,
+  ) {
+    _updateReadyIntervalPlan(emit, (plan) => plan.increaseWarmUpDuration());
+  }
+
+  void _onIntervalWarmUpDurationDecreased(
+    WorkoutSessionIntervalWarmUpDurationDecreased event,
+    Emitter<WorkoutSessionState> emit,
+  ) {
+    _updateReadyIntervalPlan(emit, (plan) => plan.decreaseWarmUpDuration());
+  }
+
+  void _onIntervalHighIntensityDistanceIncreased(
+    WorkoutSessionIntervalHighIntensityDistanceIncreased event,
+    Emitter<WorkoutSessionState> emit,
+  ) {
+    _updateReadyIntervalPlan(emit, (plan) => plan.increaseHighIntensityDistance());
+  }
+
+  void _onIntervalHighIntensityDistanceDecreased(
+    WorkoutSessionIntervalHighIntensityDistanceDecreased event,
+    Emitter<WorkoutSessionState> emit,
+  ) {
+    _updateReadyIntervalPlan(emit, (plan) => plan.decreaseHighIntensityDistance());
+  }
+
+  void _onIntervalRecoveryDurationIncreased(
+    WorkoutSessionIntervalRecoveryDurationIncreased event,
+    Emitter<WorkoutSessionState> emit,
+  ) {
+    _updateReadyIntervalPlan(emit, (plan) => plan.increaseRecoveryDuration());
+  }
+
+  void _onIntervalRecoveryDurationDecreased(
+    WorkoutSessionIntervalRecoveryDurationDecreased event,
+    Emitter<WorkoutSessionState> emit,
+  ) {
+    _updateReadyIntervalPlan(emit, (plan) => plan.decreaseRecoveryDuration());
+  }
+
+  void _onIntervalRepeatCountIncreased(
+    WorkoutSessionIntervalRepeatCountIncreased event,
+    Emitter<WorkoutSessionState> emit,
+  ) {
+    _updateReadyIntervalPlan(emit, (plan) => plan.increaseRepeatCount());
+  }
+
+  void _onIntervalRepeatCountDecreased(
+    WorkoutSessionIntervalRepeatCountDecreased event,
+    Emitter<WorkoutSessionState> emit,
+  ) {
+    _updateReadyIntervalPlan(emit, (plan) => plan.decreaseRepeatCount());
   }
 
   void _onPaused(WorkoutSessionPaused event, Emitter<WorkoutSessionState> emit) {
@@ -172,6 +326,56 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
         .copyWith(elapsed: currentState.elapsedAt(now))
         .recordHeartRate(heartRateMeasurement);
     emit(currentState.copyWith(session: updatedSession, activeStartedAt: now));
+  }
+
+  void _updateReadyState(
+    Emitter<WorkoutSessionState> emit,
+    WorkoutSessionReadyState Function(WorkoutSessionReadyState state) update,
+  ) {
+    final WorkoutSessionState currentState = state;
+    if (currentState is! WorkoutSessionReadyState) {
+      return;
+    }
+
+    emit(update(currentState));
+  }
+
+  void _updateReadyTargetZonePlan(
+    Emitter<WorkoutSessionState> emit,
+    TargetZoneWorkoutPlan Function(TargetZoneWorkoutPlan plan) update,
+  ) {
+    _updateReadyState(emit, (state) {
+      final plan = state.plan;
+      if (plan is! TargetZoneWorkoutPlan) {
+        return state;
+      }
+
+      final nextPlan = update(plan);
+      if (nextPlan == plan) {
+        return state;
+      }
+
+      return state.copyWith(plan: nextPlan);
+    });
+  }
+
+  void _updateReadyIntervalPlan(
+    Emitter<WorkoutSessionState> emit,
+    IntervalWorkoutPlan Function(IntervalWorkoutPlan plan) update,
+  ) {
+    _updateReadyState(emit, (state) {
+      final plan = state.plan;
+      if (plan is! IntervalWorkoutPlan) {
+        return state;
+      }
+
+      final nextPlan = update(plan);
+      if (nextPlan == plan) {
+        return state;
+      }
+
+      return state.copyWith(plan: nextPlan);
+    });
   }
 
   void _startTicker() {
