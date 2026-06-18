@@ -21,9 +21,6 @@ import 'widgets/workout_treadmill_panel.dart';
 final class WorkoutLiveScreen extends StatelessWidget {
   const WorkoutLiveScreen({super.key});
 
-  static const _treadmillSpeedKilometersPerHour = 9.8;
-  static const _isTreadmillManualMode = false;
-  static const _treadmillStatusLabel = 'AUTO · 속도 유지';
   static const _heartRateTrendTrailingLabel = '최근 40초';
 
   @override
@@ -40,11 +37,14 @@ final class WorkoutLiveScreen extends StatelessWidget {
             : HeartRateZone.zone2;
         final isInTargetZone = state.isInTargetHeartRateZone;
         final elapsed = state.elapsed;
+        final treadmillSpeedKilometersPerHour = state.treadmillSpeedKilometersPerHour;
+        final isTreadmillManualMode = state.isTreadmillManualMode;
 
         final zoneColor = _zoneColor(colorScheme, heartRateZone ?? targetHeartRateZone);
         final zoneLabel = _zoneLabel(heartRateZone ?? targetHeartRateZone);
         final targetRange = _targetRange(heartRateZoneTable, targetHeartRateZone);
         final targetLabel = '목표 ${targetRange.lower}–${targetRange.upper}';
+        final treadmillStatusLabel = isTreadmillManualMode == true ? '수동 조작' : 'AUTO · 속도 유지';
 
         final heartRates = state is SessionBackedWorkoutSessionState
             ? state.session.heartRateMeasurements.map((measurement) => measurement.beatsPerMinute).toList()
@@ -79,15 +79,17 @@ final class WorkoutLiveScreen extends StatelessWidget {
                           zoneColor: zoneColor,
                         ),
                         AppSpacing.sectionGap,
-                        WorkoutTreadmillPanel(
-                          speed: _treadmillSpeedKilometersPerHour,
-                          isManualMode: _isTreadmillManualMode,
-                          statusLabel: _treadmillStatusLabel,
-                          onDecrease: () {},
-                          onIncrease: () {},
-                          onResetAutomaticMode: () {},
-                        ),
-                        AppSpacing.sectionGap,
+                        if (treadmillSpeedKilometersPerHour != null && isTreadmillManualMode != null) ...[
+                          WorkoutTreadmillPanel(
+                            speed: treadmillSpeedKilometersPerHour,
+                            isManualMode: isTreadmillManualMode,
+                            statusLabel: treadmillStatusLabel,
+                            onDecrease: () {},
+                            onIncrease: () {},
+                            onResetAutomaticMode: () {},
+                          ),
+                          AppSpacing.sectionGap,
+                        ],
                         WorkoutHeartRateTrendPanel(
                           heartRates: heartRates,
                           heartRateZoneTable: heartRateZoneTable,

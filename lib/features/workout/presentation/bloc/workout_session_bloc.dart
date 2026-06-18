@@ -6,6 +6,8 @@ import 'package:equatable/equatable.dart';
 import '../../../heart_rate/domain/heart_rate_measurement.dart';
 import '../../../heart_rate/domain/heart_rate_monitor.dart';
 import '../../../heart_rate/domain/heart_rate_zone.dart';
+import '../../../treadmill/domain/treadmill_monitor.dart';
+import '../../../treadmill/domain/treadmill_snapshot.dart';
 import '../../domain/workout_environment.dart';
 import '../../domain/workout_plan.dart';
 import '../../domain/workout_session.dart';
@@ -18,6 +20,7 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
 
   WorkoutSessionBloc({
     required this.heartRateMonitor,
+    required this.treadmillMonitor,
     required HeartRateZoneTable heartRateZoneTable,
     required this.targetHeartRateZone,
     DateTime Function()? now,
@@ -54,6 +57,7 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
   final DateTime Function() _now;
   final Stream<void> Function() _createTicker;
   final HeartRateMonitor heartRateMonitor;
+  final TreadmillMonitor treadmillMonitor;
   final HeartRateZone targetHeartRateZone;
   StreamSubscription<void>? _tickerSubscription;
 
@@ -63,6 +67,7 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
       return;
     }
 
+    final TreadmillSnapshot treadmillSnapshot = treadmillMonitor.read();
     emit(
       WorkoutSessionCountdownState(
         heartRateZoneTable: currentState.heartRateZoneTable,
@@ -71,6 +76,9 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
           elapsed: Duration.zero,
           heartRateZoneTable: currentState.heartRateZoneTable,
         ),
+        treadmillSpeedKilometersPerHour: treadmillSnapshot.speedKilometersPerHour,
+        isTreadmillManualMode:
+            treadmillSnapshot.isManualMode || currentState.plan is FreeWorkoutPlan || !currentState.isAutoPaceEnabled,
         step: _countdownStartStep,
       ),
     );
@@ -225,6 +233,8 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
         heartRateZoneTable: currentState.heartRateZoneTable,
         session: currentState.session.copyWith(elapsed: currentState.elapsedAt(now)),
         targetHeartRateZone: currentState.targetHeartRateZone,
+        treadmillSpeedKilometersPerHour: currentState.treadmillSpeedKilometersPerHour,
+        isTreadmillManualMode: currentState.isTreadmillManualMode,
         pausedAt: now,
       ),
     );
@@ -240,6 +250,8 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
       WorkoutSessionCountdownState(
         heartRateZoneTable: currentState.heartRateZoneTable,
         session: currentState.session,
+        treadmillSpeedKilometersPerHour: currentState.treadmillSpeedKilometersPerHour,
+        isTreadmillManualMode: currentState.isTreadmillManualMode,
         step: _countdownStartStep,
       ),
     );
@@ -257,6 +269,8 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
             heartRateZoneTable: currentState.heartRateZoneTable,
             session: currentState.session.finish(endedAt: now, elapsed: currentState.elapsedAt(now)),
             targetHeartRateZone: currentState.targetHeartRateZone,
+            treadmillSpeedKilometersPerHour: currentState.treadmillSpeedKilometersPerHour,
+            isTreadmillManualMode: currentState.isTreadmillManualMode,
           ),
         );
       case WorkoutSessionPausedState():
@@ -265,6 +279,8 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
             heartRateZoneTable: currentState.heartRateZoneTable,
             session: currentState.session.finish(endedAt: currentState.pausedAt, elapsed: currentState.session.elapsed),
             targetHeartRateZone: currentState.targetHeartRateZone,
+            treadmillSpeedKilometersPerHour: currentState.treadmillSpeedKilometersPerHour,
+            isTreadmillManualMode: currentState.isTreadmillManualMode,
           ),
         );
       case WorkoutSessionReadyState() || WorkoutSessionCountdownState() || WorkoutSessionEndedState():
@@ -291,6 +307,8 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
           WorkoutSessionCountdownState(
             heartRateZoneTable: currentState.heartRateZoneTable,
             session: currentState.session,
+            treadmillSpeedKilometersPerHour: currentState.treadmillSpeedKilometersPerHour,
+            isTreadmillManualMode: currentState.isTreadmillManualMode,
             step: WorkoutSessionCountdownStep.two,
           ),
         );
@@ -299,6 +317,8 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
           WorkoutSessionCountdownState(
             heartRateZoneTable: currentState.heartRateZoneTable,
             session: currentState.session,
+            treadmillSpeedKilometersPerHour: currentState.treadmillSpeedKilometersPerHour,
+            isTreadmillManualMode: currentState.isTreadmillManualMode,
             step: WorkoutSessionCountdownStep.one,
           ),
         );
@@ -307,6 +327,8 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
           WorkoutSessionCountdownState(
             heartRateZoneTable: currentState.heartRateZoneTable,
             session: currentState.session,
+            treadmillSpeedKilometersPerHour: currentState.treadmillSpeedKilometersPerHour,
+            isTreadmillManualMode: currentState.isTreadmillManualMode,
             step: WorkoutSessionCountdownStep.go,
           ),
         );
@@ -317,6 +339,8 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
             heartRateZoneTable: currentState.heartRateZoneTable,
             session: currentState.session,
             targetHeartRateZone: targetHeartRateZone,
+            treadmillSpeedKilometersPerHour: currentState.treadmillSpeedKilometersPerHour,
+            isTreadmillManualMode: currentState.isTreadmillManualMode,
             activeStartedAt: now,
           ),
         );
@@ -326,10 +350,18 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
   void _tickRunning(WorkoutSessionRunningState currentState, Emitter<WorkoutSessionState> emit) {
     final DateTime now = _now();
     final HeartRateMeasurement heartRateMeasurement = heartRateMonitor.measure();
+    final TreadmillSnapshot treadmillSnapshot = treadmillMonitor.read();
     final WorkoutSession updatedSession = currentState.session
         .copyWith(elapsed: currentState.elapsedAt(now))
         .recordHeartRate(heartRateMeasurement);
-    emit(currentState.copyWith(session: updatedSession, activeStartedAt: now));
+    emit(
+      currentState.copyWith(
+        session: updatedSession,
+        treadmillSpeedKilometersPerHour: treadmillSnapshot.speedKilometersPerHour,
+        isTreadmillManualMode: treadmillSnapshot.isManualMode || currentState.isTreadmillManualMode == true,
+        activeStartedAt: now,
+      ),
+    );
   }
 
   void _updateReadyState(
