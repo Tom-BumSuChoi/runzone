@@ -63,7 +63,17 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
       return;
     }
 
-    emit(WorkoutSessionCountdownState(heartRateZoneTable: currentState.heartRateZoneTable, step: _countdownStartStep));
+    emit(
+      WorkoutSessionCountdownState(
+        heartRateZoneTable: currentState.heartRateZoneTable,
+        session: WorkoutSession(
+          startedAt: _now(),
+          elapsed: Duration.zero,
+          heartRateZoneTable: currentState.heartRateZoneTable,
+        ),
+        step: _countdownStartStep,
+      ),
+    );
     _startTicker();
   }
 
@@ -305,13 +315,7 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
         emit(
           WorkoutSessionRunningState(
             heartRateZoneTable: currentState.heartRateZoneTable,
-            session:
-                currentState.session ??
-                WorkoutSession(
-                  startedAt: now,
-                  elapsed: Duration.zero,
-                  heartRateZoneTable: currentState.heartRateZoneTable,
-                ),
+            session: currentState.session,
             targetHeartRateZone: targetHeartRateZone,
             activeStartedAt: now,
           ),

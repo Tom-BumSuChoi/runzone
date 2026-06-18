@@ -70,19 +70,19 @@ final class WorkoutSessionReadyState extends WorkoutSessionState {
 enum WorkoutSessionCountdownStep { three, two, one, go }
 
 final class WorkoutSessionCountdownState extends WorkoutSessionState {
-  const WorkoutSessionCountdownState({required super.heartRateZoneTable, required this.step, this.session});
+  const WorkoutSessionCountdownState({required super.heartRateZoneTable, required this.step, required this.session});
 
   final WorkoutSessionCountdownStep step;
-  final WorkoutSession? session;
+  final WorkoutSession session;
 
   @override
-  Duration get elapsed => session?.elapsed ?? Duration.zero;
+  Duration get elapsed => session.elapsed;
 
   @override
-  HeartRateMeasurement? get latestHeartRateMeasurement => session?.latestHeartRateMeasurement;
+  HeartRateMeasurement? get latestHeartRateMeasurement => session.latestHeartRateMeasurement;
 
   @override
-  HeartRateZone? get latestHeartRateZone => session?.latestHeartRateZone;
+  HeartRateZone? get latestHeartRateZone => session.latestHeartRateZone;
 
   @override
   List<Object?> get props => [heartRateZoneTable, step, session];

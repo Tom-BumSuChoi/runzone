@@ -89,7 +89,7 @@ void main() {
     List<HeartRateMeasurement> heartRateMeasurements = const [],
   }) {
     return WorkoutSession(
-      startedAt: runningStartedAt,
+      startedAt: startedAt,
       endedAt: endedAt,
       elapsed: elapsed,
       heartRateZoneTable: heartRateZoneTable,
@@ -107,7 +107,7 @@ void main() {
     }
   }
 
-  List<WorkoutSessionState> countdownStates({WorkoutSession? workoutSession}) {
+  List<WorkoutSessionState> countdownStates({required WorkoutSession workoutSession}) {
     return [
       WorkoutSessionCountdownState(
         heartRateZoneTable: heartRateZoneTable,
@@ -134,7 +134,7 @@ void main() {
 
   List<WorkoutSessionState> countdownToRunningStates() {
     return [
-      ...countdownStates(),
+      ...countdownStates(workoutSession: session(elapsed: Duration.zero)),
       WorkoutSessionRunningState(
         heartRateZoneTable: heartRateZoneTable,
         session: session(elapsed: Duration.zero),
@@ -342,9 +342,10 @@ void main() {
     build: buildBloc,
     act: (WorkoutSessionBloc bloc) => bloc.add(const WorkoutSessionStarted()),
     expect: () => [
-      const WorkoutSessionCountdownState(
+      WorkoutSessionCountdownState(
         heartRateZoneTable: heartRateZoneTable,
         step: WorkoutSessionCountdownStep.three,
+        session: session(elapsed: Duration.zero),
       ),
     ],
   );
