@@ -13,6 +13,8 @@ import '../features/workout/presentation/live/workout_live_screen.dart';
 import '../features/workout/presentation/post/workout_feedback_cubit.dart';
 import '../features/workout/presentation/post/workout_feedback_screen.dart';
 import '../features/workout/presentation/ready/workout_ready_cubit.dart';
+import '../features/workout/presentation/result/workout_result_cubit.dart';
+import '../features/workout/presentation/result/workout_result_screen.dart';
 import '../features/workout/presentation/ready/workout_ready_screen.dart';
 import 'app_routes.dart';
 import 'cubit/app_cubit.dart';
@@ -85,6 +87,19 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
                 child: BlocProvider(
                   create: (_) => WorkoutFeedbackCubit(session: session),
                   child: const WorkoutFeedbackScreen(),
+                ),
+              );
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.workoutResult,
+            redirect: (_, state) => state.extra is WorkoutSession ? null : AppRoutes.home,
+            pageBuilder: (_, state) {
+              final session = state.extra as WorkoutSession;
+              return NoTransitionPage(
+                child: BlocProvider(
+                  create: (_) => WorkoutResultCubit(session: session),
+                  child: const WorkoutResultScreen(),
                 ),
               );
             },
