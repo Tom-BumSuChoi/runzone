@@ -19,4 +19,6 @@ abstract final class AppSizing {
   static const navigationStartButtonSize = 50.0;
   static const workoutLiveControlButtonSize = 84.0;
   static const workoutLivePrimaryIconSize = 32.0;
+  static const pausedIconRingSize = 96.0;
+  static const pausedIconSize = 42.0;
 }
