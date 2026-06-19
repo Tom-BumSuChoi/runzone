@@ -129,6 +129,8 @@ sealed class SessionBackedWorkoutSessionState extends WorkoutSessionState {
   @override
   Duration get elapsed => session.elapsed;
 
+  List<HeartRateMeasurement> get heartRateMeasurements => session.heartRateMeasurements;
+
   @override
   HeartRateMeasurement? get latestHeartRateMeasurement => session.latestHeartRateMeasurement;
 

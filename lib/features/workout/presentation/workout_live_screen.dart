@@ -10,6 +10,7 @@ import '../../../core/design_system/widgets/label/run_zone_display_large_label.d
 import '../../../core/design_system/widgets/label/run_zone_label_medium_label.dart';
 import '../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
 import '../../../core/design_system/widgets/progress/run_zone_ring_progress.dart';
+import '../../heart_rate/domain/heart_rate_measurement.dart';
 import '../../heart_rate/domain/heart_rate_zone.dart';
 import '../../heart_rate/domain/heart_rate_zone_range.dart';
 import 'bloc/workout_session_bloc.dart';
@@ -20,8 +21,6 @@ import 'widgets/workout_treadmill_panel.dart';
 
 final class WorkoutLiveScreen extends StatelessWidget {
   const WorkoutLiveScreen({super.key});
-
-  static const _heartRateTrendTrailingLabel = '최근 40초';
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +45,9 @@ final class WorkoutLiveScreen extends StatelessWidget {
         final targetLabel = '목표 ${targetRange.lower}–${targetRange.upper}';
         final treadmillStatusLabel = isTreadmillManualMode == true ? '수동 조작' : 'AUTO · 속도 유지';
 
-        final heartRates = state is SessionBackedWorkoutSessionState
-            ? state.session.heartRateMeasurements.map((measurement) => measurement.beatsPerMinute).toList()
-            : <int>[];
+        final List<HeartRateMeasurement> heartRateMeasurements = state is SessionBackedWorkoutSessionState
+            ? state.heartRateMeasurements
+            : const <HeartRateMeasurement>[];
 
         final elapsedText = _formatDuration(elapsed);
 
@@ -95,10 +94,9 @@ final class WorkoutLiveScreen extends StatelessWidget {
                           AppSpacing.sectionGap,
                         ],
                         WorkoutHeartRateTrendPanel(
-                          heartRates: heartRates,
+                          heartRateMeasurements: heartRateMeasurements,
                           heartRateZoneTable: heartRateZoneTable,
                           targetHeartRateZone: targetHeartRateZone,
-                          trailingLabel: _heartRateTrendTrailingLabel,
                         ),
                         AppSpacing.sectionGap,
                         WorkoutMetricRow(elapsedTime: elapsedText, remainingTime: '40:00', distance: '0.00'),

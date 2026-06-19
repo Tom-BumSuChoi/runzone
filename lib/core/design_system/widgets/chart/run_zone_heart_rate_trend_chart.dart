@@ -21,7 +21,7 @@ final class RunZoneHeartRateTrendChart extends StatelessWidget {
     super.key,
   });
 
-  final List<int> heartRates;
+  final List<int?> heartRates;
   final HeartRateZoneTable heartRateZoneTable;
   final HeartRateZone targetHeartRateZone;
 
@@ -52,7 +52,7 @@ final class _RunZoneHeartRateTrendChartPainter extends CustomPainter {
     required this.colorScheme,
   });
 
-  final List<int> heartRates;
+  final List<int?> heartRates;
   final HeartRateZoneTable heartRateZoneTable;
   final HeartRateZone targetHeartRateZone;
   final ColorScheme colorScheme;
@@ -71,34 +71,39 @@ final class _RunZoneHeartRateTrendChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     _drawZoneBands(canvas, size);
 
-    if (heartRates.isEmpty) {
-      return;
-    }
-
-    if (heartRates.length == 1) {
-      _drawLastPoint(canvas, size, _pointFor(0, size));
+    final lastHeartRateIndex = heartRates.lastIndexWhere((heartRate) => heartRate != null);
+    if (lastHeartRateIndex == -1) {
       return;
     }
 
     final path = Path();
+    var hasActivePath = false;
     for (var index = 0; index < heartRates.length; index++) {
-      final point = _pointFor(index, size);
-      if (index == 0) {
+      final heartRate = heartRates[index];
+      if (heartRate == null) {
+        hasActivePath = false;
+        continue;
+      }
+
+      final point = _pointFor(index, heartRate, size);
+      if (!hasActivePath) {
         path.moveTo(point.dx, point.dy);
       } else {
         path.lineTo(point.dx, point.dy);
       }
+      hasActivePath = true;
     }
 
+    final lastHeartRate = heartRates[lastHeartRateIndex]!;
     final linePaint = Paint()
-      ..color = _currentHeartRateColor()
+      ..color = _heartRateColor(lastHeartRate)
       ..style = PaintingStyle.stroke
       ..strokeWidth = _lineStrokeWidth
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
     canvas.drawPath(path, linePaint);
 
-    _drawLastPoint(canvas, size, _pointFor(heartRates.length - 1, size));
+    _drawLastPoint(canvas, _pointFor(lastHeartRateIndex, lastHeartRate, size), _heartRateColor(lastHeartRate));
   }
 
   void _drawZoneBands(Canvas canvas, Size size) {
@@ -124,17 +129,17 @@ final class _RunZoneHeartRateTrendChartPainter extends CustomPainter {
     }
   }
 
-  void _drawLastPoint(Canvas canvas, Size size, Offset point) {
+  void _drawLastPoint(Canvas canvas, Offset point, Color color) {
     final pointPaint = Paint()
-      ..color = _currentHeartRateColor()
+      ..color = color
       ..style = PaintingStyle.fill;
     canvas.drawCircle(point, _lastPointRadius, pointPaint);
   }
 
-  Offset _pointFor(int index, Size size) {
+  Offset _pointFor(int index, int heartRate, Size size) {
     final progress = heartRates.length == 1 ? 1.0 : index / (heartRates.length - 1);
     final x = progress * size.width;
-    final y = _yFor(heartRates[index], size);
+    final y = _yFor(heartRate, size);
     return Offset(x, y);
   }
 
@@ -143,12 +148,12 @@ final class _RunZoneHeartRateTrendChartPainter extends CustomPainter {
     final zoneIndex = _zoneIndexFor(heartRate, zoneBands);
     final zoneBand = zoneBands[zoneIndex];
     final zoneRect = _rectForZone(zoneIndex, zoneBands.length, size);
-    final progress = ((heartRate - zoneBand.lowerHeartRate) / (zoneBand.upperHeartRate - zoneBand.lowerHeartRate)).clamp(0.0, 1.0);
+    final progress = ((heartRate - zoneBand.lowerHeartRate) / (zoneBand.upperHeartRate - zoneBand.lowerHeartRate))
+        .clamp(0.0, 1.0);
     return zoneRect.bottom - progress * zoneRect.height;
   }
 
-  Color _currentHeartRateColor() {
-    final heartRate = heartRates.last;
+  Color _heartRateColor(int heartRate) {
     final zoneBands = _zoneBands;
     return zoneBands[_zoneIndexFor(heartRate, zoneBands)].color;
   }
