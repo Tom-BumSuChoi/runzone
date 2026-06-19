@@ -55,16 +55,58 @@ final class _FakeHeartRateMonitor implements HeartRateMonitor {
 }
 
 final class _FakeTreadmillDevice implements TreadmillDevice {
-  _FakeTreadmillDevice(this._snapshots);
+  _FakeTreadmillDevice(this._snapshots) : _currentSnapshot = _snapshots.first;
+
+  static const double _speedStepKilometersPerHour = 0.1;
 
   final List<TreadmillSnapshot> _snapshots;
   int _nextIndex = 0;
+  TreadmillSnapshot _currentSnapshot;
 
   @override
   TreadmillSnapshot read() {
     final TreadmillSnapshot snapshot = _snapshots[_nextIndex % _snapshots.length];
     _nextIndex += 1;
+    _currentSnapshot = snapshot;
     return snapshot;
+  }
+
+  @override
+  TreadmillSnapshot decreaseSpeed() {
+    return _updateCurrentSnapshot(
+      speedKilometersPerHour: _currentSnapshot.speedKilometersPerHour - _speedStepKilometersPerHour,
+      isManualMode: true,
+    );
+  }
+
+  @override
+  TreadmillSnapshot increaseSpeed() {
+    return _updateCurrentSnapshot(
+      speedKilometersPerHour: _currentSnapshot.speedKilometersPerHour + _speedStepKilometersPerHour,
+      isManualMode: true,
+    );
+  }
+
+  @override
+  TreadmillSnapshot enableManualMode() {
+    return _updateCurrentSnapshot(isManualMode: true);
+  }
+
+  @override
+  TreadmillSnapshot enableAutomaticMode() {
+    return _updateCurrentSnapshot(isManualMode: false);
+  }
+
+  TreadmillSnapshot _updateCurrentSnapshot({double? speedKilometersPerHour, bool? isManualMode}) {
+    _currentSnapshot = TreadmillSnapshot(
+      speedKilometersPerHour: _normalizeSpeed(speedKilometersPerHour ?? _currentSnapshot.speedKilometersPerHour),
+      isManualMode: isManualMode ?? _currentSnapshot.isManualMode,
+    );
+    return _currentSnapshot;
+  }
+
+  double _normalizeSpeed(double speedKilometersPerHour) {
+    return (speedKilometersPerHour * 10).roundToDouble() / 10;
   }
 }
 
@@ -457,6 +499,79 @@ void main() {
         treadmillSpeedKilometersPerHour: defaultTreadmillSpeedKilometersPerHour,
         isTreadmillManualMode: defaultIsTreadmillManualMode,
         activeStartedAt: runningStartedAt.add(const Duration(seconds: 2)),
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSessionBloc, WorkoutSessionState>(
+    'Given 진행 상태 When 러닝머신 속도를 올리면 Then 수동 모드 속도 상태를 방출한다',
+    build: buildBloc,
+    act: (WorkoutSessionBloc bloc) async {
+      await startWorkout(bloc);
+      bloc.add(const WorkoutSessionTreadmillSpeedIncreased());
+      await pumpEventQueue();
+    },
+    expect: () => [
+      ...countdownToRunningStates(),
+      WorkoutSessionRunningState(
+        heartRateZoneTable: heartRateZoneTable,
+        session: session(elapsed: Duration.zero),
+        targetHeartRateZone: targetHeartRateZone,
+        treadmillSpeedKilometersPerHour: 7.3,
+        isTreadmillManualMode: true,
+        activeStartedAt: runningStartedAt,
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSessionBloc, WorkoutSessionState>(
+    'Given 진행 상태 When 러닝머신 속도를 내리면 Then 수동 모드 속도 상태를 방출한다',
+    build: buildBloc,
+    act: (WorkoutSessionBloc bloc) async {
+      await startWorkout(bloc);
+      bloc.add(const WorkoutSessionTreadmillSpeedDecreased());
+      await pumpEventQueue();
+    },
+    expect: () => [
+      ...countdownToRunningStates(),
+      WorkoutSessionRunningState(
+        heartRateZoneTable: heartRateZoneTable,
+        session: session(elapsed: Duration.zero),
+        targetHeartRateZone: targetHeartRateZone,
+        treadmillSpeedKilometersPerHour: 7.1,
+        isTreadmillManualMode: true,
+        activeStartedAt: runningStartedAt,
+      ),
+    ],
+  );
+
+  blocTest<WorkoutSessionBloc, WorkoutSessionState>(
+    'Given 수동 모드 진행 상태 When 러닝머신 자동 모드로 전환하면 Then 자동 모드 상태를 방출한다',
+    build: buildBloc,
+    act: (WorkoutSessionBloc bloc) async {
+      await startWorkout(bloc);
+      bloc.add(const WorkoutSessionTreadmillSpeedIncreased());
+      await pumpEventQueue();
+      bloc.add(const WorkoutSessionTreadmillAutomaticModeEnabled());
+      await pumpEventQueue();
+    },
+    expect: () => [
+      ...countdownToRunningStates(),
+      WorkoutSessionRunningState(
+        heartRateZoneTable: heartRateZoneTable,
+        session: session(elapsed: Duration.zero),
+        targetHeartRateZone: targetHeartRateZone,
+        treadmillSpeedKilometersPerHour: 7.3,
+        isTreadmillManualMode: true,
+        activeStartedAt: runningStartedAt,
+      ),
+      WorkoutSessionRunningState(
+        heartRateZoneTable: heartRateZoneTable,
+        session: session(elapsed: Duration.zero),
+        targetHeartRateZone: targetHeartRateZone,
+        treadmillSpeedKilometersPerHour: 7.3,
+        isTreadmillManualMode: false,
+        activeStartedAt: runningStartedAt,
       ),
     ],
   );

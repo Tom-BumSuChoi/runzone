@@ -48,6 +48,18 @@ final class WorkoutSessionZoneAlertToggled extends WorkoutSessionReadyEvent {
   const WorkoutSessionZoneAlertToggled();
 }
 
+final class WorkoutSessionTreadmillSpeedDecreased extends WorkoutSessionEvent {
+  const WorkoutSessionTreadmillSpeedDecreased();
+}
+
+final class WorkoutSessionTreadmillSpeedIncreased extends WorkoutSessionEvent {
+  const WorkoutSessionTreadmillSpeedIncreased();
+}
+
+final class WorkoutSessionTreadmillAutomaticModeEnabled extends WorkoutSessionEvent {
+  const WorkoutSessionTreadmillAutomaticModeEnabled();
+}
+
 final class WorkoutSessionTargetZoneDurationIncreased extends WorkoutSessionReadyEvent {
   const WorkoutSessionTargetZoneDurationIncreased();
 }

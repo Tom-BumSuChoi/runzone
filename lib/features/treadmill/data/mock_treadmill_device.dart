@@ -53,9 +53,13 @@ final class MockTreadmillDevice implements TreadmillDevice {
 
   TreadmillSnapshot _updateCurrentSnapshot({double? speedKilometersPerHour, bool? isManualMode}) {
     _currentSnapshot = TreadmillSnapshot(
-      speedKilometersPerHour: speedKilometersPerHour ?? _currentSnapshot.speedKilometersPerHour,
+      speedKilometersPerHour: _normalizeSpeed(speedKilometersPerHour ?? _currentSnapshot.speedKilometersPerHour),
       isManualMode: isManualMode ?? _currentSnapshot.isManualMode,
     );
     return _currentSnapshot;
+  }
+
+  double _normalizeSpeed(double speedKilometersPerHour) {
+    return (speedKilometersPerHour * 10).roundToDouble() / 10;
   }
 }

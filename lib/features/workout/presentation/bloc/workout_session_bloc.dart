@@ -36,6 +36,9 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
     on<WorkoutSessionTreadmillConnectionToggled>(_onTreadmillConnectionToggled);
     on<WorkoutSessionAutoPaceToggled>(_onAutoPaceToggled);
     on<WorkoutSessionZoneAlertToggled>(_onZoneAlertToggled);
+    on<WorkoutSessionTreadmillSpeedDecreased>(_onTreadmillSpeedDecreased);
+    on<WorkoutSessionTreadmillSpeedIncreased>(_onTreadmillSpeedIncreased);
+    on<WorkoutSessionTreadmillAutomaticModeEnabled>(_onTreadmillAutomaticModeEnabled);
     on<WorkoutSessionTargetZoneDurationIncreased>(_onTargetZoneDurationIncreased);
     on<WorkoutSessionTargetZoneDurationDecreased>(_onTargetZoneDurationDecreased);
     on<WorkoutSessionTargetHeartRateZoneIncreased>(_onTargetHeartRateZoneIncreased);
@@ -114,6 +117,21 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
 
   void _onZoneAlertToggled(WorkoutSessionZoneAlertToggled event, Emitter<WorkoutSessionState> emit) {
     _updateReadyState(emit, (state) => state.copyWith(isZoneAlertEnabled: !state.isZoneAlertEnabled));
+  }
+
+  void _onTreadmillSpeedDecreased(WorkoutSessionTreadmillSpeedDecreased event, Emitter<WorkoutSessionState> emit) {
+    _updateRunningTreadmillState(emit, treadmillDevice.decreaseSpeed);
+  }
+
+  void _onTreadmillSpeedIncreased(WorkoutSessionTreadmillSpeedIncreased event, Emitter<WorkoutSessionState> emit) {
+    _updateRunningTreadmillState(emit, treadmillDevice.increaseSpeed);
+  }
+
+  void _onTreadmillAutomaticModeEnabled(
+    WorkoutSessionTreadmillAutomaticModeEnabled event,
+    Emitter<WorkoutSessionState> emit,
+  ) {
+    _updateRunningTreadmillState(emit, treadmillDevice.enableAutomaticMode);
   }
 
   void _onTargetZoneDurationIncreased(
@@ -412,6 +430,21 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
 
       return state.copyWith(plan: nextPlan);
     });
+  }
+
+  void _updateRunningTreadmillState(Emitter<WorkoutSessionState> emit, TreadmillSnapshot Function() update) {
+    final WorkoutSessionState currentState = state;
+    if (currentState is! WorkoutSessionRunningState) {
+      return;
+    }
+
+    final snapshot = update();
+    emit(
+      currentState.copyWith(
+        treadmillSpeedKilometersPerHour: snapshot.speedKilometersPerHour,
+        isTreadmillManualMode: snapshot.isManualMode,
+      ),
+    );
   }
 
   void _startTicker() {

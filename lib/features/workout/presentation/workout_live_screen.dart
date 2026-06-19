@@ -84,9 +84,13 @@ final class WorkoutLiveScreen extends StatelessWidget {
                             speed: treadmillSpeedKilometersPerHour,
                             isManualMode: isTreadmillManualMode,
                             statusLabel: treadmillStatusLabel,
-                            onDecrease: () {},
-                            onIncrease: () {},
-                            onResetAutomaticMode: () {},
+                            onDecrease: () =>
+                                context.read<WorkoutSessionBloc>().add(const WorkoutSessionTreadmillSpeedDecreased()),
+                            onIncrease: () =>
+                                context.read<WorkoutSessionBloc>().add(const WorkoutSessionTreadmillSpeedIncreased()),
+                            onResetAutomaticMode: () => context.read<WorkoutSessionBloc>().add(
+                              const WorkoutSessionTreadmillAutomaticModeEnabled(),
+                            ),
                           ),
                           AppSpacing.sectionGap,
                         ],
