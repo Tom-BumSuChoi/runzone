@@ -19,53 +19,50 @@ final class WorkoutFeedbackScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return BlocProvider(
-      create: (_) => WorkoutFeedbackCubit(),
-      child: Scaffold(
-        backgroundColor: colorScheme.surface,
-        body: SafeArea(
-          bottom: false,
-          child: Padding(
-            padding: AppSpacing.screenInsets,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const RunZoneHeadlineLargeLabel('오늘 어땠나요?', textAlign: TextAlign.center),
-                AppSpacing.titleDescriptionGap,
-                RunZoneBodyLargeLabel(
-                  '한 번만 기록하면 다음 훈련 추천이 정확해져요.',
-                  color: colorScheme.onSurfaceVariant,
-                  textAlign: TextAlign.center,
-                ),
-                AppSpacing.sectionGap,
-                const RunZoneLabelSmallLabel('체감 강도 (RPE)'),
-                AppSpacing.sectionLabelGap,
-                const WorkoutPerceivedExertionSelector(),
-                AppSpacing.sectionLabelGap,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    RunZoneLabelSmallLabel('아주 편함', color: colorScheme.onSurfaceVariant),
-                    RunZoneLabelSmallLabel('최대', color: colorScheme.onSurfaceVariant),
-                  ],
-                ),
-                AppSpacing.sectionGap,
-                const RunZoneLabelSmallLabel('컨디션'),
-                AppSpacing.sectionLabelGap,
-                const WorkoutMoodSelector(),
-                AppSpacing.sectionGap,
-                const RunZoneLabelSmallLabel('메모 (선택)'),
-                AppSpacing.sectionLabelGap,
-                const WorkoutFeedbackNoteField(),
-                const Spacer(),
-                RunZonePrimaryButton(
-                  label: '저장하고 결과 보기',
-                  onPressed: context.read<WorkoutFeedbackCubit>().saveButtonTapped,
-                ),
-                AppSpacing.buttonGap,
-                RunZoneGhostButton(label: '건너뛰기', onPressed: context.read<WorkoutFeedbackCubit>().skipButtonTapped),
-              ],
-            ),
+    return Scaffold(
+      backgroundColor: colorScheme.surface,
+      body: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: AppSpacing.screenInsets,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const RunZoneHeadlineLargeLabel('오늘 어땠나요?', textAlign: TextAlign.center),
+              AppSpacing.titleDescriptionGap,
+              RunZoneBodyLargeLabel(
+                '한 번만 기록하면 다음 훈련 추천이 정확해져요.',
+                color: colorScheme.onSurfaceVariant,
+                textAlign: TextAlign.center,
+              ),
+              AppSpacing.sectionGap,
+              const RunZoneLabelSmallLabel('체감 강도 (RPE)'),
+              AppSpacing.sectionLabelGap,
+              const WorkoutPerceivedExertionSelector(),
+              AppSpacing.sectionLabelGap,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  RunZoneLabelSmallLabel('아주 편함', color: colorScheme.onSurfaceVariant),
+                  RunZoneLabelSmallLabel('최대', color: colorScheme.onSurfaceVariant),
+                ],
+              ),
+              AppSpacing.sectionGap,
+              const RunZoneLabelSmallLabel('컨디션'),
+              AppSpacing.sectionLabelGap,
+              const WorkoutMoodSelector(),
+              AppSpacing.sectionGap,
+              const RunZoneLabelSmallLabel('메모 (선택)'),
+              AppSpacing.sectionLabelGap,
+              const WorkoutFeedbackNoteField(),
+              const Spacer(),
+              RunZonePrimaryButton(
+                label: '저장하고 결과 보기',
+                onPressed: context.read<WorkoutFeedbackCubit>().saveButtonTapped,
+              ),
+              AppSpacing.buttonGap,
+              RunZoneGhostButton(label: '건너뛰기', onPressed: context.read<WorkoutFeedbackCubit>().skipButtonTapped),
+            ],
           ),
         ),
       ),

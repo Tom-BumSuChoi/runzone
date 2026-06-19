@@ -1,8 +1,19 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../domain/workout_session.dart';
+
+abstract interface class WorkoutFeedbackDelegate {
+  void saveWorkoutFeedback({required WorkoutSession session, required WorkoutFeedbackState feedback});
+
+  void skipWorkoutFeedback({required WorkoutSession session});
+}
+
 final class WorkoutFeedbackCubit extends Cubit<WorkoutFeedbackState> {
-  WorkoutFeedbackCubit() : super(const WorkoutFeedbackState());
+  WorkoutFeedbackCubit({required this.session, required this.delegate}) : super(const WorkoutFeedbackState());
+
+  final WorkoutSession session;
+  final WorkoutFeedbackDelegate delegate;
 
   void perceivedExertionSelected(int perceivedExertion) {
     if (perceivedExertion < WorkoutFeedbackState.minimumPerceivedExertion ||
@@ -21,9 +32,13 @@ final class WorkoutFeedbackCubit extends Cubit<WorkoutFeedbackState> {
     emit(WorkoutFeedbackState(perceivedExertion: state.perceivedExertion, mood: state.mood, note: note));
   }
 
-  void saveButtonTapped() {}
+  void saveButtonTapped() {
+    delegate.saveWorkoutFeedback(session: session, feedback: state);
+  }
 
-  void skipButtonTapped() {}
+  void skipButtonTapped() {
+    delegate.skipWorkoutFeedback(session: session);
+  }
 }
 
 enum WorkoutFeedbackMood { hard, neutral, good, great }
