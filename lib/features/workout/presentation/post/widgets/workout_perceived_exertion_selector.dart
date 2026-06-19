@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/design_system/app_spacing.dart';
+import '../../../../../core/design_system/widgets/label/run_zone_label_large_label.dart';
 import '../workout_feedback_cubit.dart';
 
 final class WorkoutPerceivedExertionSelector extends StatelessWidget {
@@ -30,7 +31,10 @@ final class WorkoutPerceivedExertionSelector extends StatelessWidget {
                         ? colorScheme.onPrimary
                         : colorScheme.onSurfaceVariant,
                   ),
-                  child: Text('$value'),
+                  child: RunZoneLabelLargeLabel(
+                    '$value',
+                    color: value == state.perceivedExertion ? colorScheme.onPrimary : colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
           ],
