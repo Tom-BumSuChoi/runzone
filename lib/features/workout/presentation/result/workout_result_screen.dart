@@ -65,7 +65,7 @@ final class WorkoutResultScreen extends StatelessWidget {
                     subtitle: '회복도 82 · 위험 낮음',
                   ),
                   const Spacer(),
-                  RunZonePrimaryButton(label: '확인', onPressed: () => context.go(AppRoutes.home)),
+                  RunZonePrimaryButton(label: '확인', onPressed: () => _closeWorkoutResult(context)),
                 ],
               ),
             );
@@ -73,5 +73,15 @@ final class WorkoutResultScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _closeWorkoutResult(BuildContext context) {
+    final router = GoRouter.of(context);
+    if (router.canPop()) {
+      router.pop();
+      return;
+    }
+
+    router.go(AppRoutes.home);
   }
 }

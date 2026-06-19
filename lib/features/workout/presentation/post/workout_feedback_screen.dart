@@ -56,7 +56,7 @@ final class WorkoutFeedbackScreen extends StatelessWidget {
               const Spacer(),
               RunZonePrimaryButton(
                 label: '저장하고 결과 보기',
-                onPressed: () => context.go(
+                onPressed: () => context.pushReplacement(
                   AppRoutes.workoutResult,
                   extra: context.read<WorkoutFeedbackCubit>().session,
                 ),
@@ -64,7 +64,7 @@ final class WorkoutFeedbackScreen extends StatelessWidget {
               AppSpacing.buttonGap,
               RunZoneGhostButton(
                 label: '건너뛰기',
-                onPressed: () => context.go(
+                onPressed: () => context.pushReplacement(
                   AppRoutes.workoutResult,
                   extra: context.read<WorkoutFeedbackCubit>().session,
                 ),

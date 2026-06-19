@@ -17,7 +17,7 @@ final class WorkoutLiveScreen extends StatelessWidget {
       listenWhen: (previous, current) => current is WorkoutLiveFinished,
       listener: (context, state) {
         if (state is WorkoutLiveFinished) {
-          context.go(AppRoutes.workoutFeedback, extra: state.session);
+          context.pushReplacement(AppRoutes.workoutFeedback, extra: state.session);
         }
       },
       builder: (context, state) => switch (state) {

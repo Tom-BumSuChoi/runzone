@@ -72,7 +72,7 @@ final class WorkoutReadyScreen extends StatelessWidget {
     if (session == null) {
       return;
     }
-    context.go(
+    context.pushReplacement(
       AppRoutes.workoutLive,
       extra: (session: session, isAutoPaceEnabled: cubit.state.isAutoPaceEnabled),
     );
