@@ -32,6 +32,7 @@ abstract final class AppSpacing {
   static const sectionLabelGap = SizedBox(height: 6);
   static const headerTitleGap = SizedBox(height: 22);
   static const titleDescriptionGap = SizedBox(height: 6);
+  static const headlineTagGap = SizedBox(height: 14);
   static const footerHintGap = SizedBox(height: 10);
 
   static const cardInsets = EdgeInsets.all(cardPadding);
