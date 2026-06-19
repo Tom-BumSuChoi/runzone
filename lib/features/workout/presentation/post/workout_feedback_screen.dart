@@ -5,6 +5,7 @@ import '../../../../core/design_system/app_spacing.dart';
 import '../../../../core/design_system/widgets/label/run_zone_body_large_label.dart';
 import '../../../../core/design_system/widgets/label/run_zone_headline_large_label.dart';
 import '../../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
+import 'widgets/workout_perceived_exertion_selector.dart';
 import 'workout_feedback_cubit.dart';
 
 final class WorkoutFeedbackScreen extends StatelessWidget {
@@ -41,6 +42,8 @@ final class _WorkoutFeedbackView extends StatelessWidget {
               ),
               AppSpacing.sectionGap,
               const RunZoneLabelSmallLabel('체감 강도 (RPE)'),
+              AppSpacing.sectionLabelGap,
+              const WorkoutPerceivedExertionSelector(),
             ],
           ),
         ),
