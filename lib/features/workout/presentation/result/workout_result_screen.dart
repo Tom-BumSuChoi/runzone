@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../app/app_routes.dart';
 import '../../../../core/design_system/app_spacing.dart';
 import '../../../../core/design_system/assets/run_zone_icon_asset.dart';
+import '../../../../core/design_system/widgets/button/run_zone_primary_button.dart';
 import '../../../../core/design_system/widgets/card/run_zone_action_card.dart';
 import '../../../../core/design_system/widgets/label/run_zone_headline_medium_label.dart';
 import '../../../../core/design_system/widgets/label/run_zone_label_medium_label.dart';
@@ -21,6 +24,7 @@ final class WorkoutResultScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: colorScheme.surface,
       body: SafeArea(
+        bottom: false,
         child: BlocBuilder<WorkoutResultCubit, WorkoutResultState>(
           builder: (context, state) {
             return Padding(
@@ -60,6 +64,8 @@ final class WorkoutResultScreen extends StatelessWidget {
                     title: '오늘 훈련 부하 · 회복',
                     subtitle: '회복도 82 · 위험 낮음',
                   ),
+                  const Spacer(),
+                  RunZonePrimaryButton(label: '확인', onPressed: () => context.go(AppRoutes.home)),
                 ],
               ),
             );
