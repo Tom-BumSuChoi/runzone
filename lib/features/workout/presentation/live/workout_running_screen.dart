@@ -39,8 +39,8 @@ final class WorkoutRunningScreen extends StatelessWidget {
     final targetLabel = '목표 ${targetRange.lower}–${targetRange.upper}';
     final treadmillStatusLabel = isTreadmillManualMode == true ? '수동 조작' : 'AUTO · 속도 유지';
 
-    final elapsedText = _formatDuration(state.session.elapsed);
-    final remainingDuration = state.session.remainingDuration;
+    final elapsedText = _formatDuration(state.elapsedDisplayDuration);
+    final remainingDuration = state.remainingDisplayDuration;
     final remainingText = remainingDuration == null ? '--:--' : _formatDuration(remainingDuration);
     final distanceText = (state.session.totalDistanceMeters / 1000).toStringAsFixed(2);
 

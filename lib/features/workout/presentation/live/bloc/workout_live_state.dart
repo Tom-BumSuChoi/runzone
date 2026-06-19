@@ -28,6 +28,21 @@ final class WorkoutLiveRunning extends WorkoutLiveState {
 
   HeartRateMeasurement? get latestHeartRateMeasurement => session.latestHeartRateMeasurement;
   HeartRateZone? get latestHeartRateZone => session.latestHeartRateZone;
+  Duration get elapsedDisplayDuration => Duration(seconds: session.elapsed.inSeconds);
+
+  Duration? get remainingDisplayDuration {
+    final targetDuration = session.targetDuration;
+    if (targetDuration == null) {
+      return null;
+    }
+
+    final remainingSeconds = targetDuration.inSeconds - elapsedDisplayDuration.inSeconds;
+    if (remainingSeconds <= 0) {
+      return Duration.zero;
+    }
+
+    return Duration(seconds: remainingSeconds);
+  }
 
   bool? get isInTargetHeartRateZone {
     final zone = latestHeartRateZone;
