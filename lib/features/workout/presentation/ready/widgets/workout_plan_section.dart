@@ -11,7 +11,7 @@ import '../../../../../core/design_system/widgets/stepper/run_zone_stepper.dart'
 import '../../../../heart_rate/domain/heart_rate_zone.dart';
 import '../../../domain/workout_duration_goal.dart';
 import '../../../domain/workout_plan.dart';
-import '../cubit/workout_ready_cubit.dart';
+import '../workout_ready_cubit.dart';
 
 final class WorkoutPlanSection extends StatelessWidget {
   const WorkoutPlanSection({super.key});

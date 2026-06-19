@@ -7,9 +7,11 @@ import '../features/heart_rate/domain/heart_rate_zone.dart';
 import '../features/heart_rate/domain/heart_rate_zone_range.dart';
 import '../features/profile/presentation/runner_profile_setup_screen.dart';
 import '../features/treadmill/data/mock_treadmill_device.dart';
+import '../features/workout/domain/workout_session.dart';
 import '../features/workout/presentation/bloc/workout_session_bloc.dart';
 import '../features/workout/presentation/workout_countdown_screen.dart';
 import '../features/workout/presentation/workout_live_screen.dart';
+import '../features/workout/presentation/ready/workout_ready_cubit.dart';
 import '../features/workout/presentation/ready/workout_ready_screen.dart';
 import 'app_routes.dart';
 import 'cubit/app_cubit.dart';
@@ -53,7 +55,17 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
         routes: [
           GoRoute(
             path: AppRoutes.workoutReady,
-            pageBuilder: (_, _) => const NoTransitionPage(child: WorkoutReadyScreen()),
+            pageBuilder: (_, _) => NoTransitionPage(
+              child: BlocProvider(
+                create: (context) {
+                  return WorkoutReadyCubit(
+                    heartRateZoneTable: context.read<WorkoutSessionBloc>().state.heartRateZoneTable,
+                    delegate: _WorkoutReadyDelegate(context),
+                  );
+                },
+                child: const WorkoutReadyScreen(),
+              ),
+            ),
           ),
           GoRoute(
             path: AppRoutes.workoutCountdown,
@@ -67,6 +79,37 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
       ),
     ],
   );
+}
+
+final class _WorkoutReadyDelegate implements WorkoutReadyDelegate {
+  const _WorkoutReadyDelegate(this.context);
+
+  final BuildContext context;
+
+  @override
+  void closeWorkoutReady() {
+    final router = GoRouter.of(context);
+    if (router.canPop()) {
+      router.pop();
+      return;
+    }
+
+    router.go(AppRoutes.home);
+  }
+
+  @override
+  void startWorkout({
+    required WorkoutSession session,
+    required bool isAutoPaceEnabled,
+  }) {
+    context.read<WorkoutSessionBloc>().add(
+      WorkoutSessionStarted(
+        session: session,
+        isAutoPaceEnabled: isAutoPaceEnabled,
+      ),
+    );
+    GoRouter.of(context).go(AppRoutes.workoutCountdown);
+  }
 }
 
 String? _redirect({required GoRouterState state, required AppState appState}) {
