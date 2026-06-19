@@ -13,7 +13,7 @@ final class RunZoneFilledCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return DecoratedBox(
-      decoration: BoxDecoration(color: colorScheme.surfaceContainer, borderRadius: AppRadius.mediumBorder),
+      decoration: BoxDecoration(color: colorScheme.surfaceContainerHighest, borderRadius: AppRadius.mediumBorder),
       child: Padding(padding: padding, child: child),
     );
   }
