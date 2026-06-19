@@ -20,6 +20,10 @@ final class WorkoutFeedbackCubit extends Cubit<WorkoutFeedbackState> {
   void noteChanged(String note) {
     emit(WorkoutFeedbackState(perceivedExertion: state.perceivedExertion, mood: state.mood, note: note));
   }
+
+  void saveButtonTapped() {}
+
+  void skipButtonTapped() {}
 }
 
 enum WorkoutFeedbackMood { hard, neutral, good, great }
