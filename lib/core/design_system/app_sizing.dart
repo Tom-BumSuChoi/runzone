@@ -23,4 +23,7 @@ abstract final class AppSizing {
   static const pausedIconSize = 42.0;
   static const metricDividerHeight = 32.0;
   static const buttonIconSize = 18.0;
+  static const completionRingSize = 100.0;
+  static const completionRingIconSize = 40.0;
+  static const completionRingBorderWidth = 2.0;
 }
