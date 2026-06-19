@@ -6,7 +6,7 @@ import 'package:runzone/features/heart_rate/domain/heart_rate_measurement.dart';
 import 'package:runzone/features/heart_rate/domain/heart_rate_monitor.dart';
 import 'package:runzone/features/heart_rate/domain/heart_rate_zone.dart';
 import 'package:runzone/features/heart_rate/domain/heart_rate_zone_range.dart';
-import 'package:runzone/features/treadmill/domain/treadmill_monitor.dart';
+import 'package:runzone/features/treadmill/domain/treadmill_device.dart';
 import 'package:runzone/features/treadmill/domain/treadmill_snapshot.dart';
 import 'package:runzone/features/workout/domain/workout_duration_goal.dart';
 import 'package:runzone/features/workout/domain/workout_environment.dart';
@@ -54,8 +54,8 @@ final class _FakeHeartRateMonitor implements HeartRateMonitor {
   }
 }
 
-final class _FakeTreadmillMonitor implements TreadmillMonitor {
-  _FakeTreadmillMonitor(this._snapshots);
+final class _FakeTreadmillDevice implements TreadmillDevice {
+  _FakeTreadmillDevice(this._snapshots);
 
   final List<TreadmillSnapshot> _snapshots;
   int _nextIndex = 0;
@@ -72,7 +72,7 @@ void main() {
   late _FakeClock clock;
   late _FakeTicker ticker;
   late _FakeHeartRateMonitor heartRateMonitor;
-  late _FakeTreadmillMonitor treadmillMonitor;
+  late _FakeTreadmillDevice treadmillDevice;
   final DateTime startedAt = DateTime(2026, 6, 15, 7);
   final DateTime runningStartedAt = startedAt.add(const Duration(seconds: 4));
   const HeartRateZoneTable heartRateZoneTable = HeartRateZoneTable(
@@ -89,7 +89,7 @@ void main() {
     clock = _FakeClock(startedAt);
     ticker = _FakeTicker();
     heartRateMonitor = _FakeHeartRateMonitor([HeartRateMeasurement(beatsPerMinute: 125, measuredAt: runningStartedAt)]);
-    treadmillMonitor = _FakeTreadmillMonitor(const [
+    treadmillDevice = _FakeTreadmillDevice(const [
       TreadmillSnapshot(
         speedKilometersPerHour: defaultTreadmillSpeedKilometersPerHour,
         isManualMode: defaultIsTreadmillManualMode,
@@ -102,7 +102,7 @@ void main() {
       now: clock.call,
       createTicker: ticker.create,
       heartRateMonitor: heartRateMonitor,
-      treadmillMonitor: treadmillMonitor,
+      treadmillDevice: treadmillDevice,
       heartRateZoneTable: heartRateZoneTable,
       targetHeartRateZone: targetHeartRateZone,
     );
@@ -389,7 +389,7 @@ void main() {
   blocTest<WorkoutSessionBloc, WorkoutSessionState>(
     'Given 러닝머신 스냅샷 When 시작하고 tick하면 Then 러닝머신 상태를 최신 스냅샷으로 갱신한다',
     build: () {
-      treadmillMonitor = _FakeTreadmillMonitor(const [
+      treadmillDevice = _FakeTreadmillDevice(const [
         TreadmillSnapshot(speedKilometersPerHour: defaultTreadmillSpeedKilometersPerHour, isManualMode: false),
         TreadmillSnapshot(speedKilometersPerHour: 8.4, isManualMode: true),
       ]);

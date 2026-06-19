@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 import '../../../heart_rate/domain/heart_rate_measurement.dart';
 import '../../../heart_rate/domain/heart_rate_monitor.dart';
 import '../../../heart_rate/domain/heart_rate_zone.dart';
-import '../../../treadmill/domain/treadmill_monitor.dart';
+import '../../../treadmill/domain/treadmill_device.dart';
 import '../../../treadmill/domain/treadmill_snapshot.dart';
 import '../../domain/workout_environment.dart';
 import '../../domain/workout_plan.dart';
@@ -20,7 +20,7 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
 
   WorkoutSessionBloc({
     required this.heartRateMonitor,
-    required this.treadmillMonitor,
+    required this.treadmillDevice,
     required HeartRateZoneTable heartRateZoneTable,
     required this.targetHeartRateZone,
     DateTime Function()? now,
@@ -57,7 +57,7 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
   final DateTime Function() _now;
   final Stream<void> Function() _createTicker;
   final HeartRateMonitor heartRateMonitor;
-  final TreadmillMonitor treadmillMonitor;
+  final TreadmillDevice treadmillDevice;
   final HeartRateZone targetHeartRateZone;
   StreamSubscription<void>? _tickerSubscription;
 
@@ -67,7 +67,7 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
       return;
     }
 
-    final TreadmillSnapshot treadmillSnapshot = treadmillMonitor.read();
+    final TreadmillSnapshot treadmillSnapshot = treadmillDevice.read();
     emit(
       WorkoutSessionCountdownState(
         heartRateZoneTable: currentState.heartRateZoneTable,
@@ -350,7 +350,7 @@ final class WorkoutSessionBloc extends Bloc<WorkoutSessionEvent, WorkoutSessionS
   void _tickRunning(WorkoutSessionRunningState currentState, Emitter<WorkoutSessionState> emit) {
     final DateTime now = _now();
     final HeartRateMeasurement heartRateMeasurement = heartRateMonitor.measure();
-    final TreadmillSnapshot treadmillSnapshot = treadmillMonitor.read();
+    final TreadmillSnapshot treadmillSnapshot = treadmillDevice.read();
     final WorkoutSession updatedSession = currentState.session
         .copyWith(elapsed: currentState.elapsedAt(now))
         .recordHeartRate(heartRateMeasurement);

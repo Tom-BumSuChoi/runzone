@@ -6,7 +6,7 @@ import '../features/heart_rate/data/mock_heart_rate_monitor.dart';
 import '../features/heart_rate/domain/heart_rate_zone.dart';
 import '../features/heart_rate/domain/heart_rate_zone_range.dart';
 import '../features/profile/presentation/runner_profile_setup_screen.dart';
-import '../features/treadmill/data/mock_treadmill_monitor.dart';
+import '../features/treadmill/data/mock_treadmill_device.dart';
 import '../features/workout/presentation/bloc/workout_session_bloc.dart';
 import '../features/workout/presentation/workout_countdown_screen.dart';
 import '../features/workout/presentation/workout_live_screen.dart';
@@ -30,7 +30,7 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
           child: BlocProvider(
             create: (_) => WorkoutSessionBloc(
               heartRateMonitor: MockHeartRateMonitor(),
-              treadmillMonitor: MockTreadmillMonitor(),
+              treadmillDevice: MockTreadmillDevice(),
               heartRateZoneTable: const HeartRateZoneTable(
                 zone1: HeartRateZoneRange(lower: 96, upper: 120),
                 zone2: HeartRateZoneRange(lower: 121, upper: 148),

@@ -1,8 +1,8 @@
-import '../domain/treadmill_monitor.dart';
+import '../domain/treadmill_device.dart';
 import '../domain/treadmill_snapshot.dart';
 
-final class MockTreadmillMonitor implements TreadmillMonitor {
-  MockTreadmillMonitor({
+final class MockTreadmillDevice implements TreadmillDevice {
+  MockTreadmillDevice({
     List<TreadmillSnapshot> scenario = const [TreadmillSnapshot(speedKilometersPerHour: 6.0, isManualMode: false)],
   }) : _scenario = List<TreadmillSnapshot>.unmodifiable(scenario) {
     if (_scenario.isEmpty) {

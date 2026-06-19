@@ -1,5 +1,5 @@
 import 'treadmill_snapshot.dart';
 
-abstract interface class TreadmillMonitor {
+abstract interface class TreadmillDevice {
   TreadmillSnapshot read();
 }
