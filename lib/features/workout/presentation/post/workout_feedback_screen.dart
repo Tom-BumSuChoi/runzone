@@ -5,6 +5,7 @@ import '../../../../core/design_system/app_spacing.dart';
 import '../../../../core/design_system/widgets/label/run_zone_body_large_label.dart';
 import '../../../../core/design_system/widgets/label/run_zone_headline_large_label.dart';
 import '../../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
+import 'widgets/workout_feedback_note_field.dart';
 import 'widgets/workout_mood_selector.dart';
 import 'widgets/workout_perceived_exertion_selector.dart';
 import 'workout_feedback_cubit.dart';
@@ -59,6 +60,8 @@ final class _WorkoutFeedbackView extends StatelessWidget {
               const WorkoutMoodSelector(),
               AppSpacing.sectionGap,
               const RunZoneLabelSmallLabel('메모 (선택)'),
+              AppSpacing.sectionLabelGap,
+              const WorkoutFeedbackNoteField(),
             ],
           ),
         ),
