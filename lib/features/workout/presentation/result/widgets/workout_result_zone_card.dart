@@ -53,17 +53,8 @@ final class WorkoutResultZoneCard extends StatelessWidget {
                 ),
             ],
           ),
-          AppSpacing.sectionLabelGap,
-          RunZoneBodySmallLabel(_caption(dominantZone), color: colorScheme.onSurfaceVariant),
         ],
       ),
     );
-  }
-
-  String _caption(HeartRateZone? dominantZone) {
-    if (dominantZone == null) {
-      return '심박 데이터가 없어요';
-    }
-    return '대부분 ${dominantZone.shortLabel}에서 달렸어요. 기초 지구력 OK';
   }
 }

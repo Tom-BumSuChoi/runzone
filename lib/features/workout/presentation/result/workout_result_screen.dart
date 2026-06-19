@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/design_system/app_spacing.dart';
+import '../../../../core/design_system/assets/run_zone_icon_asset.dart';
+import '../../../../core/design_system/widgets/card/run_zone_action_card.dart';
 import '../../../../core/design_system/widgets/label/run_zone_headline_medium_label.dart';
 import '../../../../core/design_system/widgets/label/run_zone_label_medium_label.dart';
 import 'workout_result_cubit.dart';
@@ -45,6 +47,18 @@ final class WorkoutResultScreen extends StatelessWidget {
                     zoneProportions: state.zoneProportions,
                     dominantZone: state.dominantZone,
                     dominantZonePercent: state.dominantZonePercent,
+                  ),
+                  AppSpacing.footerHintGap,
+                  const RunZoneActionCard(
+                    icon: RunZoneIconAsset.lap,
+                    title: '랩·페이스 상세 분석',
+                    subtitle: '5랩 · 평균 페이스 6:17/km',
+                  ),
+                  AppSpacing.footerHintGap,
+                  const RunZoneActionCard(
+                    icon: RunZoneIconAsset.activity,
+                    title: '오늘 훈련 부하 · 회복',
+                    subtitle: '회복도 82 · 위험 낮음',
                   ),
                 ],
               ),
