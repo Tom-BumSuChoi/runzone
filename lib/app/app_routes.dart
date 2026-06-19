@@ -5,4 +5,5 @@ abstract final class AppRoutes {
   static const home = '/home';
   static const workoutReady = '/workout/ready';
   static const workoutLive = '/workout/live';
+  static const workoutFeedback = '/workout/feedback';
 }

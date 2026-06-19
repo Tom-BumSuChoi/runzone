@@ -10,6 +10,8 @@ import '../features/treadmill/data/mock_treadmill_device.dart';
 import '../features/workout/domain/workout_session.dart';
 import '../features/workout/presentation/live/bloc/workout_live_bloc.dart';
 import '../features/workout/presentation/live/workout_live_screen.dart';
+import '../features/workout/presentation/post/workout_feedback_cubit.dart';
+import '../features/workout/presentation/post/workout_feedback_screen.dart';
 import '../features/workout/presentation/ready/workout_ready_cubit.dart';
 import '../features/workout/presentation/ready/workout_ready_screen.dart';
 import 'app_routes.dart';
@@ -49,12 +51,9 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
         routes: [
           GoRoute(
             path: AppRoutes.workoutReady,
-            pageBuilder: (context, _) => NoTransitionPage(
+            pageBuilder: (_, _) => NoTransitionPage(
               child: BlocProvider(
-                create: (_) => WorkoutReadyCubit(
-                  heartRateZoneTable: _heartRateZoneTable,
-                  delegate: _WorkoutReadyDelegate(context),
-                ),
+                create: (_) => WorkoutReadyCubit(heartRateZoneTable: _heartRateZoneTable),
                 child: const WorkoutReadyScreen(),
               ),
             ),
@@ -71,9 +70,21 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
                     isAutoPaceEnabled: input.isAutoPaceEnabled,
                     heartRateMonitor: MockHeartRateMonitor(),
                     treadmillDevice: MockTreadmillDevice(),
-                    delegate: const _WorkoutLiveDelegate(),
                   ),
                   child: const WorkoutLiveScreen(),
+                ),
+              );
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.workoutFeedback,
+            redirect: (_, state) => state.extra is WorkoutSession ? null : AppRoutes.home,
+            pageBuilder: (_, state) {
+              final session = state.extra as WorkoutSession;
+              return NoTransitionPage(
+                child: BlocProvider(
+                  create: (_) => WorkoutFeedbackCubit(session: session),
+                  child: const WorkoutFeedbackScreen(),
                 ),
               );
             },
@@ -85,41 +96,6 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
 }
 
 typedef _WorkoutLiveRouteInput = ({WorkoutSession session, bool isAutoPaceEnabled});
-
-final class _WorkoutLiveDelegate implements WorkoutLiveDelegate {
-  const _WorkoutLiveDelegate();
-
-  @override
-  void pauseWorkout({required WorkoutSession session}) {}
-
-  @override
-  void endWorkout({required WorkoutSession session}) {}
-}
-
-final class _WorkoutReadyDelegate implements WorkoutReadyDelegate {
-  const _WorkoutReadyDelegate(this.context);
-
-  final BuildContext context;
-
-  @override
-  void closeWorkoutReady() {
-    final router = GoRouter.of(context);
-    if (router.canPop()) {
-      router.pop();
-      return;
-    }
-
-    router.go(AppRoutes.home);
-  }
-
-  @override
-  void startWorkout({required WorkoutSession session, required bool isAutoPaceEnabled}) {
-    GoRouter.of(context).go(
-      AppRoutes.workoutLive,
-      extra: (session: session, isAutoPaceEnabled: isAutoPaceEnabled),
-    );
-  }
-}
 
 String? _redirect({required GoRouterState state, required AppState appState}) {
   final path = state.uri.path;

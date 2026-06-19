@@ -15,19 +15,12 @@ import '../../../domain/workout_session.dart';
 part 'workout_live_event.dart';
 part 'workout_live_state.dart';
 
-abstract interface class WorkoutLiveDelegate {
-  void pauseWorkout({required WorkoutSession session});
-
-  void endWorkout({required WorkoutSession session});
-}
-
 final class WorkoutLiveBloc extends Bloc<WorkoutLiveEvent, WorkoutLiveState> {
   WorkoutLiveBloc({
     required WorkoutSession session,
     required bool isAutoPaceEnabled,
     required this.heartRateMonitor,
     required this.treadmillDevice,
-    required this.delegate,
     DateTime Function()? now,
     Stream<void> Function()? createTicker,
   }) : _session = session,
@@ -53,7 +46,6 @@ final class WorkoutLiveBloc extends Bloc<WorkoutLiveEvent, WorkoutLiveState> {
   final Stream<void> Function() _createTicker;
   final HeartRateMonitor heartRateMonitor;
   final TreadmillDevice treadmillDevice;
-  final WorkoutLiveDelegate delegate;
   StreamSubscription<void>? _tickerSubscription;
 
   void _onCountdownTicked(_WorkoutLiveCountdownTicked event, Emitter<WorkoutLiveState> emit) {
@@ -120,7 +112,6 @@ final class WorkoutLiveBloc extends Bloc<WorkoutLiveEvent, WorkoutLiveState> {
         isTreadmillManualMode: running.isTreadmillManualMode,
       ),
     );
-    delegate.pauseWorkout(session: pausedSession);
   }
 
   void _onResumed(WorkoutLiveResumed event, Emitter<WorkoutLiveState> emit) {
@@ -157,7 +148,7 @@ final class WorkoutLiveBloc extends Bloc<WorkoutLiveEvent, WorkoutLiveState> {
     }
 
     _stopTicker();
-    delegate.endWorkout(session: session.finish(endedAt: now, elapsed: elapsed));
+    emit(WorkoutLiveFinished(session: session.finish(endedAt: now, elapsed: elapsed)));
   }
 
   void _onTicked(_WorkoutLiveTicked event, Emitter<WorkoutLiveState> emit) {

@@ -3,17 +3,10 @@ import 'package:equatable/equatable.dart';
 
 import '../../domain/workout_session.dart';
 
-abstract interface class WorkoutFeedbackDelegate {
-  void saveWorkoutFeedback({required WorkoutSession session, required WorkoutFeedbackState feedback});
-
-  void skipWorkoutFeedback({required WorkoutSession session});
-}
-
 final class WorkoutFeedbackCubit extends Cubit<WorkoutFeedbackState> {
-  WorkoutFeedbackCubit({required this.session, required this.delegate}) : super(const WorkoutFeedbackState());
+  WorkoutFeedbackCubit({required this.session}) : super(const WorkoutFeedbackState());
 
   final WorkoutSession session;
-  final WorkoutFeedbackDelegate delegate;
 
   void perceivedExertionSelected(int perceivedExertion) {
     if (perceivedExertion < WorkoutFeedbackState.minimumPerceivedExertion ||
@@ -30,14 +23,6 @@ final class WorkoutFeedbackCubit extends Cubit<WorkoutFeedbackState> {
 
   void noteChanged(String note) {
     emit(WorkoutFeedbackState(perceivedExertion: state.perceivedExertion, mood: state.mood, note: note));
-  }
-
-  void saveButtonTapped() {
-    delegate.saveWorkoutFeedback(session: session, feedback: state);
-  }
-
-  void skipButtonTapped() {
-    delegate.skipWorkoutFeedback(session: session);
   }
 }
 

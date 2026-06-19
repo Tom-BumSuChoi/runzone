@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../app/app_routes.dart';
 import '../../../../core/design_system/app_spacing.dart';
 import '../../../../core/design_system/widgets/button/run_zone_ghost_button.dart';
 import '../../../../core/design_system/widgets/button/run_zone_primary_button.dart';
@@ -10,7 +11,6 @@ import '../../../../core/design_system/widgets/label/run_zone_label_small_label.
 import 'widgets/workout_feedback_note_field.dart';
 import 'widgets/workout_mood_selector.dart';
 import 'widgets/workout_perceived_exertion_selector.dart';
-import 'workout_feedback_cubit.dart';
 
 final class WorkoutFeedbackScreen extends StatelessWidget {
   const WorkoutFeedbackScreen({super.key});
@@ -58,10 +58,10 @@ final class WorkoutFeedbackScreen extends StatelessWidget {
               const Spacer(),
               RunZonePrimaryButton(
                 label: '저장하고 결과 보기',
-                onPressed: context.read<WorkoutFeedbackCubit>().saveButtonTapped,
+                onPressed: () => context.go(AppRoutes.home),
               ),
               AppSpacing.buttonGap,
-              RunZoneGhostButton(label: '건너뛰기', onPressed: context.read<WorkoutFeedbackCubit>().skipButtonTapped),
+              RunZoneGhostButton(label: '건너뛰기', onPressed: () => context.go(AppRoutes.home)),
             ],
           ),
         ),

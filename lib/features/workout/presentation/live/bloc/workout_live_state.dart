@@ -88,3 +88,12 @@ final class WorkoutLivePaused extends WorkoutLiveState {
   @override
   List<Object?> get props => [session, treadmillSpeedKilometersPerHour, isTreadmillManualMode];
 }
+
+final class WorkoutLiveFinished extends WorkoutLiveState {
+  const WorkoutLiveFinished({required this.session});
+
+  final WorkoutSession session;
+
+  @override
+  List<Object?> get props => [session];
+}

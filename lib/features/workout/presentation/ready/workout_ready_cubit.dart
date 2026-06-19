@@ -6,39 +6,26 @@ import '../../domain/workout_environment.dart';
 import '../../domain/workout_plan.dart';
 import '../../domain/workout_session.dart';
 
-abstract interface class WorkoutReadyDelegate {
-  void closeWorkoutReady();
-
-  void startWorkout({required WorkoutSession session, required bool isAutoPaceEnabled});
-}
-
 final class WorkoutReadyCubit extends Cubit<WorkoutReadyState> {
-  WorkoutReadyCubit({required this.heartRateZoneTable, required this.delegate, DateTime Function()? now})
+  WorkoutReadyCubit({required this.heartRateZoneTable, DateTime Function()? now})
     : _now = now ?? DateTime.now,
       super(const WorkoutReadyState());
 
   final HeartRateZoneTable heartRateZoneTable;
-  final WorkoutReadyDelegate delegate;
   final DateTime Function() _now;
 
-  void closeTapped() {
-    delegate.closeWorkoutReady();
-  }
-
-  void startWorkoutTapped() {
+  WorkoutSession? startWorkoutTapped() {
     if (!state.canStart) {
-      return;
+      return null;
     }
 
-    final session = WorkoutSession(
+    return WorkoutSession(
       startedAt: _now(),
       elapsed: Duration.zero,
       environment: state.environment,
       plan: state.plan,
       heartRateZoneTable: heartRateZoneTable,
     );
-
-    delegate.startWorkout(session: session, isAutoPaceEnabled: state.isAutoPaceEnabled);
   }
 
   void indoorEnvironmentTapped() {

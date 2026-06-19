@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../app/app_routes.dart';
 import '../../../../core/design_system/app_spacing.dart';
 import '../../../../core/design_system/widgets/label/run_zone_body_large_label.dart';
 import '../../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
@@ -30,7 +32,7 @@ final class WorkoutReadyScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    WorkoutReadyHeader(onClosePressed: () => context.read<WorkoutReadyCubit>().closeTapped()),
+                    WorkoutReadyHeader(onClosePressed: () => _closeWorkoutReady(context)),
                     AppSpacing.titleDescriptionGap,
                     const RunZoneBodyLargeLabel('오늘 운동에 사용할 목표와 기기 상태를 확인해요.'),
                     AppSpacing.controlGroupSpacer,
@@ -49,9 +51,30 @@ final class WorkoutReadyScreen extends StatelessWidget {
               ),
             ),
           ),
-          WorkoutStartButtonArea(onStartPressed: () => context.read<WorkoutReadyCubit>().startWorkoutTapped()),
+          WorkoutStartButtonArea(onStartPressed: () => _startWorkout(context)),
         ],
       ),
+    );
+  }
+
+  void _closeWorkoutReady(BuildContext context) {
+    final router = GoRouter.of(context);
+    if (router.canPop()) {
+      router.pop();
+      return;
+    }
+    router.go(AppRoutes.home);
+  }
+
+  void _startWorkout(BuildContext context) {
+    final cubit = context.read<WorkoutReadyCubit>();
+    final session = cubit.startWorkoutTapped();
+    if (session == null) {
+      return;
+    }
+    context.go(
+      AppRoutes.workoutLive,
+      extra: (session: session, isAutoPaceEnabled: cubit.state.isAutoPaceEnabled),
     );
   }
 }

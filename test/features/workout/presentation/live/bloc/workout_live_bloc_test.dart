@@ -10,17 +10,6 @@ import 'package:runzone/features/treadmill/domain/treadmill_snapshot.dart';
 import 'package:runzone/features/workout/domain/workout_session.dart';
 import 'package:runzone/features/workout/presentation/live/bloc/workout_live_bloc.dart';
 
-final class _FakeDelegate implements WorkoutLiveDelegate {
-  WorkoutSession? pausedSession;
-  WorkoutSession? endedSession;
-
-  @override
-  void pauseWorkout({required WorkoutSession session}) => pausedSession = session;
-
-  @override
-  void endWorkout({required WorkoutSession session}) => endedSession = session;
-}
-
 final _zoneTable = const HeartRateZoneTable(
   zone1: HeartRateZoneRange(lower: 96, upper: 120),
   zone2: HeartRateZoneRange(lower: 121, upper: 148),
@@ -31,18 +20,13 @@ final _zoneTable = const HeartRateZoneTable(
 
 final _startedAt = DateTime(2026, 1, 1, 7);
 
-final _testSession = WorkoutSession(
-  startedAt: _startedAt,
-  elapsed: Duration.zero,
-  heartRateZoneTable: _zoneTable,
-);
+final _testSession = WorkoutSession(startedAt: _startedAt, elapsed: Duration.zero, heartRateZoneTable: _zoneTable);
 
 WorkoutLiveBloc _buildBloc({
   WorkoutSession? session,
   bool isAutoPaceEnabled = false,
   Stream<void> Function()? createTicker,
   DateTime Function()? now,
-  _FakeDelegate? delegate,
 }) {
   return WorkoutLiveBloc(
     session: session ?? _testSession,
@@ -51,7 +35,6 @@ WorkoutLiveBloc _buildBloc({
     treadmillDevice: MockTreadmillDevice(
       scenario: const [TreadmillSnapshot(speedKilometersPerHour: 6.0, isManualMode: false)],
     ),
-    delegate: delegate ?? _FakeDelegate(),
     createTicker: createTicker ?? () => const Stream.empty(),
     now: now ?? () => _startedAt,
   );
@@ -89,10 +72,7 @@ void main() {
 
     blocTest<WorkoutLiveBloc, WorkoutLiveState>(
       'Given CountingDown(0) When tick 4번 Then WorkoutLiveRunning 전환',
-      build: () => _buildBloc(
-        createTicker: () => ticker.stream,
-        now: () => _startedAt,
-      ),
+      build: () => _buildBloc(createTicker: () => ticker.stream, now: () => _startedAt),
       act: (bloc) async {
         for (var i = 0; i < 4; i++) {
           ticker.add(null);
@@ -117,10 +97,7 @@ void main() {
 
     blocTest<WorkoutLiveBloc, WorkoutLiveState>(
       'Given Running When PauseButtonTapped Then WorkoutLivePaused',
-      build: () => _buildBloc(
-        createTicker: () => ticker.stream,
-        now: () => _startedAt,
-      ),
+      build: () => _buildBloc(createTicker: () => ticker.stream, now: () => _startedAt),
       act: (bloc) async {
         for (var i = 0; i < 4; i++) {
           ticker.add(null);
@@ -139,10 +116,7 @@ void main() {
 
     blocTest<WorkoutLiveBloc, WorkoutLiveState>(
       'Given Paused When WorkoutLiveResumed Then WorkoutLiveRunning',
-      build: () => _buildBloc(
-        createTicker: () => ticker.stream,
-        now: () => _startedAt,
-      ),
+      build: () => _buildBloc(createTicker: () => ticker.stream, now: () => _startedAt),
       act: (bloc) async {
         for (var i = 0; i < 4; i++) {
           ticker.add(null);
@@ -161,27 +135,6 @@ void main() {
         isA<WorkoutLiveRunning>(),
       ],
     );
-
-    test('Given Running When PauseButtonTapped Then delegate.pauseWorkout 호출됨', () async {
-      final delegate = _FakeDelegate();
-      final ticker = StreamController<void>.broadcast();
-      final bloc = _buildBloc(
-        createTicker: () => ticker.stream,
-        now: () => _startedAt,
-        delegate: delegate,
-      );
-
-      for (var i = 0; i < 4; i++) {
-        ticker.add(null);
-        await Future.delayed(Duration.zero);
-      }
-      bloc.add(const WorkoutLivePauseButtonTapped());
-      await Future.delayed(Duration.zero);
-
-      expect(delegate.pausedSession, isNotNull);
-      await bloc.close();
-      await ticker.close();
-    });
   });
 
   group('종료', () {
@@ -189,46 +142,46 @@ void main() {
     setUp(() => ticker = StreamController<void>.broadcast());
     tearDown(() => ticker.close());
 
-    test('Given Running When WorkoutLiveEnded Then delegate.endWorkout 호출됨', () async {
-      final delegate = _FakeDelegate();
-      final bloc = _buildBloc(
-        createTicker: () => ticker.stream,
-        now: () => _startedAt,
-        delegate: delegate,
-      );
+    blocTest<WorkoutLiveBloc, WorkoutLiveState>(
+      'Given Running When WorkoutLiveEnded Then WorkoutLiveFinished 방출',
+      build: () => _buildBloc(createTicker: () => ticker.stream, now: () => _startedAt),
+      act: (bloc) async {
+        for (var i = 0; i < 4; i++) {
+          ticker.add(null);
+          await Future.delayed(Duration.zero);
+        }
+        bloc.add(const WorkoutLiveEnded());
+      },
+      expect: () => [
+        const WorkoutLiveCountingDown(countIndex: 1),
+        const WorkoutLiveCountingDown(countIndex: 2),
+        const WorkoutLiveCountingDown(countIndex: 3),
+        isA<WorkoutLiveRunning>(),
+        isA<WorkoutLiveFinished>().having((s) => s.session.endedAt, 'endedAt', _startedAt),
+      ],
+    );
 
-      for (var i = 0; i < 4; i++) {
-        ticker.add(null);
+    blocTest<WorkoutLiveBloc, WorkoutLiveState>(
+      'Given Paused When WorkoutLiveEnded Then WorkoutLiveFinished 방출',
+      build: () => _buildBloc(createTicker: () => ticker.stream, now: () => _startedAt),
+      act: (bloc) async {
+        for (var i = 0; i < 4; i++) {
+          ticker.add(null);
+          await Future.delayed(Duration.zero);
+        }
+        bloc.add(const WorkoutLivePauseButtonTapped());
         await Future.delayed(Duration.zero);
-      }
-      bloc.add(const WorkoutLiveEnded());
-      await Future.delayed(Duration.zero);
-
-      expect(delegate.endedSession, isNotNull);
-      expect(delegate.endedSession!.endedAt, _startedAt);
-      await bloc.close();
-    });
-
-    test('Given Paused When WorkoutLiveEnded Then delegate.endWorkout 호출됨', () async {
-      final delegate = _FakeDelegate();
-      final bloc = _buildBloc(
-        createTicker: () => ticker.stream,
-        now: () => _startedAt,
-        delegate: delegate,
-      );
-
-      for (var i = 0; i < 4; i++) {
-        ticker.add(null);
-        await Future.delayed(Duration.zero);
-      }
-      bloc.add(const WorkoutLivePauseButtonTapped());
-      await Future.delayed(Duration.zero);
-      bloc.add(const WorkoutLiveEnded());
-      await Future.delayed(Duration.zero);
-
-      expect(delegate.endedSession, isNotNull);
-      await bloc.close();
-    });
+        bloc.add(const WorkoutLiveEnded());
+      },
+      expect: () => [
+        const WorkoutLiveCountingDown(countIndex: 1),
+        const WorkoutLiveCountingDown(countIndex: 2),
+        const WorkoutLiveCountingDown(countIndex: 3),
+        isA<WorkoutLiveRunning>(),
+        isA<WorkoutLivePaused>(),
+        isA<WorkoutLiveFinished>(),
+      ],
+    );
   });
 
   group('이벤트 무시 케이스', () {
