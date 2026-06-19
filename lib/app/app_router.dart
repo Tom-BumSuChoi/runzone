@@ -17,6 +17,14 @@ import 'cubit/app_cubit.dart';
 import 'main_shell.dart';
 import 'splash_screen.dart';
 
+const _heartRateZoneTable = HeartRateZoneTable(
+  zone1: HeartRateZoneRange(lower: 96, upper: 120),
+  zone2: HeartRateZoneRange(lower: 121, upper: 148),
+  zone3: HeartRateZoneRange(lower: 149, upper: 160),
+  zone4: HeartRateZoneRange(lower: 161, upper: 172),
+  zone5: HeartRateZoneRange(lower: 173, upper: 182),
+);
+
 GoRouter createAppRouter({required AppCubit appCubit, required Listenable refreshListenable}) {
   return GoRouter(
     refreshListenable: refreshListenable,
@@ -28,20 +36,7 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
       GoRoute(path: AppRoutes.home, builder: (_, _) => const MainShell()),
       ShellRoute(
         pageBuilder: (_, _, child) => CustomTransitionPage(
-          child: BlocProvider(
-            create: (_) => WorkoutLiveBloc(
-              heartRateMonitor: MockHeartRateMonitor(),
-              treadmillDevice: MockTreadmillDevice(),
-              heartRateZoneTable: const HeartRateZoneTable(
-                zone1: HeartRateZoneRange(lower: 96, upper: 120),
-                zone2: HeartRateZoneRange(lower: 121, upper: 148),
-                zone3: HeartRateZoneRange(lower: 149, upper: 160),
-                zone4: HeartRateZoneRange(lower: 161, upper: 172),
-                zone5: HeartRateZoneRange(lower: 173, upper: 182),
-              ),
-            ),
-            child: child,
-          ),
+          child: child,
           transitionsBuilder: (_, animation, _, child) {
             final position = Tween<Offset>(
               begin: const Offset(0, 1),
@@ -54,14 +49,12 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
         routes: [
           GoRoute(
             path: AppRoutes.workoutReady,
-            pageBuilder: (_, _) => NoTransitionPage(
+            pageBuilder: (context, _) => NoTransitionPage(
               child: BlocProvider(
-                create: (context) {
-                  return WorkoutReadyCubit(
-                    heartRateZoneTable: context.read<WorkoutLiveBloc>().state.heartRateZoneTable,
-                    delegate: _WorkoutReadyDelegate(context),
-                  );
-                },
+                create: (_) => WorkoutReadyCubit(
+                  heartRateZoneTable: _heartRateZoneTable,
+                  delegate: _WorkoutReadyDelegate(context),
+                ),
                 child: const WorkoutReadyScreen(),
               ),
             ),
@@ -72,7 +65,16 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
             pageBuilder: (_, state) {
               final input = state.extra as _WorkoutLiveRouteInput;
               return NoTransitionPage(
-                child: WorkoutLiveScreen(session: input.session, isAutoPaceEnabled: input.isAutoPaceEnabled),
+                child: BlocProvider(
+                  create: (_) => WorkoutLiveBloc(
+                    session: input.session,
+                    isAutoPaceEnabled: input.isAutoPaceEnabled,
+                    heartRateMonitor: MockHeartRateMonitor(),
+                    treadmillDevice: MockTreadmillDevice(),
+                    delegate: const _WorkoutLiveDelegate(),
+                  ),
+                  child: const WorkoutLiveScreen(),
+                ),
               );
             },
           ),
@@ -83,6 +85,16 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
 }
 
 typedef _WorkoutLiveRouteInput = ({WorkoutSession session, bool isAutoPaceEnabled});
+
+final class _WorkoutLiveDelegate implements WorkoutLiveDelegate {
+  const _WorkoutLiveDelegate();
+
+  @override
+  void pauseWorkout({required WorkoutSession session}) {}
+
+  @override
+  void endWorkout({required WorkoutSession session}) {}
+}
 
 final class _WorkoutReadyDelegate implements WorkoutReadyDelegate {
   const _WorkoutReadyDelegate(this.context);
@@ -102,7 +114,10 @@ final class _WorkoutReadyDelegate implements WorkoutReadyDelegate {
 
   @override
   void startWorkout({required WorkoutSession session, required bool isAutoPaceEnabled}) {
-    GoRouter.of(context).go(AppRoutes.workoutLive, extra: (session: session, isAutoPaceEnabled: isAutoPaceEnabled));
+    GoRouter.of(context).go(
+      AppRoutes.workoutLive,
+      extra: (session: session, isAutoPaceEnabled: isAutoPaceEnabled),
+    );
   }
 }
 
