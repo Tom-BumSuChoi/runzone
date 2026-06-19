@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/design_system/app_spacing.dart';
-import '../../../../core/design_system/widgets/card/run_zone_card.dart';
-import '../../../../core/design_system/widgets/chart/run_zone_heart_rate_trend_chart.dart';
-import '../../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
-import '../../../heart_rate/domain/heart_rate_measurement.dart';
-import '../../../heart_rate/domain/heart_rate_zone.dart';
+import '../../../../../core/design_system/app_spacing.dart';
+import '../../../../../core/design_system/widgets/card/run_zone_card.dart';
+import '../../../../../core/design_system/widgets/chart/run_zone_heart_rate_trend_chart.dart';
+import '../../../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
+import '../../../../heart_rate/domain/heart_rate_measurement.dart';
+import '../../../../heart_rate/domain/heart_rate_zone.dart';
 
 final class WorkoutHeartRateTrendPanel extends StatelessWidget {
   const WorkoutHeartRateTrendPanel({

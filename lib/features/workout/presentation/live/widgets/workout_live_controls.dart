@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../../core/design_system/app_radius.dart';
-import '../../../../core/design_system/app_sizing.dart';
-import '../../../../core/design_system/app_spacing.dart';
-import '../../../../core/design_system/assets/run_zone_icon_asset.dart';
+import '../../../../../core/design_system/app_radius.dart';
+import '../../../../../core/design_system/app_sizing.dart';
+import '../../../../../core/design_system/app_spacing.dart';
+import '../../../../../core/design_system/assets/run_zone_icon_asset.dart';
 
 final class WorkoutLiveControls extends StatelessWidget {
   const WorkoutLiveControls({required this.onLap, required this.onPause, required this.onStop, super.key});

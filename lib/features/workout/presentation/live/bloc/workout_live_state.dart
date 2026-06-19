@@ -1,7 +1,7 @@
-part of 'workout_session_bloc.dart';
+part of 'workout_live_bloc.dart';
 
-sealed class WorkoutSessionState extends Equatable {
-  const WorkoutSessionState({required this.heartRateZoneTable});
+sealed class WorkoutLiveState extends Equatable {
+  const WorkoutLiveState({required this.heartRateZoneTable});
 
   final HeartRateZoneTable heartRateZoneTable;
 
@@ -16,51 +16,12 @@ sealed class WorkoutSessionState extends Equatable {
   List<Object?> get props => [heartRateZoneTable];
 }
 
-final class WorkoutSessionIdleState extends WorkoutSessionState {
-  const WorkoutSessionIdleState({required super.heartRateZoneTable});
+final class WorkoutLiveIdleState extends WorkoutLiveState {
+  const WorkoutLiveIdleState({required super.heartRateZoneTable});
 }
 
-enum WorkoutSessionCountdownStep { three, two, one, go }
-
-final class WorkoutSessionCountdownState extends WorkoutSessionState {
-  const WorkoutSessionCountdownState({
-    required super.heartRateZoneTable,
-    required this.step,
-    required this.session,
-    required this.treadmillSpeedKilometersPerHour,
-    required this.isTreadmillManualMode,
-  });
-
-  final WorkoutSessionCountdownStep step;
-  final WorkoutSession session;
-
-  @override
-  final double? treadmillSpeedKilometersPerHour;
-
-  @override
-  final bool? isTreadmillManualMode;
-
-  @override
-  Duration get elapsed => session.elapsed;
-
-  @override
-  HeartRateMeasurement? get latestHeartRateMeasurement => session.latestHeartRateMeasurement;
-
-  @override
-  HeartRateZone? get latestHeartRateZone => session.latestHeartRateZone;
-
-  @override
-  List<Object?> get props => [
-    heartRateZoneTable,
-    step,
-    session,
-    treadmillSpeedKilometersPerHour,
-    isTreadmillManualMode,
-  ];
-}
-
-sealed class SessionBackedWorkoutSessionState extends WorkoutSessionState {
-  const SessionBackedWorkoutSessionState({
+sealed class SessionBackedWorkoutLiveState extends WorkoutLiveState {
+  const SessionBackedWorkoutLiveState({
     required super.heartRateZoneTable,
     required this.session,
     required this.treadmillSpeedKilometersPerHour,
@@ -106,8 +67,8 @@ sealed class SessionBackedWorkoutSessionState extends WorkoutSessionState {
   ];
 }
 
-final class WorkoutSessionRunningState extends SessionBackedWorkoutSessionState {
-  const WorkoutSessionRunningState({
+final class WorkoutLiveRunningState extends SessionBackedWorkoutLiveState {
+  const WorkoutLiveRunningState({
     required super.heartRateZoneTable,
     required super.session,
     required super.treadmillSpeedKilometersPerHour,
@@ -121,13 +82,13 @@ final class WorkoutSessionRunningState extends SessionBackedWorkoutSessionState 
     return session.elapsed + now.difference(activeStartedAt);
   }
 
-  WorkoutSessionRunningState copyWith({
+  WorkoutLiveRunningState copyWith({
     WorkoutSession? session,
     DateTime? activeStartedAt,
     double? treadmillSpeedKilometersPerHour,
     bool? isTreadmillManualMode,
   }) {
-    return WorkoutSessionRunningState(
+    return WorkoutLiveRunningState(
       heartRateZoneTable: heartRateZoneTable,
       session: session ?? this.session,
       treadmillSpeedKilometersPerHour: treadmillSpeedKilometersPerHour ?? this.treadmillSpeedKilometersPerHour,
@@ -146,8 +107,8 @@ final class WorkoutSessionRunningState extends SessionBackedWorkoutSessionState 
   ];
 }
 
-final class WorkoutSessionPausedState extends SessionBackedWorkoutSessionState {
-  const WorkoutSessionPausedState({
+final class WorkoutLivePausedState extends SessionBackedWorkoutLiveState {
+  const WorkoutLivePausedState({
     required super.heartRateZoneTable,
     required super.session,
     required super.treadmillSpeedKilometersPerHour,
@@ -167,8 +128,8 @@ final class WorkoutSessionPausedState extends SessionBackedWorkoutSessionState {
   ];
 }
 
-final class WorkoutSessionEndedState extends SessionBackedWorkoutSessionState {
-  const WorkoutSessionEndedState({
+final class WorkoutLiveEndedState extends SessionBackedWorkoutLiveState {
+  const WorkoutLiveEndedState({
     required super.heartRateZoneTable,
     required super.session,
     required super.treadmillSpeedKilometersPerHour,

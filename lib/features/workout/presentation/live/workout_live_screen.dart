@@ -1,37 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/design_system/app_color_scheme.dart';
-import '../../../core/design_system/app_sizing.dart';
-import '../../../core/design_system/app_spacing.dart';
-import '../../../core/design_system/widgets/badge/run_zone_blinking_badge.dart';
-import '../../../core/design_system/widgets/badge/run_zone_indicator_pill.dart';
-import '../../../core/design_system/widgets/label/run_zone_display_large_label.dart';
-import '../../../core/design_system/widgets/label/run_zone_label_medium_label.dart';
-import '../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
-import '../../../core/design_system/widgets/progress/run_zone_ring_progress.dart';
-import '../../heart_rate/domain/heart_rate_measurement.dart';
-import '../../heart_rate/domain/heart_rate_zone.dart';
-import '../../heart_rate/domain/heart_rate_zone_range.dart';
-import 'bloc/workout_session_bloc.dart';
+import '../../../../core/design_system/app_color_scheme.dart';
+import '../../../../core/design_system/app_sizing.dart';
+import '../../../../core/design_system/app_spacing.dart';
+import '../../../../core/design_system/widgets/badge/run_zone_blinking_badge.dart';
+import '../../../../core/design_system/widgets/badge/run_zone_indicator_pill.dart';
+import '../../../../core/design_system/widgets/label/run_zone_display_large_label.dart';
+import '../../../../core/design_system/widgets/label/run_zone_label_medium_label.dart';
+import '../../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
+import '../../../../core/design_system/widgets/progress/run_zone_ring_progress.dart';
+import '../../../heart_rate/domain/heart_rate_measurement.dart';
+import '../../../heart_rate/domain/heart_rate_zone.dart';
+import '../../../heart_rate/domain/heart_rate_zone_range.dart';
+import '../../domain/workout_session.dart';
+import 'bloc/workout_live_bloc.dart';
+import 'widgets/workout_countdown.dart';
 import 'widgets/workout_heart_rate_trend_panel.dart';
 import 'widgets/workout_live_controls.dart';
 import 'widgets/workout_metric_row.dart';
 import 'widgets/workout_treadmill_panel.dart';
 
 final class WorkoutLiveScreen extends StatelessWidget {
-  const WorkoutLiveScreen({super.key});
+  const WorkoutLiveScreen({
+    required this.session,
+    required this.isAutoPaceEnabled,
+    super.key,
+  });
+
+  final WorkoutSession session;
+  final bool isAutoPaceEnabled;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
+    return BlocBuilder<WorkoutLiveBloc, WorkoutLiveState>(
       builder: (context, state) {
+        if (state is WorkoutLiveIdleState) {
+          return Scaffold(
+            backgroundColor: colorScheme.surface,
+            body: WorkoutCountdown(
+              onCompleted: () {
+                context.read<WorkoutLiveBloc>().add(
+                  WorkoutLiveStarted(session: session, isAutoPaceEnabled: isAutoPaceEnabled),
+                );
+              },
+            ),
+          );
+        }
+
         final heartRateZoneTable = state.heartRateZoneTable;
         final beatsPerMinute = state.latestHeartRateMeasurement?.beatsPerMinute;
         final heartRateZone = state.latestHeartRateZone;
-        final targetHeartRateZone = state is SessionBackedWorkoutSessionState
+        final targetHeartRateZone = state is SessionBackedWorkoutLiveState
             ? state.targetHeartRateZone
             : HeartRateZone.zone2;
         final isInTargetZone = state.isInTargetHeartRateZone;
@@ -45,14 +67,14 @@ final class WorkoutLiveScreen extends StatelessWidget {
         final targetLabel = '목표 ${targetRange.lower}–${targetRange.upper}';
         final treadmillStatusLabel = isTreadmillManualMode == true ? '수동 조작' : 'AUTO · 속도 유지';
 
-        final List<HeartRateMeasurement> heartRateMeasurements = state is SessionBackedWorkoutSessionState
+        final List<HeartRateMeasurement> heartRateMeasurements = state is SessionBackedWorkoutLiveState
             ? state.heartRateMeasurements
             : const <HeartRateMeasurement>[];
 
         final elapsedText = _formatDuration(elapsed);
-        final remainingDuration = state is SessionBackedWorkoutSessionState ? state.session.remainingDuration : null;
+        final remainingDuration = state is SessionBackedWorkoutLiveState ? state.session.remainingDuration : null;
         final remainingText = remainingDuration == null ? '--:--' : _formatDuration(remainingDuration);
-        final totalDistanceMeters = state is SessionBackedWorkoutSessionState
+        final totalDistanceMeters = state is SessionBackedWorkoutLiveState
             ? state.session.totalDistanceMeters
             : 0.0;
         final distanceText = (totalDistanceMeters / 1000).toStringAsFixed(2);
@@ -90,11 +112,11 @@ final class WorkoutLiveScreen extends StatelessWidget {
                             isManualMode: isTreadmillManualMode,
                             statusLabel: treadmillStatusLabel,
                             onDecrease: () =>
-                                context.read<WorkoutSessionBloc>().add(const WorkoutSessionTreadmillSpeedDecreased()),
+                                context.read<WorkoutLiveBloc>().add(const WorkoutLiveTreadmillSpeedDecreased()),
                             onIncrease: () =>
-                                context.read<WorkoutSessionBloc>().add(const WorkoutSessionTreadmillSpeedIncreased()),
-                            onResetAutomaticMode: () => context.read<WorkoutSessionBloc>().add(
-                              const WorkoutSessionTreadmillAutomaticModeEnabled(),
+                                context.read<WorkoutLiveBloc>().add(const WorkoutLiveTreadmillSpeedIncreased()),
+                            onResetAutomaticMode: () => context.read<WorkoutLiveBloc>().add(
+                              const WorkoutLiveTreadmillAutomaticModeEnabled(),
                             ),
                           ),
                           AppSpacing.sectionGap,
@@ -113,8 +135,8 @@ final class WorkoutLiveScreen extends StatelessWidget {
               ),
               WorkoutLiveControls(
                 onLap: () {},
-                onPause: () => context.read<WorkoutSessionBloc>().add(const WorkoutSessionPaused()),
-                onStop: () => context.read<WorkoutSessionBloc>().add(const WorkoutSessionEnded()),
+                onPause: () => context.read<WorkoutLiveBloc>().add(const WorkoutLivePaused()),
+                onStop: () => context.read<WorkoutLiveBloc>().add(const WorkoutLiveEnded()),
               ),
             ],
           ),

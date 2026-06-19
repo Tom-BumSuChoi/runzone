@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/design_system/app_spacing.dart';
-import '../../../../core/design_system/widgets/label/run_zone_display_small_label.dart';
-import '../../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
+import '../../../../../core/design_system/app_spacing.dart';
+import '../../../../../core/design_system/widgets/label/run_zone_display_small_label.dart';
+import '../../../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
 
 final class WorkoutMetricRow extends StatelessWidget {
   const WorkoutMetricRow({required this.elapsedTime, required this.remainingTime, required this.distance, super.key});
