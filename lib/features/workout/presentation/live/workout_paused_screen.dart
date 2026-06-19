@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/design_system/app_spacing.dart';
+import '../../../../core/design_system/assets/run_zone_icon_asset.dart';
 import '../../../../core/design_system/widgets/badge/run_zone_text_pill.dart';
+import '../../../../core/design_system/widgets/button/run_zone_ghost_button.dart';
+import '../../../../core/design_system/widgets/button/run_zone_primary_button.dart';
 import '../../../../core/design_system/widgets/label/run_zone_headline_medium_label.dart';
 import '../../../heart_rate/presentation/heart_rate_zone_display.dart';
 import 'bloc/workout_live_bloc.dart';
@@ -30,23 +34,32 @@ final class WorkoutPausedScreen extends StatelessWidget {
       backgroundColor: colorScheme.surface,
       body: SafeArea(
         bottom: false,
-        child: Center(
-          child: Padding(
-            padding: AppSpacing.screenInsets,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const WorkoutPausedIconRing(),
-                AppSpacing.headerTitleGap,
-                RunZoneHeadlineMediumLabel('잠시 멈췄어요'),
-                AppSpacing.headlineTagGap,
-                RunZoneTextPill('${session.targetHeartRateZone.label} · 일시정지'),
-                AppSpacing.sectionGap,
-                WorkoutPausedMetricsCard(elapsed: elapsedText, distance: distanceText, avgBpm: avgBpm),
-                AppSpacing.footerHintGap,
-                const WorkoutPausedTreadmillHint(),
-              ],
-            ),
+        child: Padding(
+          padding: AppSpacing.screenInsets,
+          child: Column(
+            children: [
+              const Spacer(),
+              const WorkoutPausedIconRing(),
+              AppSpacing.headerTitleGap,
+              RunZoneHeadlineMediumLabel('잠시 멈췄어요', textAlign: TextAlign.center),
+              AppSpacing.headlineTagGap,
+              RunZoneTextPill('${session.targetHeartRateZone.label} · 일시정지'),
+              AppSpacing.sectionGap,
+              WorkoutPausedMetricsCard(elapsed: elapsedText, distance: distanceText, avgBpm: avgBpm),
+              AppSpacing.footerHintGap,
+              const WorkoutPausedTreadmillHint(),
+              const Spacer(),
+              RunZonePrimaryButton(
+                label: '이어서 달리기',
+                icon: RunZoneIconAsset.play,
+                onPressed: () => context.read<WorkoutLiveBloc>().add(const WorkoutLiveResumed()),
+              ),
+              AppSpacing.buttonGap,
+              RunZoneGhostButton(
+                label: '운동 종료',
+                onPressed: () => context.read<WorkoutLiveBloc>().add(const WorkoutLiveEnded()),
+              ),
+            ],
           ),
         ),
       ),

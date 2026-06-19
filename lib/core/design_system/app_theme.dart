@@ -46,7 +46,12 @@ abstract final class AppTheme {
       thumbColor: AppColors.lime300,
     ),
     filledButtonTheme: FilledButtonThemeData(
-      style: _filledButtonStyle(backgroundColor: AppColors.lime300, foregroundColor: AppColors.gray950),
+      style: _filledButtonStyle(
+        backgroundColor: AppColors.lime300,
+        foregroundColor: AppColors.gray950,
+        disabledBackgroundColor: AppColors.gray850,
+        disabledForegroundColor: AppColors.gray400,
+      ),
     ),
     chipTheme: _choiceChipTheme(
       backgroundColor: AppColors.gray850,
@@ -98,7 +103,12 @@ abstract final class AppTheme {
       thumbColor: AppColors.lime400,
     ),
     filledButtonTheme: FilledButtonThemeData(
-      style: _filledButtonStyle(backgroundColor: AppColors.lime400, foregroundColor: AppColors.gray950),
+      style: _filledButtonStyle(
+        backgroundColor: AppColors.lime400,
+        foregroundColor: AppColors.gray950,
+        disabledBackgroundColor: AppColors.gray100,
+        disabledForegroundColor: AppColors.gray500,
+      ),
     ),
     chipTheme: _choiceChipTheme(
       backgroundColor: AppColors.gray100,
@@ -223,10 +233,19 @@ abstract final class AppTheme {
     );
   }
 
-  static ButtonStyle _filledButtonStyle({required Color backgroundColor, required Color foregroundColor}) {
+  static ButtonStyle _filledButtonStyle({
+    required Color backgroundColor,
+    required Color foregroundColor,
+    required Color disabledBackgroundColor,
+    required Color disabledForegroundColor,
+  }) {
     return ButtonStyle(
-      backgroundColor: WidgetStatePropertyAll(backgroundColor),
-      foregroundColor: WidgetStatePropertyAll(foregroundColor),
+      backgroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.disabled) ? disabledBackgroundColor : backgroundColor,
+      ),
+      foregroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.disabled) ? disabledForegroundColor : foregroundColor,
+      ),
       minimumSize: const WidgetStatePropertyAll(Size(AppSizing.touchTarget, AppSizing.touchTarget)),
       overlayColor: const WidgetStatePropertyAll(Colors.transparent),
       padding: const WidgetStatePropertyAll(AppSpacing.buttonInsets),
