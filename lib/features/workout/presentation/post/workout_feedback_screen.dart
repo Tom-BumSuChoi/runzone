@@ -52,6 +52,8 @@ final class _WorkoutFeedbackView extends StatelessWidget {
                   RunZoneLabelSmallLabel('최대', color: colorScheme.onSurfaceVariant),
                 ],
               ),
+              AppSpacing.sectionGap,
+              const RunZoneLabelSmallLabel('컨디션'),
             ],
           ),
         ),
