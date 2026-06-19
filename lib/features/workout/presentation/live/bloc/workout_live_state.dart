@@ -1,138 +1,90 @@
 part of 'workout_live_bloc.dart';
 
 sealed class WorkoutLiveState extends Equatable {
-  const WorkoutLiveState({required this.heartRateZoneTable});
+  const WorkoutLiveState();
+}
 
-  final HeartRateZoneTable heartRateZoneTable;
+final class WorkoutLiveCountingDown extends WorkoutLiveState {
+  const WorkoutLiveCountingDown({required this.countIndex});
 
-  Duration get elapsed => Duration.zero;
-  HeartRateMeasurement? get latestHeartRateMeasurement => null;
-  HeartRateZone? get latestHeartRateZone => null;
-  bool? get isInTargetHeartRateZone => null;
-  double? get treadmillSpeedKilometersPerHour => null;
-  bool? get isTreadmillManualMode => null;
+  final int countIndex;
 
   @override
-  List<Object?> get props => [heartRateZoneTable];
+  List<Object?> get props => [countIndex];
 }
 
-final class WorkoutLiveIdleState extends WorkoutLiveState {
-  const WorkoutLiveIdleState({required super.heartRateZoneTable});
-}
-
-sealed class SessionBackedWorkoutLiveState extends WorkoutLiveState {
-  const SessionBackedWorkoutLiveState({
-    required super.heartRateZoneTable,
+final class WorkoutLiveRunning extends WorkoutLiveState {
+  const WorkoutLiveRunning({
     required this.session,
-    required this.treadmillSpeedKilometersPerHour,
-    required this.isTreadmillManualMode,
+    required this.activeStartedAt,
+    this.treadmillSpeedKilometersPerHour,
+    this.isTreadmillManualMode,
   });
 
   final WorkoutSession session;
-
-  HeartRateZone get targetHeartRateZone => session.targetHeartRateZone;
-
-  @override
+  final DateTime activeStartedAt;
   final double? treadmillSpeedKilometersPerHour;
-
-  @override
   final bool? isTreadmillManualMode;
 
-  @override
-  Duration get elapsed => session.elapsed;
-
-  List<HeartRateMeasurement> get heartRateMeasurements => session.heartRateMeasurements;
-
-  @override
   HeartRateMeasurement? get latestHeartRateMeasurement => session.latestHeartRateMeasurement;
-
-  @override
   HeartRateZone? get latestHeartRateZone => session.latestHeartRateZone;
 
-  @override
   bool? get isInTargetHeartRateZone {
-    final HeartRateZone? heartRateZone = latestHeartRateZone;
-    if (heartRateZone == null) {
-      return null;
-    }
-    return heartRateZone == targetHeartRateZone;
+    final zone = latestHeartRateZone;
+    if (zone == null) return null;
+    return zone == session.targetHeartRateZone;
   }
 
-  @override
-  List<Object?> get props => [
-    heartRateZoneTable,
-    session,
-    treadmillSpeedKilometersPerHour,
-    isTreadmillManualMode,
-  ];
-}
+  Duration elapsedAt(DateTime now) => session.elapsed + now.difference(activeStartedAt);
 
-final class WorkoutLiveRunningState extends SessionBackedWorkoutLiveState {
-  const WorkoutLiveRunningState({
-    required super.heartRateZoneTable,
-    required super.session,
-    required super.treadmillSpeedKilometersPerHour,
-    required super.isTreadmillManualMode,
-    required this.activeStartedAt,
-  });
-
-  final DateTime activeStartedAt;
-
-  Duration elapsedAt(DateTime now) {
-    return session.elapsed + now.difference(activeStartedAt);
-  }
-
-  WorkoutLiveRunningState copyWith({
+  WorkoutLiveRunning copyWith({
     WorkoutSession? session,
     DateTime? activeStartedAt,
     double? treadmillSpeedKilometersPerHour,
     bool? isTreadmillManualMode,
   }) {
-    return WorkoutLiveRunningState(
-      heartRateZoneTable: heartRateZoneTable,
+    return WorkoutLiveRunning(
       session: session ?? this.session,
-      treadmillSpeedKilometersPerHour: treadmillSpeedKilometersPerHour ?? this.treadmillSpeedKilometersPerHour,
-      isTreadmillManualMode: isTreadmillManualMode ?? this.isTreadmillManualMode,
       activeStartedAt: activeStartedAt ?? this.activeStartedAt,
+      treadmillSpeedKilometersPerHour:
+          treadmillSpeedKilometersPerHour ?? this.treadmillSpeedKilometersPerHour,
+      isTreadmillManualMode: isTreadmillManualMode ?? this.isTreadmillManualMode,
     );
   }
 
   @override
   List<Object?> get props => [
-    heartRateZoneTable,
     session,
+    activeStartedAt,
     treadmillSpeedKilometersPerHour,
     isTreadmillManualMode,
-    activeStartedAt,
   ];
 }
 
-final class WorkoutLivePausedState extends SessionBackedWorkoutLiveState {
-  const WorkoutLivePausedState({
-    required super.heartRateZoneTable,
-    required super.session,
-    required super.treadmillSpeedKilometersPerHour,
-    required super.isTreadmillManualMode,
-    required this.pausedAt,
+final class WorkoutLivePaused extends WorkoutLiveState {
+  const WorkoutLivePaused({
+    required this.session,
+    this.treadmillSpeedKilometersPerHour,
+    this.isTreadmillManualMode,
   });
 
-  final DateTime pausedAt;
+  final WorkoutSession session;
+  final double? treadmillSpeedKilometersPerHour;
+  final bool? isTreadmillManualMode;
+
+  WorkoutLivePaused copyWith({
+    WorkoutSession? session,
+    double? treadmillSpeedKilometersPerHour,
+    bool? isTreadmillManualMode,
+  }) {
+    return WorkoutLivePaused(
+      session: session ?? this.session,
+      treadmillSpeedKilometersPerHour:
+          treadmillSpeedKilometersPerHour ?? this.treadmillSpeedKilometersPerHour,
+      isTreadmillManualMode: isTreadmillManualMode ?? this.isTreadmillManualMode,
+    );
+  }
 
   @override
-  List<Object?> get props => [
-    heartRateZoneTable,
-    session,
-    treadmillSpeedKilometersPerHour,
-    isTreadmillManualMode,
-    pausedAt,
-  ];
-}
-
-final class WorkoutLiveEndedState extends SessionBackedWorkoutLiveState {
-  const WorkoutLiveEndedState({
-    required super.heartRateZoneTable,
-    required super.session,
-    required super.treadmillSpeedKilometersPerHour,
-    required super.isTreadmillManualMode,
-  });
+  List<Object?> get props => [session, treadmillSpeedKilometersPerHour, isTreadmillManualMode];
 }

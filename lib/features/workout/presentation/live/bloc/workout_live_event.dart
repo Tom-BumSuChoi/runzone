@@ -7,16 +7,6 @@ sealed class WorkoutLiveEvent extends Equatable {
   List<Object?> get props => const [];
 }
 
-final class WorkoutLiveStarted extends WorkoutLiveEvent {
-  const WorkoutLiveStarted({required this.session, required this.isAutoPaceEnabled});
-
-  final WorkoutSession session;
-  final bool isAutoPaceEnabled;
-
-  @override
-  List<Object?> get props => [session, isAutoPaceEnabled];
-}
-
 final class WorkoutLiveTreadmillSpeedDecreased extends WorkoutLiveEvent {
   const WorkoutLiveTreadmillSpeedDecreased();
 }
@@ -29,8 +19,8 @@ final class WorkoutLiveTreadmillAutomaticModeEnabled extends WorkoutLiveEvent {
   const WorkoutLiveTreadmillAutomaticModeEnabled();
 }
 
-final class WorkoutLivePaused extends WorkoutLiveEvent {
-  const WorkoutLivePaused();
+final class WorkoutLivePauseButtonTapped extends WorkoutLiveEvent {
+  const WorkoutLivePauseButtonTapped();
 }
 
 final class WorkoutLiveResumed extends WorkoutLiveEvent {
@@ -39,6 +29,10 @@ final class WorkoutLiveResumed extends WorkoutLiveEvent {
 
 final class WorkoutLiveEnded extends WorkoutLiveEvent {
   const WorkoutLiveEnded();
+}
+
+final class _WorkoutLiveCountdownTicked extends WorkoutLiveEvent {
+  const _WorkoutLiveCountdownTicked();
 }
 
 final class _WorkoutLiveTicked extends WorkoutLiveEvent {
