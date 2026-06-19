@@ -7,6 +7,7 @@ import '../../../../core/design_system/widgets/label/run_zone_label_medium_label
 import 'workout_result_cubit.dart';
 import 'widgets/workout_result_completion_ring.dart';
 import 'widgets/workout_result_metrics_card.dart';
+import 'widgets/workout_result_zone_card.dart';
 
 final class WorkoutResultScreen extends StatelessWidget {
   const WorkoutResultScreen({super.key});
@@ -38,6 +39,12 @@ final class WorkoutResultScreen extends StatelessWidget {
                     distanceKm: state.distanceKm,
                     durationLabel: state.durationLabel,
                     averageBpm: state.averageBpm,
+                  ),
+                  AppSpacing.footerHintGap,
+                  WorkoutResultZoneCard(
+                    zoneProportions: state.zoneProportions,
+                    dominantZone: state.dominantZone,
+                    dominantZonePercent: state.dominantZonePercent,
                   ),
                 ],
               ),
