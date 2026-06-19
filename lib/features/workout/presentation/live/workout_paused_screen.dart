@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/design_system/app_spacing.dart';
 import '../../../../core/design_system/assets/run_zone_icon_asset.dart';
 import '../../../../core/design_system/widgets/badge/run_zone_text_pill.dart';
-import '../../../../core/design_system/widgets/button/run_zone_ghost_button.dart';
+import '../../../../core/design_system/widgets/button/run_zone_danger_button.dart';
 import '../../../../core/design_system/widgets/button/run_zone_primary_button.dart';
 import '../../../../core/design_system/widgets/label/run_zone_headline_medium_label.dart';
 import '../../../heart_rate/presentation/heart_rate_zone_display.dart';
@@ -55,8 +55,9 @@ final class WorkoutPausedScreen extends StatelessWidget {
                 onPressed: () => context.read<WorkoutLiveBloc>().add(const WorkoutLiveResumed()),
               ),
               AppSpacing.buttonGap,
-              RunZoneGhostButton(
+              RunZoneDangerButton(
                 label: '운동 종료',
+                icon: RunZoneIconAsset.stop,
                 onPressed: () => context.read<WorkoutLiveBloc>().add(const WorkoutLiveEnded()),
               ),
             ],
