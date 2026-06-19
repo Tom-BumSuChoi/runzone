@@ -57,6 +57,8 @@ final class _WorkoutFeedbackView extends StatelessWidget {
               const RunZoneLabelSmallLabel('컨디션'),
               AppSpacing.sectionLabelGap,
               const WorkoutMoodSelector(),
+              AppSpacing.sectionGap,
+              const RunZoneLabelSmallLabel('메모 (선택)'),
             ],
           ),
         ),
