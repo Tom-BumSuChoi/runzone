@@ -25,6 +25,7 @@ final class RunZoneGhostButton extends StatelessWidget {
           disabledForegroundColor: colorScheme.onSurfaceVariant,
           minimumSize: const Size(AppSizing.touchTarget, AppSizing.touchTarget),
           padding: AppSpacing.buttonInsets,
+          side: BorderSide(color: colorScheme.outlineVariant),
           shape: const RoundedRectangleBorder(borderRadius: AppRadius.smallBorder),
         ),
         child: RunZoneLabelLargeLabel(label, color: colorScheme.onSurfaceVariant),
