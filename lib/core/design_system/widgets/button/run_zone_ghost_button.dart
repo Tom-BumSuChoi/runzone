@@ -5,8 +5,8 @@ import '../../app_sizing.dart';
 import '../../app_spacing.dart';
 import '../label/run_zone_label_large_label.dart';
 
-final class RunZonePrimaryButton extends StatelessWidget {
-  const RunZonePrimaryButton({required this.label, required this.onPressed, super.key});
+final class RunZoneGhostButton extends StatelessWidget {
+  const RunZoneGhostButton({required this.label, required this.onPressed, super.key});
 
   final String label;
   final VoidCallback? onPressed;
@@ -14,22 +14,20 @@ final class RunZonePrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isEnabled = onPressed != null;
 
     return SizedBox(
       width: double.infinity,
-      child: FilledButton(
+      child: TextButton(
         onPressed: onPressed,
-        style: FilledButton.styleFrom(
-          backgroundColor: colorScheme.primary,
-          foregroundColor: colorScheme.onPrimary,
-          disabledBackgroundColor: colorScheme.surfaceContainerHighest,
+        style: TextButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          foregroundColor: colorScheme.onSurfaceVariant,
           disabledForegroundColor: colorScheme.onSurfaceVariant,
           minimumSize: const Size(AppSizing.touchTarget, AppSizing.touchTarget),
           padding: AppSpacing.buttonInsets,
           shape: const RoundedRectangleBorder(borderRadius: AppRadius.smallBorder),
         ),
-        child: RunZoneLabelLargeLabel(label, color: isEnabled ? colorScheme.onPrimary : colorScheme.onSurfaceVariant),
+        child: RunZoneLabelLargeLabel(label, color: colorScheme.onSurfaceVariant),
       ),
     );
   }
