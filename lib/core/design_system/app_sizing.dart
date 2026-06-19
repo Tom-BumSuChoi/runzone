@@ -21,4 +21,5 @@ abstract final class AppSizing {
   static const workoutLivePrimaryIconSize = 32.0;
   static const pausedIconRingSize = 96.0;
   static const pausedIconSize = 42.0;
+  static const metricDividerHeight = 32.0;
 }
