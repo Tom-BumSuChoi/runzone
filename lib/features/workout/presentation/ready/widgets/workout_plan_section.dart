@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/design_system/app_spacing.dart';
-import '../../../../core/design_system/widgets/card/run_zone_card.dart';
-import '../../../../core/design_system/widgets/chip/run_zone_choice_chip.dart';
-import '../../../../core/design_system/widgets/label/run_zone_body_medium_label.dart';
-import '../../../../core/design_system/widgets/label/run_zone_body_small_label.dart';
-import '../../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
-import '../../../../core/design_system/widgets/stepper/run_zone_stepper.dart';
-import '../../../heart_rate/domain/heart_rate_zone.dart';
-import '../../domain/workout_duration_goal.dart';
-import '../../domain/workout_plan.dart';
-import '../bloc/workout_session_bloc.dart';
-import '../bloc/workout_session_ready_state_extension.dart';
+import '../../../../../core/design_system/app_spacing.dart';
+import '../../../../../core/design_system/widgets/card/run_zone_card.dart';
+import '../../../../../core/design_system/widgets/chip/run_zone_choice_chip.dart';
+import '../../../../../core/design_system/widgets/label/run_zone_body_medium_label.dart';
+import '../../../../../core/design_system/widgets/label/run_zone_body_small_label.dart';
+import '../../../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
+import '../../../../../core/design_system/widgets/stepper/run_zone_stepper.dart';
+import '../../../../heart_rate/domain/heart_rate_zone.dart';
+import '../../../domain/workout_duration_goal.dart';
+import '../../../domain/workout_plan.dart';
+import '../cubit/workout_ready_cubit.dart';
 
 final class WorkoutPlanSection extends StatelessWidget {
   const WorkoutPlanSection({super.key});
@@ -26,9 +25,9 @@ final class WorkoutPlanSection extends StatelessWidget {
         AppSpacing.sectionLabelGap,
         const _WorkoutPlanChips(),
         AppSpacing.controlGroupSpacer,
-        BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
+        BlocBuilder<WorkoutReadyCubit, WorkoutReadyState>(
           builder: (context, state) {
-            return RunZoneBodyMediumLabel(state.readyState.plan.spec.description);
+            return RunZoneBodyMediumLabel(state.plan.spec.description);
           },
         ),
         const _WorkoutGoalSection(),
@@ -42,10 +41,8 @@ final class _WorkoutGoalSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
-      builder: (context, state) {
-        final readyState = state.readyState;
-
+    return BlocBuilder<WorkoutReadyCubit, WorkoutReadyState>(
+      builder: (context, readyState) {
         if (readyState.plan is FreeWorkoutPlan) {
           return const SizedBox.shrink();
         }
@@ -69,9 +66,9 @@ final class _WorkoutGoalSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
+    return BlocBuilder<WorkoutReadyCubit, WorkoutReadyState>(
       builder: (context, state) {
-        return switch (state.readyState.plan) {
+        return switch (state.plan) {
           TargetZoneWorkoutPlan plan => _TargetZoneWorkoutGoalCard(plan: plan),
           IntervalWorkoutPlan plan => _IntervalWorkoutGoalCard(plan: plan),
           FreeWorkoutPlan() => const SizedBox.shrink(),
@@ -88,7 +85,7 @@ final class _TargetZoneWorkoutGoalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<WorkoutSessionBloc>();
+    final cubit = context.read<WorkoutReadyCubit>();
 
     return RunZoneCard(
       child: Column(
@@ -98,8 +95,8 @@ final class _TargetZoneWorkoutGoalCard extends StatelessWidget {
             description: '운동 시작 후에도 조정 가능',
             control: RunZoneStepper(
               label: plan.durationGoal.label,
-              onDecrement: () => bloc.add(const WorkoutSessionTargetZoneDurationDecreased()),
-              onIncrement: () => bloc.add(const WorkoutSessionTargetZoneDurationIncreased()),
+              onDecrement: cubit.targetZoneDurationDecreased,
+              onIncrement: cubit.targetZoneDurationIncreased,
             ),
           ),
           const Divider(),
@@ -108,8 +105,8 @@ final class _TargetZoneWorkoutGoalCard extends StatelessWidget {
             description: '선택한 심박존을 유지',
             control: RunZoneStepper(
               label: plan.targetHeartRateZone.label,
-              onDecrement: () => bloc.add(const WorkoutSessionTargetHeartRateZoneDecreased()),
-              onIncrement: () => bloc.add(const WorkoutSessionTargetHeartRateZoneIncreased()),
+              onDecrement: cubit.targetHeartRateZoneDecreased,
+              onIncrement: cubit.targetHeartRateZoneIncreased,
             ),
           ),
         ],
@@ -125,7 +122,7 @@ final class _IntervalWorkoutGoalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<WorkoutSessionBloc>();
+    final cubit = context.read<WorkoutReadyCubit>();
 
     return RunZoneCard(
       child: Column(
@@ -135,8 +132,8 @@ final class _IntervalWorkoutGoalCard extends StatelessWidget {
             description: '몸을 천천히 올려요',
             control: RunZoneStepper(
               label: plan.warmUpDuration.minutesLabel,
-              onDecrement: () => bloc.add(const WorkoutSessionIntervalWarmUpDurationDecreased()),
-              onIncrement: () => bloc.add(const WorkoutSessionIntervalWarmUpDurationIncreased()),
+              onDecrement: cubit.intervalWarmUpDurationDecreased,
+              onIncrement: cubit.intervalWarmUpDurationIncreased,
             ),
           ),
           const Divider(),
@@ -145,8 +142,8 @@ final class _IntervalWorkoutGoalCard extends StatelessWidget {
             description: '목표 Z4',
             control: RunZoneStepper(
               label: '${plan.highIntensityDistanceMeters}m',
-              onDecrement: () => bloc.add(const WorkoutSessionIntervalHighIntensityDistanceDecreased()),
-              onIncrement: () => bloc.add(const WorkoutSessionIntervalHighIntensityDistanceIncreased()),
+              onDecrement: cubit.intervalHighIntensityDistanceDecreased,
+              onIncrement: cubit.intervalHighIntensityDistanceIncreased,
             ),
           ),
           const Divider(),
@@ -155,8 +152,8 @@ final class _IntervalWorkoutGoalCard extends StatelessWidget {
             description: '목표 Z1-Z2',
             control: RunZoneStepper(
               label: plan.recoveryDuration.secondsLabel,
-              onDecrement: () => bloc.add(const WorkoutSessionIntervalRecoveryDurationDecreased()),
-              onIncrement: () => bloc.add(const WorkoutSessionIntervalRecoveryDurationIncreased()),
+              onDecrement: cubit.intervalRecoveryDurationDecreased,
+              onIncrement: cubit.intervalRecoveryDurationIncreased,
             ),
           ),
           const Divider(),
@@ -165,8 +162,8 @@ final class _IntervalWorkoutGoalCard extends StatelessWidget {
             description: '고강도와 회복 반복',
             control: RunZoneStepper(
               label: '${plan.repeatCount}회',
-              onDecrement: () => bloc.add(const WorkoutSessionIntervalRepeatCountDecreased()),
-              onIncrement: () => bloc.add(const WorkoutSessionIntervalRepeatCountIncreased()),
+              onDecrement: cubit.intervalRepeatCountDecreased,
+              onIncrement: cubit.intervalRepeatCountIncreased,
             ),
           ),
         ],
@@ -202,10 +199,8 @@ final class _WorkoutPlanChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
-      builder: (context, state) {
-        final readyState = state.readyState;
-
+    return BlocBuilder<WorkoutReadyCubit, WorkoutReadyState>(
+      builder: (context, readyState) {
         return Row(
           spacing: AppSpacing.chipGap,
           children: [
@@ -213,7 +208,7 @@ final class _WorkoutPlanChips extends StatelessWidget {
               RunZoneChoiceChip(
                 label: spec.label,
                 isSelected: spec.matches(readyState.plan),
-                onTap: () => spec.select(context.read<WorkoutSessionBloc>()),
+                onTap: () => spec.select(context.read<WorkoutReadyCubit>()),
               ),
           ],
         );
@@ -265,14 +260,14 @@ final class _WorkoutPlanSpec {
     };
   }
 
-  void select(WorkoutSessionBloc bloc) {
+  void select(WorkoutReadyCubit cubit) {
     switch (plan) {
       case TargetZoneWorkoutPlan():
-        bloc.add(const WorkoutSessionTargetZonePlanSelected());
+        cubit.targetZonePlanSelected();
       case IntervalWorkoutPlan():
-        bloc.add(const WorkoutSessionIntervalPlanSelected());
+        cubit.intervalPlanSelected();
       case FreeWorkoutPlan():
-        bloc.add(const WorkoutSessionFreePlanSelected());
+        cubit.freePlanSelected();
     }
   }
 }

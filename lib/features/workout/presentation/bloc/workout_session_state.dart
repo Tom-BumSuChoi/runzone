@@ -16,57 +16,8 @@ sealed class WorkoutSessionState extends Equatable {
   List<Object?> get props => [heartRateZoneTable];
 }
 
-final class WorkoutSessionReadyState extends WorkoutSessionState {
-  const WorkoutSessionReadyState({
-    required super.heartRateZoneTable,
-    this.environment = WorkoutEnvironment.indoor,
-    this.plan = TargetZoneWorkoutPlan.initial,
-    this.isHeartRateDeviceConnected = true,
-    this.isTreadmillConnected = false,
-    this.isAutoPaceEnabled = true,
-    this.isZoneAlertEnabled = true,
-  });
-
-  final WorkoutEnvironment environment;
-  final WorkoutPlan plan;
-  final bool isHeartRateDeviceConnected;
-  final bool isTreadmillConnected;
-  final bool isAutoPaceEnabled;
-  final bool isZoneAlertEnabled;
-
-  bool get canStart {
-    return isHeartRateDeviceConnected && (environment == WorkoutEnvironment.outdoor || isTreadmillConnected);
-  }
-
-  WorkoutSessionReadyState copyWith({
-    WorkoutEnvironment? environment,
-    WorkoutPlan? plan,
-    bool? isHeartRateDeviceConnected,
-    bool? isTreadmillConnected,
-    bool? isAutoPaceEnabled,
-    bool? isZoneAlertEnabled,
-  }) {
-    return WorkoutSessionReadyState(
-      heartRateZoneTable: heartRateZoneTable,
-      environment: environment ?? this.environment,
-      plan: plan ?? this.plan,
-      isHeartRateDeviceConnected: isHeartRateDeviceConnected ?? this.isHeartRateDeviceConnected,
-      isTreadmillConnected: isTreadmillConnected ?? this.isTreadmillConnected,
-      isAutoPaceEnabled: isAutoPaceEnabled ?? this.isAutoPaceEnabled,
-      isZoneAlertEnabled: isZoneAlertEnabled ?? this.isZoneAlertEnabled,
-    );
-  }
-
-  @override
-  List<Object?> get props => [
-    heartRateZoneTable,
-    environment,
-    plan,
-    isHeartRateDeviceConnected,
-    isTreadmillConnected,
-    isAutoPaceEnabled,
-    isZoneAlertEnabled,
-  ];
+final class WorkoutSessionIdleState extends WorkoutSessionState {
+  const WorkoutSessionIdleState({required super.heartRateZoneTable});
 }
 
 enum WorkoutSessionCountdownStep { three, two, one, go }
@@ -112,13 +63,13 @@ sealed class SessionBackedWorkoutSessionState extends WorkoutSessionState {
   const SessionBackedWorkoutSessionState({
     required super.heartRateZoneTable,
     required this.session,
-    required this.targetHeartRateZone,
     required this.treadmillSpeedKilometersPerHour,
     required this.isTreadmillManualMode,
   });
 
   final WorkoutSession session;
-  final HeartRateZone targetHeartRateZone;
+
+  HeartRateZone get targetHeartRateZone => session.targetHeartRateZone;
 
   @override
   final double? treadmillSpeedKilometersPerHour;
@@ -150,7 +101,6 @@ sealed class SessionBackedWorkoutSessionState extends WorkoutSessionState {
   List<Object?> get props => [
     heartRateZoneTable,
     session,
-    targetHeartRateZone,
     treadmillSpeedKilometersPerHour,
     isTreadmillManualMode,
   ];
@@ -160,7 +110,6 @@ final class WorkoutSessionRunningState extends SessionBackedWorkoutSessionState 
   const WorkoutSessionRunningState({
     required super.heartRateZoneTable,
     required super.session,
-    required super.targetHeartRateZone,
     required super.treadmillSpeedKilometersPerHour,
     required super.isTreadmillManualMode,
     required this.activeStartedAt,
@@ -181,7 +130,6 @@ final class WorkoutSessionRunningState extends SessionBackedWorkoutSessionState 
     return WorkoutSessionRunningState(
       heartRateZoneTable: heartRateZoneTable,
       session: session ?? this.session,
-      targetHeartRateZone: targetHeartRateZone,
       treadmillSpeedKilometersPerHour: treadmillSpeedKilometersPerHour ?? this.treadmillSpeedKilometersPerHour,
       isTreadmillManualMode: isTreadmillManualMode ?? this.isTreadmillManualMode,
       activeStartedAt: activeStartedAt ?? this.activeStartedAt,
@@ -192,7 +140,6 @@ final class WorkoutSessionRunningState extends SessionBackedWorkoutSessionState 
   List<Object?> get props => [
     heartRateZoneTable,
     session,
-    targetHeartRateZone,
     treadmillSpeedKilometersPerHour,
     isTreadmillManualMode,
     activeStartedAt,
@@ -203,7 +150,6 @@ final class WorkoutSessionPausedState extends SessionBackedWorkoutSessionState {
   const WorkoutSessionPausedState({
     required super.heartRateZoneTable,
     required super.session,
-    required super.targetHeartRateZone,
     required super.treadmillSpeedKilometersPerHour,
     required super.isTreadmillManualMode,
     required this.pausedAt,
@@ -215,7 +161,6 @@ final class WorkoutSessionPausedState extends SessionBackedWorkoutSessionState {
   List<Object?> get props => [
     heartRateZoneTable,
     session,
-    targetHeartRateZone,
     treadmillSpeedKilometersPerHour,
     isTreadmillManualMode,
     pausedAt,
@@ -226,7 +171,6 @@ final class WorkoutSessionEndedState extends SessionBackedWorkoutSessionState {
   const WorkoutSessionEndedState({
     required super.heartRateZoneTable,
     required super.session,
-    required super.targetHeartRateZone,
     required super.treadmillSpeedKilometersPerHour,
     required super.isTreadmillManualMode,
   });

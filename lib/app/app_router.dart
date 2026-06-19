@@ -10,7 +10,7 @@ import '../features/treadmill/data/mock_treadmill_device.dart';
 import '../features/workout/presentation/bloc/workout_session_bloc.dart';
 import '../features/workout/presentation/workout_countdown_screen.dart';
 import '../features/workout/presentation/workout_live_screen.dart';
-import '../features/workout/presentation/workout_ready_screen.dart';
+import '../features/workout/presentation/ready/workout_ready_screen.dart';
 import 'app_routes.dart';
 import 'cubit/app_cubit.dart';
 import 'main_shell.dart';
@@ -38,7 +38,6 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
                 zone4: HeartRateZoneRange(lower: 161, upper: 172),
                 zone5: HeartRateZoneRange(lower: 173, upper: 182),
               ),
-              targetHeartRateZone: HeartRateZone.zone2,
             ),
             child: child,
           ),

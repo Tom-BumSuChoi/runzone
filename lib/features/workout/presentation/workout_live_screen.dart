@@ -50,6 +50,12 @@ final class WorkoutLiveScreen extends StatelessWidget {
             : const <HeartRateMeasurement>[];
 
         final elapsedText = _formatDuration(elapsed);
+        final remainingDuration = state is SessionBackedWorkoutSessionState ? state.session.remainingDuration : null;
+        final remainingText = remainingDuration == null ? '--:--' : _formatDuration(remainingDuration);
+        final totalDistanceMeters = state is SessionBackedWorkoutSessionState
+            ? state.session.totalDistanceMeters
+            : 0.0;
+        final distanceText = (totalDistanceMeters / 1000).toStringAsFixed(2);
 
         return Scaffold(
           backgroundColor: colorScheme.surface,
@@ -99,7 +105,7 @@ final class WorkoutLiveScreen extends StatelessWidget {
                           targetHeartRateZone: targetHeartRateZone,
                         ),
                         AppSpacing.sectionGap,
-                        WorkoutMetricRow(elapsedTime: elapsedText, remainingTime: '40:00', distance: '0.00'),
+                        WorkoutMetricRow(elapsedTime: elapsedText, remainingTime: remainingText, distance: distanceText),
                       ],
                     ),
                   ),

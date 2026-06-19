@@ -3,30 +3,40 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/app_routes.dart';
-import '../../../core/design_system/app_spacing.dart';
-import '../../../core/design_system/app_sizing.dart';
-import '../../../core/design_system/assets/run_zone_icon_asset.dart';
-import '../../../core/design_system/widgets/badge/run_zone_badge.dart';
-import '../../../core/design_system/widgets/button/run_zone_icon_outline_button.dart';
-import '../../../core/design_system/widgets/button/run_zone_primary_button.dart';
-import '../../../core/design_system/widgets/card/run_zone_card.dart';
-import '../../../core/design_system/widgets/control/run_zone_segmented_control.dart';
-import '../../../core/design_system/widgets/label/run_zone_body_large_label.dart';
-import '../../../core/design_system/widgets/label/run_zone_body_medium_label.dart';
-import '../../../core/design_system/widgets/label/run_zone_body_small_label.dart';
-import '../../../core/design_system/widgets/label/run_zone_headline_large_label.dart';
-import '../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
-import '../../../core/design_system/widgets/label/run_zone_title_medium_label.dart';
-import '../../../core/design_system/widgets/list/run_zone_list_item.dart';
-import '../domain/workout_environment.dart';
-import '../domain/workout_plan.dart';
-import 'bloc/workout_session_bloc.dart';
-import 'bloc/workout_session_ready_state_extension.dart';
+import '../../../../app/app_routes.dart';
+import '../../../../core/design_system/app_spacing.dart';
+import '../../../../core/design_system/app_sizing.dart';
+import '../../../../core/design_system/assets/run_zone_icon_asset.dart';
+import '../../../../core/design_system/widgets/badge/run_zone_badge.dart';
+import '../../../../core/design_system/widgets/button/run_zone_icon_outline_button.dart';
+import '../../../../core/design_system/widgets/button/run_zone_primary_button.dart';
+import '../../../../core/design_system/widgets/card/run_zone_card.dart';
+import '../../../../core/design_system/widgets/control/run_zone_segmented_control.dart';
+import '../../../../core/design_system/widgets/label/run_zone_body_large_label.dart';
+import '../../../../core/design_system/widgets/label/run_zone_body_medium_label.dart';
+import '../../../../core/design_system/widgets/label/run_zone_body_small_label.dart';
+import '../../../../core/design_system/widgets/label/run_zone_headline_large_label.dart';
+import '../../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
+import '../../../../core/design_system/widgets/label/run_zone_title_medium_label.dart';
+import '../../../../core/design_system/widgets/list/run_zone_list_item.dart';
+import '../../domain/workout_environment.dart';
+import '../../domain/workout_plan.dart';
+import '../../domain/workout_session.dart';
+import '../bloc/workout_session_bloc.dart';
+import 'cubit/workout_ready_cubit.dart';
 import 'widgets/workout_plan_section.dart';
 
 final class WorkoutReadyScreen extends StatelessWidget {
   const WorkoutReadyScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(create: (_) => WorkoutReadyCubit(), child: const _WorkoutReadyView());
+  }
+}
+
+final class _WorkoutReadyView extends StatelessWidget {
+  const _WorkoutReadyView();
 
   @override
   Widget build(BuildContext context) {
@@ -88,10 +98,8 @@ final class _WorkoutDeviceStatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
-      builder: (context, state) {
-        final readyState = state.readyState;
-
+    return BlocBuilder<WorkoutReadyCubit, WorkoutReadyState>(
+      builder: (context, readyState) {
         return RunZoneCard(
           child: Column(
             children: [
@@ -108,7 +116,7 @@ final class _WorkoutDeviceStatusCard extends StatelessWidget {
                   trailing: Switch(
                     value: readyState.isTreadmillConnected,
                     onChanged: (_) {
-                      context.read<WorkoutSessionBloc>().add(const WorkoutSessionTreadmillConnectionToggled());
+                      context.read<WorkoutReadyCubit>().treadmillConnectionToggled();
                     },
                   ),
                 ),
@@ -145,7 +153,7 @@ final class _WorkoutTreadmillPacePanel extends StatelessWidget {
             trailing: Switch(
               value: isAutoPaceEnabled,
               onChanged: (_) {
-                context.read<WorkoutSessionBloc>().add(const WorkoutSessionAutoPaceToggled());
+                context.read<WorkoutReadyCubit>().autoPaceToggled();
               },
             ),
           ),
@@ -202,9 +210,8 @@ final class _WorkoutStartRequirementSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
-      builder: (context, state) {
-        final readyState = state.readyState;
+    return BlocBuilder<WorkoutReadyCubit, WorkoutReadyState>(
+      builder: (context, readyState) {
         final message = switch ((readyState.isHeartRateDeviceConnected, readyState.canStart)) {
           (false, _) => '심박 기기 연결이 필요해요.',
           (true, false) => '러닝머신 연결이 필요해요.',
@@ -262,13 +269,11 @@ final class _WorkoutStartButtonArea extends StatelessWidget {
       ),
       child: Padding(
         padding: AppSpacing.screenInsets,
-        child: BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
-          builder: (context, state) {
-            final readyState = state.readyState;
-
+        child: BlocBuilder<WorkoutReadyCubit, WorkoutReadyState>(
+          builder: (context, readyState) {
             return RunZonePrimaryButton(
               label: '운동 시작',
-              onPressed: readyState.canStart ? () => _startWorkout(context) : null,
+              onPressed: readyState.canStart ? () => _startWorkout(context, readyState) : null,
             );
           },
         ),
@@ -276,8 +281,17 @@ final class _WorkoutStartButtonArea extends StatelessWidget {
     );
   }
 
-  void _startWorkout(BuildContext context) {
-    context.read<WorkoutSessionBloc>().add(const WorkoutSessionStarted());
+  void _startWorkout(BuildContext context, WorkoutReadyState readyState) {
+    final sessionBloc = context.read<WorkoutSessionBloc>();
+    final session = WorkoutSession(
+      startedAt: DateTime.now(),
+      elapsed: Duration.zero,
+      environment: readyState.environment,
+      plan: readyState.plan,
+      heartRateZoneTable: sessionBloc.state.heartRateZoneTable,
+    );
+
+    sessionBloc.add(WorkoutSessionStarted(session: session, isAutoPaceEnabled: readyState.isAutoPaceEnabled));
     GoRouter.of(context).go(AppRoutes.workoutCountdown);
   }
 }
@@ -287,10 +301,8 @@ final class _WorkoutCoachingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
-      builder: (context, state) {
-        final readyState = state.readyState;
-
+    return BlocBuilder<WorkoutReadyCubit, WorkoutReadyState>(
+      builder: (context, readyState) {
         if (readyState.plan is FreeWorkoutPlan) {
           return const SizedBox.shrink();
         }
@@ -307,7 +319,7 @@ final class _WorkoutCoachingSection extends StatelessWidget {
                 trailing: Switch(
                   value: readyState.isZoneAlertEnabled,
                   onChanged: (_) {
-                    context.read<WorkoutSessionBloc>().add(const WorkoutSessionZoneAlertToggled());
+                    context.read<WorkoutReadyCubit>().zoneAlertToggled();
                   },
                 ),
               ),
@@ -324,14 +336,18 @@ final class _WorkoutEnvironmentControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutSessionBloc, WorkoutSessionState>(
-      builder: (context, state) {
-        final readyState = state.readyState;
-
+    return BlocBuilder<WorkoutReadyCubit, WorkoutReadyState>(
+      builder: (context, readyState) {
         return RunZoneSegmentedControl<WorkoutEnvironment>(
           selectedValue: readyState.environment,
           onChanged: (environment) {
-            context.read<WorkoutSessionBloc>().add(WorkoutSessionEnvironmentChanged(environment));
+            final cubit = context.read<WorkoutReadyCubit>();
+            switch (environment) {
+              case WorkoutEnvironment.indoor:
+                cubit.indoorEnvironmentTapped();
+              case WorkoutEnvironment.outdoor:
+                cubit.outdoorEnvironmentTapped();
+            }
           },
           options: const [
             RunZoneSegmentedControlOption(value: WorkoutEnvironment.indoor, label: '실내 · 러닝머신'),
