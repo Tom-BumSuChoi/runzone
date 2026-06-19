@@ -28,13 +28,9 @@ final class WorkoutFeedbackScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const RunZoneHeadlineLargeLabel('오늘 어땠나요?', textAlign: TextAlign.center),
+              const RunZoneHeadlineLargeLabel('오늘 어땠나요?'),
               AppSpacing.titleDescriptionGap,
-              RunZoneBodyLargeLabel(
-                '한 번만 기록하면 다음 훈련 추천이 정확해져요.',
-                color: colorScheme.onSurfaceVariant,
-                textAlign: TextAlign.center,
-              ),
+              RunZoneBodyLargeLabel('한 번만 기록하면 다음 훈련 추천이 정확해져요.', color: colorScheme.onSurfaceVariant),
               AppSpacing.sectionGap,
               const RunZoneLabelSmallLabel('체감 강도 (RPE)'),
               AppSpacing.sectionLabelGap,
@@ -56,10 +52,7 @@ final class WorkoutFeedbackScreen extends StatelessWidget {
               AppSpacing.sectionLabelGap,
               const WorkoutFeedbackNoteField(),
               const Spacer(),
-              RunZonePrimaryButton(
-                label: '저장하고 결과 보기',
-                onPressed: () => context.go(AppRoutes.home),
-              ),
+              RunZonePrimaryButton(label: '저장하고 결과 보기', onPressed: () => context.go(AppRoutes.home)),
               AppSpacing.buttonGap,
               RunZoneGhostButton(label: '건너뛰기', onPressed: () => context.go(AppRoutes.home)),
             ],
