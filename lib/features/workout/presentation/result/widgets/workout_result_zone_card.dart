@@ -4,7 +4,6 @@ import '../../../../../core/design_system/app_color_scheme.dart';
 import '../../../../../core/design_system/app_spacing.dart';
 import '../../../../../core/design_system/widgets/bar/segmented_bar.dart';
 import '../../../../../core/design_system/widgets/card/run_zone_card.dart';
-import '../../../../../core/design_system/widgets/label/run_zone_body_small_label.dart';
 import '../../../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
 import '../../../../../core/design_system/widgets/label/run_zone_title_small_label.dart';
 import '../../../../heart_rate/domain/heart_rate_zone.dart';

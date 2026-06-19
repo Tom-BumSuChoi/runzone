@@ -17,17 +17,14 @@ part 'workout_live_state.dart';
 
 final class WorkoutLiveBloc extends Bloc<WorkoutLiveEvent, WorkoutLiveState> {
   WorkoutLiveBloc({
-    required WorkoutSession session,
-    required bool isAutoPaceEnabled,
+    required this._session,
+    required this._isAutoPaceEnabled,
     required this.heartRateMonitor,
     required this.treadmillDevice,
     DateTime Function()? now,
     Stream<void> Function()? createTicker,
-  }) : _session = session,
-       _isAutoPaceEnabled = isAutoPaceEnabled,
-       _now = now ?? DateTime.now,
-       _createTicker =
-           createTicker ?? (() => Stream<void>.periodic(const Duration(seconds: 1), (_) {})),
+  }) : _now = now ?? DateTime.now,
+       _createTicker = createTicker ?? (() => Stream<void>.periodic(const Duration(seconds: 1), (_) {})),
        super(const WorkoutLiveCountingDown(countIndex: 0)) {
     on<_WorkoutLiveCountdownTicked>(_onCountdownTicked);
     on<WorkoutLiveTreadmillSpeedDecreased>(_onTreadmillSpeedDecreased);
@@ -66,25 +63,17 @@ final class WorkoutLiveBloc extends Bloc<WorkoutLiveEvent, WorkoutLiveState> {
         activeStartedAt: _now(),
         treadmillSpeedKilometersPerHour: treadmillSnapshot.speedKilometersPerHour,
         isTreadmillManualMode:
-            treadmillSnapshot.isManualMode ||
-            _session.plan is FreeWorkoutPlan ||
-            !_isAutoPaceEnabled,
+            treadmillSnapshot.isManualMode || _session.plan is FreeWorkoutPlan || !_isAutoPaceEnabled,
       ),
     );
     _startRunningTicker();
   }
 
-  void _onTreadmillSpeedDecreased(
-    WorkoutLiveTreadmillSpeedDecreased event,
-    Emitter<WorkoutLiveState> emit,
-  ) {
+  void _onTreadmillSpeedDecreased(WorkoutLiveTreadmillSpeedDecreased event, Emitter<WorkoutLiveState> emit) {
     _updateRunningTreadmillState(emit, treadmillDevice.decreaseSpeed);
   }
 
-  void _onTreadmillSpeedIncreased(
-    WorkoutLiveTreadmillSpeedIncreased event,
-    Emitter<WorkoutLiveState> emit,
-  ) {
+  void _onTreadmillSpeedIncreased(WorkoutLiveTreadmillSpeedIncreased event, Emitter<WorkoutLiveState> emit) {
     _updateRunningTreadmillState(emit, treadmillDevice.increaseSpeed);
   }
 
@@ -95,10 +84,7 @@ final class WorkoutLiveBloc extends Bloc<WorkoutLiveEvent, WorkoutLiveState> {
     _updateRunningTreadmillState(emit, treadmillDevice.enableAutomaticMode);
   }
 
-  void _onPauseButtonTapped(
-    WorkoutLivePauseButtonTapped event,
-    Emitter<WorkoutLiveState> emit,
-  ) {
+  void _onPauseButtonTapped(WorkoutLivePauseButtonTapped event, Emitter<WorkoutLiveState> emit) {
     if (state is! WorkoutLiveRunning) return;
     final running = state as WorkoutLiveRunning;
 
@@ -148,7 +134,11 @@ final class WorkoutLiveBloc extends Bloc<WorkoutLiveEvent, WorkoutLiveState> {
     }
 
     _stopTicker();
-    emit(WorkoutLiveFinished(session: session.finish(endedAt: now, elapsed: elapsed)));
+    emit(
+      WorkoutLiveFinished(
+        session: session.finish(endedAt: now, elapsed: elapsed),
+      ),
+    );
   }
 
   void _onTicked(_WorkoutLiveTicked event, Emitter<WorkoutLiveState> emit) {
@@ -172,17 +162,13 @@ final class WorkoutLiveBloc extends Bloc<WorkoutLiveEvent, WorkoutLiveState> {
       running.copyWith(
         session: updatedSession,
         treadmillSpeedKilometersPerHour: treadmillSnapshot.speedKilometersPerHour,
-        isTreadmillManualMode:
-            treadmillSnapshot.isManualMode || (running.isTreadmillManualMode ?? false),
+        isTreadmillManualMode: treadmillSnapshot.isManualMode || (running.isTreadmillManualMode ?? false),
         activeStartedAt: now,
       ),
     );
   }
 
-  void _updateRunningTreadmillState(
-    Emitter<WorkoutLiveState> emit,
-    TreadmillSnapshot Function() update,
-  ) {
+  void _updateRunningTreadmillState(Emitter<WorkoutLiveState> emit, TreadmillSnapshot Function() update) {
     if (state is! WorkoutLiveRunning) return;
     final running = state as WorkoutLiveRunning;
 
