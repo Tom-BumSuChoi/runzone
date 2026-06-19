@@ -44,6 +44,14 @@ final class _WorkoutFeedbackView extends StatelessWidget {
               const RunZoneLabelSmallLabel('체감 강도 (RPE)'),
               AppSpacing.sectionLabelGap,
               const WorkoutPerceivedExertionSelector(),
+              AppSpacing.sectionLabelGap,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  RunZoneLabelSmallLabel('아주 편함', color: colorScheme.onSurfaceVariant),
+                  RunZoneLabelSmallLabel('최대', color: colorScheme.onSurfaceVariant),
+                ],
+              ),
             ],
           ),
         ),
