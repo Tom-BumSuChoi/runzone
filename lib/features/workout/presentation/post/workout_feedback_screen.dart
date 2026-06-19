@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/design_system/app_spacing.dart';
+import '../../../../core/design_system/widgets/button/run_zone_ghost_button.dart';
+import '../../../../core/design_system/widgets/button/run_zone_primary_button.dart';
 import '../../../../core/design_system/widgets/label/run_zone_body_large_label.dart';
 import '../../../../core/design_system/widgets/label/run_zone_headline_large_label.dart';
 import '../../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
@@ -30,7 +32,7 @@ final class _WorkoutFeedbackView extends StatelessWidget {
       backgroundColor: colorScheme.surface,
       body: SafeArea(
         bottom: false,
-        child: SingleChildScrollView(
+        child: Padding(
           padding: AppSpacing.screenInsets,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -62,6 +64,10 @@ final class _WorkoutFeedbackView extends StatelessWidget {
               const RunZoneLabelSmallLabel('메모 (선택)'),
               AppSpacing.sectionLabelGap,
               const WorkoutFeedbackNoteField(),
+              const Spacer(),
+              RunZonePrimaryButton(label: '저장하고 결과 보기', onPressed: () {}),
+              AppSpacing.buttonGap,
+              RunZoneGhostButton(label: '건너뛰기', onPressed: () {}),
             ],
           ),
         ),
