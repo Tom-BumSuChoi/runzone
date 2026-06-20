@@ -23,7 +23,7 @@ final class WorkoutPausedTreadmillHint extends StatelessWidget {
             height: AppSizing.inlineIconSize,
             colorFilter: ColorFilter.mode(colorScheme.onSurfaceVariant, BlendMode.srcIn),
           ),
-          AppSpacing.buttonGap,
+          AppSpacing.inlineLabelGap,
           Expanded(child: RunZoneBodySmallLabel('러닝머신은 같은 페이스로 이어져요', color: colorScheme.onSurfaceVariant)),
         ],
       ),
