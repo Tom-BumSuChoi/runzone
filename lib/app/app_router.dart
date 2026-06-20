@@ -9,6 +9,7 @@ import '../features/profile/presentation/runner_profile_setup_screen.dart';
 import '../features/treadmill/data/mock_treadmill_device.dart';
 import '../features/workout/domain/workout_session.dart';
 import '../features/workout/presentation/live/bloc/workout_live_bloc.dart';
+import '../features/workout/presentation/live/workout_live_route_input.dart';
 import '../features/workout/presentation/live/workout_live_screen.dart';
 import '../features/workout/presentation/feedback/workout_feedback_cubit.dart';
 import '../features/workout/presentation/feedback/workout_feedback_screen.dart';
@@ -62,9 +63,9 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
           ),
           GoRoute(
             path: AppRoutes.workoutLive,
-            redirect: (_, state) => state.extra is _WorkoutLiveRouteInput ? null : AppRoutes.home,
+            redirect: (_, state) => state.extra is WorkoutLiveRouteInput ? null : AppRoutes.home,
             pageBuilder: (_, state) {
-              final input = state.extra as _WorkoutLiveRouteInput;
+              final input = state.extra as WorkoutLiveRouteInput;
               return NoTransitionPage(
                 child: BlocProvider(
                   create: (_) => WorkoutLiveBloc(
@@ -109,8 +110,6 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
     ],
   );
 }
-
-typedef _WorkoutLiveRouteInput = ({WorkoutSession session, bool isAutoPaceEnabled});
 
 String? _redirect({required GoRouterState state, required AppState appState}) {
   final path = state.uri.path;

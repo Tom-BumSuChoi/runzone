@@ -6,6 +6,7 @@ import '../../../../app/app_routes.dart';
 import '../../../../core/design_system/app_spacing.dart';
 import '../../../../core/design_system/widgets/label/run_zone_body_large_label.dart';
 import '../../../../core/design_system/widgets/label/run_zone_label_small_label.dart';
+import '../live/workout_live_route_input.dart';
 import 'workout_ready_cubit.dart';
 import 'widgets/workout_coaching_section.dart';
 import 'widgets/workout_device_status_card.dart';
@@ -74,7 +75,7 @@ final class WorkoutReadyScreen extends StatelessWidget {
     }
     context.pushReplacement(
       AppRoutes.workoutLive,
-      extra: (session: session, isAutoPaceEnabled: cubit.state.isAutoPaceEnabled),
+      extra: WorkoutLiveRouteInput(session: session, isAutoPaceEnabled: cubit.state.isAutoPaceEnabled),
     );
   }
 }
