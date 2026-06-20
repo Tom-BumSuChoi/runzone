@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../heart_rate/domain/heart_rate_measurement.dart';
 import '../../heart_rate/domain/heart_rate_zone.dart';
+import 'workout_environment.dart';
+import 'workout_plan.dart';
 
 @immutable
 final class WorkoutSession extends Equatable {
@@ -10,6 +12,9 @@ final class WorkoutSession extends Equatable {
     required this.startedAt,
     required this.elapsed,
     required this.heartRateZoneTable,
+    this.environment = WorkoutEnvironment.indoor,
+    this.plan = TargetZoneWorkoutPlan.initial,
+    this.totalDistanceMeters = 0.0,
     this.endedAt,
     this.heartRateMeasurements = const [],
   });
@@ -17,8 +22,39 @@ final class WorkoutSession extends Equatable {
   final DateTime startedAt;
   final DateTime? endedAt;
   final Duration elapsed;
+  final WorkoutEnvironment environment;
+  final WorkoutPlan plan;
+  final double totalDistanceMeters;
   final HeartRateZoneTable heartRateZoneTable;
   final List<HeartRateMeasurement> heartRateMeasurements;
+
+  Duration? get targetDuration {
+    return switch (plan) {
+      TargetZoneWorkoutPlan(:final durationGoal) => Duration(minutes: durationGoal.minutes),
+      IntervalWorkoutPlan() || FreeWorkoutPlan() => null,
+    };
+  }
+
+  Duration? get remainingDuration {
+    final Duration? targetDuration = this.targetDuration;
+    if (targetDuration == null) {
+      return null;
+    }
+
+    final Duration remainingDuration = targetDuration - elapsed;
+    if (remainingDuration.isNegative) {
+      return Duration.zero;
+    }
+
+    return remainingDuration;
+  }
+
+  HeartRateZone get targetHeartRateZone {
+    return switch (plan) {
+      TargetZoneWorkoutPlan(:final targetHeartRateZone) => targetHeartRateZone,
+      IntervalWorkoutPlan() || FreeWorkoutPlan() => HeartRateZone.zone2,
+    };
+  }
 
   HeartRateMeasurement? get latestHeartRateMeasurement {
     if (heartRateMeasurements.isEmpty) {
@@ -35,11 +71,21 @@ final class WorkoutSession extends Equatable {
     return heartRateZoneTable.getZoneType(measurement.beatsPerMinute);
   }
 
-  WorkoutSession copyWith({DateTime? endedAt, Duration? elapsed, List<HeartRateMeasurement>? heartRateMeasurements}) {
+  WorkoutSession copyWith({
+    DateTime? endedAt,
+    Duration? elapsed,
+    WorkoutEnvironment? environment,
+    WorkoutPlan? plan,
+    double? totalDistanceMeters,
+    List<HeartRateMeasurement>? heartRateMeasurements,
+  }) {
     return WorkoutSession(
       startedAt: startedAt,
       endedAt: endedAt ?? this.endedAt,
       elapsed: elapsed ?? this.elapsed,
+      environment: environment ?? this.environment,
+      plan: plan ?? this.plan,
+      totalDistanceMeters: totalDistanceMeters ?? this.totalDistanceMeters,
       heartRateZoneTable: heartRateZoneTable,
       heartRateMeasurements: heartRateMeasurements ?? this.heartRateMeasurements,
     );
@@ -54,5 +100,14 @@ final class WorkoutSession extends Equatable {
   }
 
   @override
-  List<Object?> get props => [startedAt, endedAt, elapsed, heartRateZoneTable, heartRateMeasurements];
+  List<Object?> get props => [
+    startedAt,
+    endedAt,
+    elapsed,
+    environment,
+    plan,
+    totalDistanceMeters,
+    heartRateZoneTable,
+    heartRateMeasurements,
+  ];
 }

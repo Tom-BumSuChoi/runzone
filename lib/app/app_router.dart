@@ -1,13 +1,34 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/heart_rate/data/mock_heart_rate_monitor.dart';
+import '../features/heart_rate/domain/heart_rate_zone.dart';
+import '../features/heart_rate/domain/heart_rate_zone_range.dart';
 import '../features/profile/presentation/runner_profile_setup_screen.dart';
-import '../features/workout/presentation/workout_countdown_screen.dart';
-import '../features/workout/presentation/workout_live_screen.dart';
+import '../features/treadmill/data/mock_treadmill_device.dart';
+import '../features/workout/domain/workout_session.dart';
+import '../features/workout/presentation/live/bloc/workout_live_bloc.dart';
+import '../features/workout/presentation/live/workout_live_route_input.dart';
+import '../features/workout/presentation/live/workout_live_screen.dart';
+import '../features/workout/presentation/feedback/workout_feedback_cubit.dart';
+import '../features/workout/presentation/feedback/workout_feedback_screen.dart';
+import '../features/workout/presentation/ready/workout_ready_cubit.dart';
+import '../features/workout/presentation/result/workout_result_cubit.dart';
+import '../features/workout/presentation/result/workout_result_screen.dart';
+import '../features/workout/presentation/ready/workout_ready_screen.dart';
 import 'app_routes.dart';
 import 'cubit/app_cubit.dart';
 import 'main_shell.dart';
 import 'splash_screen.dart';
+
+const _heartRateZoneTable = HeartRateZoneTable(
+  zone1: HeartRateZoneRange(lower: 96, upper: 120),
+  zone2: HeartRateZoneRange(lower: 121, upper: 148),
+  zone3: HeartRateZoneRange(lower: 149, upper: 160),
+  zone4: HeartRateZoneRange(lower: 161, upper: 172),
+  zone5: HeartRateZoneRange(lower: 173, upper: 182),
+);
 
 GoRouter createAppRouter({required AppCubit appCubit, required Listenable refreshListenable}) {
   return GoRouter(
@@ -18,13 +39,73 @@ GoRouter createAppRouter({required AppCubit appCubit, required Listenable refres
       GoRoute(path: AppRoutes.splash, builder: (_, _) => const SplashScreen()),
       GoRoute(path: AppRoutes.profileSetup, builder: (_, _) => const RunnerProfileSetupScreen()),
       GoRoute(path: AppRoutes.home, builder: (_, _) => const MainShell()),
-      GoRoute(
-        path: AppRoutes.workoutCountdown,
-        pageBuilder: (_, _) => const NoTransitionPage(child: WorkoutCountdownScreen()),
-      ),
-      GoRoute(
-        path: AppRoutes.workoutLive,
-        pageBuilder: (_, _) => const NoTransitionPage(child: WorkoutLiveScreen()),
+      ShellRoute(
+        pageBuilder: (_, _, child) => CustomTransitionPage(
+          child: child,
+          transitionsBuilder: (_, animation, _, child) {
+            final position = Tween<Offset>(
+              begin: const Offset(0, 1),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
+
+            return SlideTransition(position: position, child: child);
+          },
+        ),
+        routes: [
+          GoRoute(
+            path: AppRoutes.workoutReady,
+            pageBuilder: (_, _) => NoTransitionPage(
+              child: BlocProvider(
+                create: (_) => WorkoutReadyCubit(heartRateZoneTable: _heartRateZoneTable),
+                child: const WorkoutReadyScreen(),
+              ),
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.workoutLive,
+            redirect: (_, state) => state.extra is WorkoutLiveRouteInput ? null : AppRoutes.home,
+            pageBuilder: (_, state) {
+              final input = state.extra as WorkoutLiveRouteInput;
+              return NoTransitionPage(
+                child: BlocProvider(
+                  create: (_) => WorkoutLiveBloc(
+                    session: input.session,
+                    isAutoPaceEnabled: input.isAutoPaceEnabled,
+                    heartRateMonitor: MockHeartRateMonitor(),
+                    treadmillDevice: MockTreadmillDevice(),
+                  ),
+                  child: const WorkoutLiveScreen(),
+                ),
+              );
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.workoutFeedback,
+            redirect: (_, state) => state.extra is WorkoutSession ? null : AppRoutes.home,
+            pageBuilder: (_, state) {
+              final session = state.extra as WorkoutSession;
+              return NoTransitionPage(
+                child: BlocProvider(
+                  create: (_) => WorkoutFeedbackCubit(session: session),
+                  child: const WorkoutFeedbackScreen(),
+                ),
+              );
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.workoutResult,
+            redirect: (_, state) => state.extra is WorkoutSession ? null : AppRoutes.home,
+            pageBuilder: (_, state) {
+              final session = state.extra as WorkoutSession;
+              return NoTransitionPage(
+                child: BlocProvider(
+                  create: (_) => WorkoutResultCubit(session: session),
+                  child: const WorkoutResultScreen(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     ],
   );

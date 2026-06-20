@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../app_sizing.dart';
 import '../../app_spacing.dart';
+import '../../assets/run_zone_icon_asset.dart';
 import '../label/run_zone_label_small_label.dart';
 import 'run_zone_bottom_navigation_slot.dart';
 
@@ -10,13 +11,13 @@ final class RunZoneBottomNavigationItem extends RunZoneBottomNavigationSlot {
   const RunZoneBottomNavigationItem({
     super.key,
     required this.label,
-    required this.iconAsset,
+    required this.icon,
     required this.isSelected,
     required this.onTap,
   });
 
   final String label;
-  final String iconAsset;
+  final RunZoneIconAsset icon;
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -32,7 +33,7 @@ final class RunZoneBottomNavigationItem extends RunZoneBottomNavigationSlot {
         mainAxisSize: MainAxisSize.min,
         children: [
           SvgPicture.asset(
-            iconAsset,
+            icon.path,
             width: AppSizing.navigationIconSize,
             height: AppSizing.navigationIconSize,
             colorFilter: ColorFilter.mode(color, BlendMode.srcIn),

@@ -1,14 +1,29 @@
 abstract final class AppSizing {
   static const colorSwatch = 8.0;
+  static const connectionIndicatorSize = 6.0;
+  static const indicatorSize = 8.0;
   static const inlineIconSize = 14.0;
   static const heartRateZoneBarHeight = 100.0;
+  static const heartRateTrendChartHeight = 100.0;
+  static const workoutHeartRateRingSize = 250.0;
   static const progressSegmentHeight = 4.0;
   static const stepperButton = 32.0;
   static const stepperValueWidth = 56.0;
-  static const stepperIconSize = 17.0;
+  static const stepperIconSize = 18.0;
+  static const iconOutlineButtonSize = 34.0;
+  static const iconOutlineButtonIconSize = 20.0;
   static const touchTarget = 44.0;
   static const rowHeight = 44.0;
   static const navigationHeight = 78.0;
   static const navigationIconSize = 24.0;
   static const navigationStartButtonSize = 50.0;
+  static const workoutLiveControlButtonSize = 84.0;
+  static const workoutLivePrimaryIconSize = 32.0;
+  static const pausedIconRingSize = 96.0;
+  static const pausedIconSize = 42.0;
+  static const metricDividerHeight = 32.0;
+  static const buttonIconSize = 18.0;
+  static const completionRingSize = 100.0;
+  static const completionRingIconSize = 40.0;
+  static const completionRingBorderWidth = 2.0;
 }

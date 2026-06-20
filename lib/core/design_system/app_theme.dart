@@ -31,6 +31,13 @@ abstract final class AppTheme {
     ),
     textTheme: _textTheme(text: AppColors.gray100, dimText: AppColors.gray400, mutedText: AppColors.gray500),
     dividerTheme: const DividerThemeData(color: AppColors.gray700),
+    inputDecorationTheme: _inputDecorationTheme(
+      textColor: AppColors.gray100,
+      hintColor: AppColors.gray400,
+      fillColor: AppColors.gray850,
+      enabledBorderColor: AppColors.gray600,
+      focusedBorderColor: AppColors.lime300,
+    ),
     sliderTheme: SliderThemeData(
       activeTrackColor: AppColors.lime300,
       inactiveTrackColor: AppColors.gray600,
@@ -39,7 +46,12 @@ abstract final class AppTheme {
       thumbColor: AppColors.lime300,
     ),
     filledButtonTheme: FilledButtonThemeData(
-      style: _filledButtonStyle(backgroundColor: AppColors.lime300, foregroundColor: AppColors.gray950),
+      style: _filledButtonStyle(
+        backgroundColor: AppColors.lime300,
+        foregroundColor: AppColors.gray950,
+        disabledBackgroundColor: AppColors.gray850,
+        disabledForegroundColor: AppColors.gray400,
+      ),
     ),
     chipTheme: _choiceChipTheme(
       backgroundColor: AppColors.gray850,
@@ -76,6 +88,13 @@ abstract final class AppTheme {
     ),
     textTheme: _textTheme(text: AppColors.gray950, dimText: AppColors.gray500, mutedText: AppColors.gray400),
     dividerTheme: const DividerThemeData(color: AppColors.gray400),
+    inputDecorationTheme: _inputDecorationTheme(
+      textColor: AppColors.gray950,
+      hintColor: AppColors.gray500,
+      fillColor: AppColors.gray100,
+      enabledBorderColor: AppColors.gray500,
+      focusedBorderColor: AppColors.lime400,
+    ),
     sliderTheme: SliderThemeData(
       activeTrackColor: AppColors.lime400,
       inactiveTrackColor: AppColors.gray500,
@@ -84,7 +103,12 @@ abstract final class AppTheme {
       thumbColor: AppColors.lime400,
     ),
     filledButtonTheme: FilledButtonThemeData(
-      style: _filledButtonStyle(backgroundColor: AppColors.lime400, foregroundColor: AppColors.gray950),
+      style: _filledButtonStyle(
+        backgroundColor: AppColors.lime400,
+        foregroundColor: AppColors.gray950,
+        disabledBackgroundColor: AppColors.gray100,
+        disabledForegroundColor: AppColors.gray500,
+      ),
     ),
     chipTheme: _choiceChipTheme(
       backgroundColor: AppColors.gray100,
@@ -209,15 +233,60 @@ abstract final class AppTheme {
     );
   }
 
-  static ButtonStyle _filledButtonStyle({required Color backgroundColor, required Color foregroundColor}) {
+  static ButtonStyle _filledButtonStyle({
+    required Color backgroundColor,
+    required Color foregroundColor,
+    required Color disabledBackgroundColor,
+    required Color disabledForegroundColor,
+  }) {
     return ButtonStyle(
-      backgroundColor: WidgetStatePropertyAll(backgroundColor),
-      foregroundColor: WidgetStatePropertyAll(foregroundColor),
+      backgroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.disabled) ? disabledBackgroundColor : backgroundColor,
+      ),
+      foregroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.disabled) ? disabledForegroundColor : foregroundColor,
+      ),
       minimumSize: const WidgetStatePropertyAll(Size(AppSizing.touchTarget, AppSizing.touchTarget)),
       overlayColor: const WidgetStatePropertyAll(Colors.transparent),
       padding: const WidgetStatePropertyAll(AppSpacing.buttonInsets),
       shape: const WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: AppRadius.smallBorder)),
       splashFactory: NoSplash.splashFactory,
+    );
+  }
+
+  static InputDecorationTheme _inputDecorationTheme({
+    required Color textColor,
+    required Color hintColor,
+    required Color fillColor,
+    required Color enabledBorderColor,
+    required Color focusedBorderColor,
+  }) {
+    return InputDecorationTheme(
+      filled: true,
+      fillColor: fillColor,
+      hintStyle: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        height: 1.55,
+        color: hintColor,
+      ),
+      contentPadding: AppSpacing.cardInsets,
+      enabledBorder: OutlineInputBorder(
+        borderRadius: AppRadius.mediumBorder,
+        borderSide: BorderSide(color: enabledBorderColor),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: AppRadius.mediumBorder,
+        borderSide: BorderSide(color: focusedBorderColor),
+      ),
+      labelStyle: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        height: 1.55,
+        color: textColor,
+      ),
     );
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../app/di.dart';
 import '../../../core/design_system/app_color_scheme.dart';
 import '../../../core/design_system/app_spacing.dart';
+import '../../../core/design_system/assets/run_zone_icon_asset.dart';
 import '../../../core/design_system/widgets/bar/segmented_bar.dart';
 import '../../../core/design_system/widgets/button/run_zone_inline_action_button.dart';
 import '../../../core/design_system/widgets/card/run_zone_card.dart';
@@ -92,7 +93,7 @@ final class _ProfileRestoreButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: RunZoneInlineActionButton(
-        iconAsset: 'assets/icons/refresh.svg',
+        icon: RunZoneIconAsset.refresh,
         label: '프로필 기준으로 되돌리기',
         onPressed: onPressed,
       ),

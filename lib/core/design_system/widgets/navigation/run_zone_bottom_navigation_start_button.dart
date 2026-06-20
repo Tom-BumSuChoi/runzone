@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../app_radius.dart';
 import '../../app_sizing.dart';
 import '../../app_spacing.dart';
+import '../../assets/run_zone_icon_asset.dart';
 import 'run_zone_bottom_navigation_slot.dart';
 
 final class RunZoneBottomNavigationStartButton extends RunZoneBottomNavigationSlot {
@@ -27,7 +28,7 @@ final class RunZoneBottomNavigationStartButton extends RunZoneBottomNavigationSl
             decoration: BoxDecoration(color: colorScheme.primary, borderRadius: AppRadius.mediumBorder),
             child: Center(
               child: SvgPicture.asset(
-                'assets/icons/play.svg',
+                RunZoneIconAsset.play.path,
                 width: AppSizing.navigationIconSize,
                 height: AppSizing.navigationIconSize,
                 colorFilter: ColorFilter.mode(colorScheme.onPrimary, BlendMode.srcIn),

@@ -11,6 +11,7 @@ abstract final class AppSpacing {
   static const badgePaddingHorizontal = 10.0;
   static const segmentedControlPadding = 4.0;
   static const segmentedControlButtonPaddingVertical = 10.0;
+  static const controlBarPadding = 10.0;
   static const navigationPaddingTop = 12.0;
   static const navigationPaddingHorizontal = 14.0;
   static const navigationStartButtonLift = 6.0;
@@ -25,12 +26,15 @@ abstract final class AppSpacing {
 
   static const inlineLabelGap = SizedBox(width: 6);
   static const inlineValueGap = SizedBox(width: 4);
+  static const buttonGap = SizedBox(height: chipGap);
   static const navigationLabelGap = SizedBox(height: 6);
   static const controlGroupSpacer = SizedBox(height: controlGroupGap);
   static const sectionGap = SizedBox(height: 18);
   static const sectionLabelGap = SizedBox(height: 6);
   static const headerTitleGap = SizedBox(height: 22);
   static const titleDescriptionGap = SizedBox(height: 6);
+  static const metricLabelGap = SizedBox(height: 2);
+  static const headlineTagGap = SizedBox(height: 14);
   static const footerHintGap = SizedBox(height: 10);
 
   static const cardInsets = EdgeInsets.all(cardPadding);
